@@ -664,6 +664,46 @@
         put API keys or server tokens in this page.
       </p>
     </section>
+  
+    <section class="section container" id="tiktok-connection">
+      <div class="connect-panel">
+        <div>
+          <div class="eyebrow">04 / CREATOR CONNECTION</div>
+          <h2>CONNECT YOUR TIKTOK LIVE</h2>
+          <p>Enter any TikTok username to connect its LIVE events to your Roblox game.</p>
+        </div>
+
+        <div class="connection-box">
+          <form id="tiktok-connect-form">
+            <label for="tiktok-username">TikTok username</label>
+            <input
+              id="tiktok-username"
+              type="text"
+              placeholder="@username"
+              maxlength="25"
+              autocomplete="off"
+              required
+              style="width:100%;margin-top:10px;padding:13px;border:1px solid #403256;border-radius:9px;background:#100d1b;color:white;"
+            >
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+              <button class="btn btn-primary" type="submit" id="tiktok-connect-button">
+                CONNECT LIVE
+              </button>
+              <button class="btn btn-secondary" type="button" id="tiktok-disconnect-button">
+                DISCONNECT
+              </button>
+            </div>
+          </form>
+
+          <div id="tiktok-connection-status" role="status" aria-live="polite" style="margin-top:16px;">
+            Not connected.
+          </div>
+
+          <pre id="tiktok-connection-error" hidden style="white-space:pre-wrap;overflow-wrap:anywhere;color:#ff9cab;font-size:12px;"></pre>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
