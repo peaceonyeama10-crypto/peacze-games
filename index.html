@@ -3,287 +3,518 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090b12">
-  <title>PEACZE GAMES</title>
+  <title>Peacze Games</title>
+  <meta name="description" content="Play Peacze Games and control Roblox games with TikTok LIVE interactions.">
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #090b12;
-      color: white;
+      background: #0b0913;
+      color: #fff;
     }
+
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
       padding: 22px 7%;
-      border-bottom: 1px solid #252938;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid #282137;
+      background: #100c1c;
     }
-    .logo { font-size: 23px; font-weight: 900; white-space: nowrap; }
-    .logo span, h1 span { color: #a855f7; }
-    .status { color: #b6bacb; font-size: 13px; text-align: right; }
-    main { max-width: 1100px; margin: auto; padding: 55px 22px; }
-    .hero { text-align: center; margin-bottom: 42px; }
-    .tag {
-      color: #d8b4fe;
-      background: #241434;
-      padding: 8px 13px;
-      border-radius: 20px;
-      font-size: 12px;
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      color: #c6a0ff;
     }
-    h1 { font-size: clamp(38px, 7vw, 68px); margin: 25px 0 12px; }
-    .hero p, .panel p { color: #a9afc2; line-height: 1.6; }
-    h2 { font-size: 23px; }
+
+    header a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 65px 20px 40px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 7vw, 65px);
+      margin: 0 0 16px;
+    }
+
+    .hero h1 span { color: #b68aff; }
+
+    .hero p {
+      color: #b9b2c9;
+      line-height: 1.6;
+      max-width: 650px;
+      margin: 0 auto 25px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 15px;
+      background: #171323;
+      border: 1px solid #302541;
+      border-radius: 30px;
+      color: #c8bfd8;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #f0b44c;
+    }
+
+    .dot.online { background: #4be09a; }
+    .dot.offline { background: #ff6868; }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 25px 22px 65px;
+    }
+
+    .section-heading { margin-bottom: 24px; }
+
+    .section-heading h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: #a8a0b9;
+      line-height: 1.5;
+    }
+
     .games {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin: 25px 0 40px;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 22px;
     }
-    .game {
-      background: #121521;
-      border: 2px solid #292d3c;
-      border-radius: 18px;
-      padding: 22px;
-      cursor: pointer;
-      color: white;
-      text-align: left;
-      transition: .2s;
+
+    .game-card {
+      background: #151120;
+      border: 1px solid #30253f;
+      border-radius: 17px;
+      padding: 23px;
+      display: flex;
+      flex-direction: column;
+      min-height: 290px;
+      transition: border-color .2s, transform .2s;
     }
-    .game:hover { transform: translateY(-3px); border-color: #8b5cf6; }
-    .game.selected { border-color: #a855f7; background: #20152e; }
-    .emoji { font-size: 38px; }
-    .game h3 { margin-bottom: 8px; }
-    .game p { color: #a9afc2; font-size: 14px; line-height: 1.5; }
-    .selected-label { color: #d8b4fe; font-size: 12px; }
-    .panel {
-      background: #121521;
-      border: 1px solid #292d3c;
-      border-radius: 18px;
-      padding: 25px;
-      margin-bottom: 20px;
+
+    .game-card:hover {
+      border-color: #a66bff;
+      transform: translateY(-3px);
     }
-    .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .game-card.selected {
+      border-color: #b68aff;
+      box-shadow: 0 0 0 1px #b68aff33;
+    }
+
+    .game-icon {
+      width: 57px;
+      height: 57px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      font-size: 29px;
+      background: #2b1d40;
+      margin-bottom: 18px;
+    }
+
+    .game-card h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    .game-card p {
+      color: #b5aec4;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 20px;
+      flex: 1;
+    }
+
+    .game-status {
+      font-size: 12px;
+      color: #bda4e8;
+      margin-bottom: 14px;
+    }
+
     button {
       border: 0;
       border-radius: 10px;
-      padding: 13px 18px;
-      font-weight: bold;
+      padding: 13px 15px;
+      font-weight: 800;
       cursor: pointer;
       font-size: 14px;
+      transition: opacity .2s;
     }
-    .primary { background: #a855f7; color: white; }
-    .secondary { background: #252a3b; color: white; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    #message { color: #d8b4fe; margin-top: 15px; overflow-wrap: anywhere; }
-    .event-list {
+
+    button:hover { opacity: .85; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    .primary {
+      background: #a970ff;
+      color: #160d24;
+    }
+
+    .secondary {
+      background: #282035;
+      color: white;
+      border: 1px solid #433452;
+    }
+
+    .actions {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
     }
-    .event {
-      background: #191d2b;
-      border-radius: 10px;
-      padding: 12px;
-      color: #dce0ef;
+
+    .actions button { width: 100%; }
+
+    .panel {
+      margin-top: 30px;
+      padding: 23px;
+      border: 1px solid #30253f;
+      background: #151120;
+      border-radius: 17px;
+    }
+
+    .panel h2 { margin-top: 0; }
+
+    .panel p {
+      color: #b5aec4;
+      line-height: 1.6;
       font-size: 14px;
     }
+
+    #message {
+      padding: 13px;
+      border-radius: 9px;
+      background: #20182e;
+      color: #d8c6ff;
+      line-height: 1.5;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      color: #9188a4 !important;
+      font-size: 12px !important;
+    }
+
     footer {
       text-align: center;
-      color: #777f95;
-      padding: 30px;
-      border-top: 1px solid #252938;
+      border-top: 1px solid #282137;
+      padding: 25px 15px;
+      color: #8f879f;
       font-size: 13px;
     }
-    @media (max-width: 500px) {
+
+    @media (max-width: 520px) {
       header { padding: 18px; }
-      main { padding: 38px 16px; }
-      .status { max-width: 130px; }
-      .panel { padding: 19px; }
+      .hero { padding-top: 48px; }
+      main { padding-inline: 15px; }
+      .actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">PEACZE<span> GAMES</span></div>
-    <div class="status" id="backendStatus">Checking backend...</div>
+    <a class="logo" href="#">PEACZE GAMES</a>
+    <a href="#games">Explore Games ↓</a>
   </header>
 
-  <main>
-    <section class="hero">
-      <span class="tag">YOUR LIVE. YOUR GAME.</span>
-      <h1>MAKE YOUR LIVE<br><span>CONTROL THE GAME.</span></h1>
-      <p>Choose a Roblox game and turn your viewers' likes, follows and gifts into in-game actions.</p>
-    </section>
-
-    <h2>01 — Choose your game</h2>
-    <div class="games">
-      <button class="game selected" data-game="racing" onclick="chooseGame(this)">
-        <div class="emoji">🏎️</div>
-        <h3>Original Racing Game</h3>
-        <p>Join the race and interact with the racing experience.</p>
-        <div class="selected-label">CURRENTLY SELECTED</div>
-      </button>
-
-      <button class="game" data-game="jungle" onclick="chooseGame(this)">
-        <div class="emoji">🌴</div>
-        <h3>Jungle Run</h3>
-        <p>Boost speed, fly and activate a jetpack with LIVE events.</p>
-        <div class="selected-label"></div>
-      </button>
-
-      <button class="game" data-game="city" onclick="chooseGame(this)">
-        <div class="emoji">🦖</div>
-        <h3>Save the City</h3>
-        <p>Fight monsters using viewer likes, follows and gifts.</p>
-        <div class="selected-label"></div>
-      </button>
+  <section class="hero">
+    <h1>Your LIVE. Your Game. <span>Your Rules.</span></h1>
+    <p>
+      Choose a Roblox game, launch it, and get ready to bring your
+      TikTok LIVE community into the action.
+    </p>
+    <div class="status">
+      <span class="dot" id="backendDot"></span>
+      <span id="backendStatus">Checking game server...</span>
     </div>
+  </section>
 
-    <section class="panel">
-      <h2>02 — Your selected game</h2>
-      <p id="selectedGame">Original Racing Game</p>
-      <div class="actions">
-        <button class="primary" id="launchButton" onclick="launchGame()">Launch game</button>
-        <button class="secondary" id="connectButton" onclick="connectTikTok()">Check LIVE connector</button>
+  <main>
+    <section id="games">
+      <div class="section-heading">
+        <h2>Choose Your Game</h2>
+        <p>Select a game to make it your active game.</p>
       </div>
-      <p id="message" role="status" aria-live="polite">Checking the backend connection...</p>
+
+      <div class="games">
+        <article class="game-card selected" id="card-racing">
+          <div class="game-icon">🏎️</div>
+          <h3>Original Racing Game</h3>
+          <p>Race, compete, and let your community help shape the action.</p>
+          <div class="game-status" id="status-racing">Selected game</div>
+          <button class="primary" onclick="chooseGame('racing')">
+            Select Game
+          </button>
+          <div class="actions">
+            <button class="secondary" onclick="launchGame('racing')">
+              Launch Game ↗
+            </button>
+            <button class="secondary" onclick="copyGameLink('racing')">
+              Copy Link
+            </button>
+          </div>
+        </article>
+
+        <article class="game-card" id="card-jungle">
+          <div class="game-icon">🌴</div>
+          <h3>Jungle Run</h3>
+          <p>Run through the jungle, ride creatures, and take on challenges.</p>
+          <div class="game-status" id="status-jungle">Choose this game</div>
+          <button class="primary" onclick="chooseGame('jungle')">
+            Select Game
+          </button>
+          <div class="actions">
+            <button class="secondary" onclick="launchGame('jungle')">
+              Launch Game ↗
+            </button>
+            <button class="secondary" onclick="copyGameLink('jungle')">
+              Copy Link
+            </button>
+          </div>
+        </article>
+
+        <article class="game-card" id="card-city">
+          <div class="game-icon">🏙️</div>
+          <h3>Save the City</h3>
+          <p>Defend the city, battle threats, and see what your viewers can trigger.</p>
+          <div class="game-status" id="status-city">Choose this game</div>
+          <button class="primary" onclick="chooseGame('city')">
+            Select Game
+          </button>
+          <div class="actions">
+            <button class="secondary" onclick="launchGame('city')">
+              Launch Game ↗
+            </button>
+            <button class="secondary" onclick="copyGameLink('city')">
+              Copy Link
+            </button>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section class="panel">
-      <h2>03 — LIVE event controls</h2>
-      <p>Planned Save the City actions. These require matching event handlers inside the Roblox game.</p>
-      <div class="event-list">
-        <div class="event">❤️ Follow — Sword Slice (10 damage)</div>
-        <div class="event">👍 Likes — Punch (1 damage per like)</div>
-        <div class="event">🌹 Rose — Sword Slice (10 damage)</div>
-        <div class="event">🌸 Perfume — Super Slice (200 damage)</div>
-        <div class="event">🍩 Donut — Super Punch (300 damage)</div>
-        <div class="event">🎉 Confetti — Teleport Slap (1,000 damage)</div>
-        <div class="event">💸 Money Gun — Spawn another monster</div>
-        <div class="event">🌌 Galaxy — Void Punch (10,000 damage)</div>
+      <h2>Connect TikTok LIVE</h2>
+      <p>
+        Check whether the backend is online. The current backend uses its
+        server-side TikTok username; this page does not yet create separate
+        secure connections for each creator.
+      </p>
+      <button class="primary" id="checkButton" onclick="checkBackend(true)">
+        Check Connection
+      </button>
+      <div style="margin-top: 16px" id="message" role="status" aria-live="polite">
+        Checking backend connection...
       </div>
+      <p class="small">
+        Never enter your TikTok password or server API keys on this page.
+      </p>
     </section>
   </main>
 
-  <footer>PEACZE GAMES © 2026 · Built for creators</footer>
+  <footer>
+    © <span id="year"></span> Peacze Games · Play responsibly
+  </footer>
 
   <script>
     const BACKEND_URL = "https://tiktok-race-queue-1.onrender.com";
 
-    let selected = "racing";
+    const GAMES = {
+      racing: {
+        name: "Original Racing Game",
+        url: "https://www.roblox.com/games/97689573979587/tiktok"
+      },
+      jungle: {
+        name: "Jungle Run",
+        url: ""
+      },
+      city: {
+        name: "Save the City",
+        url: ""
+      }
+    };
+
+    let selectedGame = "racing";
     let backendOnline = false;
     let availableGames = [];
 
-    const names = {
-      racing: "Original Racing Game",
-      jungle: "Jungle Run",
-      city: "Save the City"
-    };
+    const message = document.getElementById("message");
 
-    async function checkBackend() {
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    function setBackendStatus(online) {
+      backendOnline = online;
+      const dot = document.getElementById("backendDot");
       const status = document.getElementById("backendStatus");
 
-      try {
-        const response = await fetch(`${BACKEND_URL}/health`);
-
-        if (!response.ok) {
-          throw new Error("Backend health check failed");
-        }
-
-        const data = await response.json();
-        backendOnline = data.status === "ok";
-        availableGames = Array.isArray(data.availableGames)
-          ? data.availableGames
-          : [];
-
-        status.textContent = backendOnline
-          ? "Backend online"
-          : "Backend needs attention";
-
-        status.style.color = backendOnline ? "#86efac" : "#fca5a5";
-
-        updateMessage(
-          backendOnline
-            ? "Backend is reachable. TikTok LIVE and game events still need to be connected and tested."
-            : "The backend responded, but its health status is not OK."
-        );
-      } catch (error) {
-        backendOnline = false;
-        status.textContent = "Backend unavailable";
-        status.style.color = "#fca5a5";
-        updateMessage("Couldn't reach the backend. Refresh the page or check the Render service.");
-      }
+      dot.className = online ? "dot online" : "dot offline";
+      status.textContent = online ? "Game server online" : "Game server unavailable";
     }
 
-    function updateMessage(text) {
-      document.getElementById("message").textContent = text;
-    }
-
-    function chooseGame(button) {
-      document.querySelectorAll(".game").forEach(game => {
-        game.classList.remove("selected");
-        game.querySelector(".selected-label").textContent = "";
-      });
-
-      button.classList.add("selected");
-      button.querySelector(".selected-label").textContent = "CURRENTLY SELECTED";
-      selected = button.dataset.game;
-
-      document.getElementById("selectedGame").textContent = names[selected];
-
-      if (!backendOnline) {
-        updateMessage("Game selected. The backend is currently unavailable.");
-      } else if (!availableGames.includes(selected)) {
-        updateMessage(
-          names[selected] + " selected, but this game is not configured on the backend yet."
-        );
-      } else {
-        updateMessage(
-          names[selected] + " selected. The backend supports this game, but LIVE events still need testing."
-        );
-      }
-    }
-
-    function launchGame() {
-      updateMessage(
-        "Selected: " + names[selected] +
-        ". A Roblox experience link and working launch integration must be configured before this button can launch the game."
-      );
-    }
-
-    async function connectTikTok() {
-      const button = document.getElementById("connectButton");
+    async function checkBackend(showDetails = false) {
+      const button = document.getElementById("checkButton");
       button.disabled = true;
       button.textContent = "Checking...";
 
       try {
-        const response = await fetch(`${BACKEND_URL}/health`);
+        const response = await fetch(`${BACKEND_URL}/health`, {
+          method: "GET"
+        });
 
         if (!response.ok) {
-          throw new Error("Backend unavailable");
+          throw new Error(`Server returned HTTP ${response.status}`);
         }
 
         const data = await response.json();
+        setBackendStatus(true);
 
-        updateMessage(
-          "Backend connected. TikTok LIVE is not connected through this button yet. The current server uses a configured TikTok username and does not provide separate creator accounts."
-        );
+        try {
+          const gamesResponse = await fetch(`${BACKEND_URL}/api/games`);
+          if (gamesResponse.ok) {
+            const gamesData = await gamesResponse.json();
+            availableGames = Array.isArray(gamesData)
+              ? gamesData
+              : (gamesData.games || []);
+          }
+        } catch (_) {
+          // Health can succeed even if the optional game list fails.
+        }
 
-        if (data.status !== "ok") {
-          updateMessage("The backend responded, but needs attention before LIVE events can work.");
+        updateCards();
+
+        if (showDetails) {
+          showMessage(
+            "Backend is online. " +
+            "The server currently uses its configured TikTok username. " +
+            "Per-creator TikTok connections and full gift controls are not yet implemented."
+          );
         }
       } catch (error) {
-        updateMessage("Couldn't reach the backend. Check Render and try again.");
+        setBackendStatus(false);
+        if (showDetails) {
+          showMessage(
+            "Could not reach the backend. It may be starting up or unavailable. " +
+            "Try again in a moment. Details: " + error.message
+          );
+        }
       } finally {
         button.disabled = false;
-        button.textContent = "Check LIVE connector";
+        button.textContent = "Check Connection";
       }
     }
 
-    checkBackend();
+    async function chooseGame(gameId) {
+      const game = GAMES[gameId];
+      if (!game) return;
+
+      selectedGame = gameId;
+      updateCards();
+
+      if (!backendOnline) {
+        showMessage(
+          `${game.name} selected on this website. The backend is offline, so the selection has not been sent to the server.`
+        );
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/select-game`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ game: gameId })
+        });
+
+        if (response.status === 401 || response.status === 403) {
+          showMessage(
+            `${game.name} selected on this page, but the server requires authorization. A secure server-side selection flow must be configured.`
+          );
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        showMessage(`${game.name} selected.`);
+      } catch (error) {
+        showMessage(
+          `${game.name} selected on this page, but the server selection could not be confirmed. ${error.message}`
+        );
+      }
+    }
+
+    function updateCards() {
+      for (const id of Object.keys(GAMES)) {
+        const card = document.getElementById(`card-${id}`);
+        const status = document.getElementById(`status-${id}`);
+        const isSelected = selectedGame === id;
+
+        card.classList.toggle("selected", isSelected);
+        status.textContent = isSelected ? "Selected game" : "Choose this game";
+      }
+    }
+
+    function launchGame(gameId) {
+      const game = GAMES[gameId];
+
+      if (!game || !game.url) {
+        showMessage(
+          `${game ? game.name : "This game"} does not have a public Roblox game link configured yet.`
+        );
+        return;
+      }
+
+      window.open(game.url, "_blank", "noopener,noreferrer");
+      showMessage(`Opening ${game.name} on Roblox.`);
+    }
+
+    async function copyGameLink(gameId) {
+      const game = GAMES[gameId];
+
+      if (!game || !game.url) {
+        showMessage(
+          `${game ? game.name : "This game"} does not have a public Roblox link configured yet.`
+        );
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(game.url);
+        showMessage(`${game.name} link copied.`);
+      } catch (_) {
+        showMessage(`Copy this link: ${game.url}`);
+      }
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    updateCards();
+    checkBackend(false);
   </script>
 </body>
 </html>
