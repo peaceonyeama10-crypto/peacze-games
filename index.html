@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEACZE GAMES</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #090b12;
+      color: white;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 7%;
+      border-bottom: 1px solid #252938;
+    }
+    .logo { font-size: 23px; font-weight: 900; }
+    .logo span { color: #a855f7; }
+    .status { color: #b6bacb; font-size: 13px; }
+    main { max-width: 1100px; margin: auto; padding: 55px 22px; }
+    .hero { text-align: center; margin-bottom: 42px; }
+    .tag {
+      color: #d8b4fe;
+      background: #241434;
+      padding: 8px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    h1 { font-size: clamp(38px, 7vw, 68px); margin: 25px 0 12px; }
+    h1 span { color: #a855f7; }
+    .hero p { color: #a9afc2; line-height: 1.6; }
+    h2 { font-size: 23px; }
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 25px 0 40px;
+    }
+    .game {
+      background: #121521;
+      border: 2px solid #292d3c;
+      border-radius: 18px;
+      padding: 22px;
+      cursor: pointer;
+      color: white;
+      text-align: left;
+      transition: .2s;
+    }
+    .game:hover { transform: translateY(-3px); border-color: #8b5cf6; }
+    .game.selected { border-color: #a855f7; background: #20152e; }
+    .emoji { font-size: 38px; }
+    .game h3 { margin-bottom: 8px; }
+    .game p { color: #a9afc2; font-size: 14px; line-height: 1.5; }
+    .selected-label { color: #d8b4fe; font-size: 12px; }
+    .panel {
+      background: #121521;
+      border: 1px solid #292d3c;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .panel p { color: #a9afc2; line-height: 1.6; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .primary { background: #a855f7; color: white; }
+    .secondary { background: #252a3b; color: white; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    #message { color: #d8b4fe; margin-top: 15px; }
+    footer {
+      text-align: center;
+      color: #777f95;
+      padding: 30px;
+      border-top: 1px solid #252938;
+      font-size: 13px;
+    }
+    @media (max-width: 500px) {
+      header { padding: 18px; }
+      main { padding: 38px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">PEACZE<span> GAMES</span></div>
+    <div class="status">Creator Gaming Platform</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="tag">YOUR LIVE. YOUR GAME.</span>
+      <h1>MAKE YOUR LIVE<br><span>CONTROL THE GAME.</span></h1>
+      <p>Choose a Roblox game and turn your viewers' likes, follows and gifts into in-game actions.</p>
+    </section>
+
+    <h2>01 — Choose your game</h2>
+    <div class="games">
+      <button class="game selected" data-game="racing" onclick="chooseGame(this)">
+        <div class="emoji">🏎️</div>
+        <h3>Original Racing Game</h3>
+        <p>Keep your original racing experience and its existing event system.</p>
+        <div class="selected-label">SELECTED BY DEFAULT</div>
+      </button>
+
+      <button class="game" data-game="jungle" onclick="chooseGame(this)">
+        <div class="emoji">🌴</div>
+        <h3>Jungle Run</h3>
+        <p>Let viewers boost speed, fly and activate a jetpack with LIVE events.</p>
+        <div class="selected-label"></div>
+      </button>
+
+      <button class="game" data-game="city" onclick="chooseGame(this)">
+        <div class="emoji">🦖</div>
+        <h3>Save the City</h3>
+        <p>Fight monsters using viewer likes, follows and gifts.</p>
+        <div class="selected-label"></div>
+      </button>
+    </div>
+
+    <section class="panel">
+      <h2>02 — Your selected game</h2>
+      <p id="selectedGame">Original Racing Game</p>
+      <div class="actions">
+        <button class="primary" onclick="launchGame()">Launch game</button>
+        <button class="secondary" onclick="connectTikTok()">Connect TikTok LIVE</button>
+      </div>
+      <p id="message">Website preview: game selection works. Live connections are not configured yet.</p>
+    </section>
+
+    <section class="panel">
+      <h2>03 — LIVE event controls</h2>
+      <p>These are the planned Save the City actions. They will work in Roblox after the game and backend are connected.</p>
+      <p>❤️ Follow — Sword Slice (10 damage)</p>
+      <p>👍 Like — Punch (1 damage per like)</p>
+      <p>🌹 Rose — Sword Slice (10 damage)</p>
+      <p>🌸 Perfume — Super Slice (200 damage)</p>
+      <p>🍩 Donut — Super Punch (300 damage)</p>
+      <p>🎉 Confetti — Teleport Slap (1,000 damage)</p>
+      <p>💸 Money Gun — Spawn another monster</p>
+      <p>🌌 Galaxy — Void Punch (10,000 damage)</p>
+    </section>
+  </main>
+
+  <footer>PEACZE GAMES © 2026 · Built for creators</footer>
+
+  <script>
+    let selected = "racing";
+
+    function chooseGame(button) {
+      document.querySelectorAll(".game").forEach(game => {
+        game.classList.remove("selected");
+        game.querySelector(".selected-label").textContent = "";
+      });
+
+      button.classList.add("selected");
+      button.querySelector(".selected-label").textContent = "CURRENTLY SELECTED";
+      selected = button.dataset.game;
+
+      const names = {
+        racing: "Original Racing Game",
+        jungle: "Jungle Run",
+        city: "Save the City"
+      };
+
+      document.getElementById("selectedGame").textContent = names[selected];
+      document.getElementById("message").textContent =
+        names[selected] + " selected. Connect the Roblox backend to launch it.";
+    }
+
+    function launchGame() {
+      document.getElementById("message").textContent =
+        "Selected: " + selected +
+        ". A Roblox game ID and backend connection are required before launch works.";
+    }
+
+    function connectTikTok() {
+      document.getElementById("message").textContent =
+        "TikTok LIVE connection is not configured yet. We will build the secure connector next.";
+    }
+  </script>
+</body>
+</html>
