@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b12">
   <title>PEACZE GAMES</title>
   <style>
     * { box-sizing: border-box; }
@@ -16,12 +17,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
       padding: 22px 7%;
       border-bottom: 1px solid #252938;
     }
-    .logo { font-size: 23px; font-weight: 900; }
-    .logo span { color: #a855f7; }
-    .status { color: #b6bacb; font-size: 13px; }
+    .logo { font-size: 23px; font-weight: 900; white-space: nowrap; }
+    .logo span, h1 span { color: #a855f7; }
+    .status { color: #b6bacb; font-size: 13px; text-align: right; }
     main { max-width: 1100px; margin: auto; padding: 55px 22px; }
     .hero { text-align: center; margin-bottom: 42px; }
     .tag {
@@ -32,8 +34,7 @@
       font-size: 12px;
     }
     h1 { font-size: clamp(38px, 7vw, 68px); margin: 25px 0 12px; }
-    h1 span { color: #a855f7; }
-    .hero p { color: #a9afc2; line-height: 1.6; }
+    .hero p, .panel p { color: #a9afc2; line-height: 1.6; }
     h2 { font-size: 23px; }
     .games {
       display: grid;
@@ -64,7 +65,6 @@
       padding: 25px;
       margin-bottom: 20px;
     }
-    .panel p { color: #a9afc2; line-height: 1.6; }
     .actions { display: flex; gap: 12px; flex-wrap: wrap; }
     button {
       border: 0;
@@ -72,11 +72,24 @@
       padding: 13px 18px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 14px;
     }
     .primary { background: #a855f7; color: white; }
     .secondary { background: #252a3b; color: white; }
     button:disabled { opacity: .5; cursor: not-allowed; }
-    #message { color: #d8b4fe; margin-top: 15px; }
+    #message { color: #d8b4fe; margin-top: 15px; overflow-wrap: anywhere; }
+    .event-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .event {
+      background: #191d2b;
+      border-radius: 10px;
+      padding: 12px;
+      color: #dce0ef;
+      font-size: 14px;
+    }
     footer {
       text-align: center;
       color: #777f95;
@@ -87,13 +100,15 @@
     @media (max-width: 500px) {
       header { padding: 18px; }
       main { padding: 38px 16px; }
+      .status { max-width: 130px; }
+      .panel { padding: 19px; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">PEACZE<span> GAMES</span></div>
-    <div class="status">Creator Gaming Platform</div>
+    <div class="status" id="backendStatus">Checking backend...</div>
   </header>
 
   <main>
@@ -108,14 +123,14 @@
       <button class="game selected" data-game="racing" onclick="chooseGame(this)">
         <div class="emoji">🏎️</div>
         <h3>Original Racing Game</h3>
-        <p>Keep your original racing experience and its existing event system.</p>
-        <div class="selected-label">SELECTED BY DEFAULT</div>
+        <p>Join the race and interact with the racing experience.</p>
+        <div class="selected-label">CURRENTLY SELECTED</div>
       </button>
 
       <button class="game" data-game="jungle" onclick="chooseGame(this)">
         <div class="emoji">🌴</div>
         <h3>Jungle Run</h3>
-        <p>Let viewers boost speed, fly and activate a jetpack with LIVE events.</p>
+        <p>Boost speed, fly and activate a jetpack with LIVE events.</p>
         <div class="selected-label"></div>
       </button>
 
@@ -131,30 +146,81 @@
       <h2>02 — Your selected game</h2>
       <p id="selectedGame">Original Racing Game</p>
       <div class="actions">
-        <button class="primary" onclick="launchGame()">Launch game</button>
-        <button class="secondary" onclick="connectTikTok()">Connect TikTok LIVE</button>
+        <button class="primary" id="launchButton" onclick="launchGame()">Launch game</button>
+        <button class="secondary" id="connectButton" onclick="connectTikTok()">Check LIVE connector</button>
       </div>
-      <p id="message">Website preview: game selection works. Live connections are not configured yet.</p>
+      <p id="message" role="status" aria-live="polite">Checking the backend connection...</p>
     </section>
 
     <section class="panel">
       <h2>03 — LIVE event controls</h2>
-      <p>These are the planned Save the City actions. They will work in Roblox after the game and backend are connected.</p>
-      <p>❤️ Follow — Sword Slice (10 damage)</p>
-      <p>👍 Like — Punch (1 damage per like)</p>
-      <p>🌹 Rose — Sword Slice (10 damage)</p>
-      <p>🌸 Perfume — Super Slice (200 damage)</p>
-      <p>🍩 Donut — Super Punch (300 damage)</p>
-      <p>🎉 Confetti — Teleport Slap (1,000 damage)</p>
-      <p>💸 Money Gun — Spawn another monster</p>
-      <p>🌌 Galaxy — Void Punch (10,000 damage)</p>
+      <p>Planned Save the City actions. These require matching event handlers inside the Roblox game.</p>
+      <div class="event-list">
+        <div class="event">❤️ Follow — Sword Slice (10 damage)</div>
+        <div class="event">👍 Likes — Punch (1 damage per like)</div>
+        <div class="event">🌹 Rose — Sword Slice (10 damage)</div>
+        <div class="event">🌸 Perfume — Super Slice (200 damage)</div>
+        <div class="event">🍩 Donut — Super Punch (300 damage)</div>
+        <div class="event">🎉 Confetti — Teleport Slap (1,000 damage)</div>
+        <div class="event">💸 Money Gun — Spawn another monster</div>
+        <div class="event">🌌 Galaxy — Void Punch (10,000 damage)</div>
+      </div>
     </section>
   </main>
 
   <footer>PEACZE GAMES © 2026 · Built for creators</footer>
 
   <script>
+    const BACKEND_URL = "https://tiktok-race-queue-1.onrender.com";
+
     let selected = "racing";
+    let backendOnline = false;
+    let availableGames = [];
+
+    const names = {
+      racing: "Original Racing Game",
+      jungle: "Jungle Run",
+      city: "Save the City"
+    };
+
+    async function checkBackend() {
+      const status = document.getElementById("backendStatus");
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/health`);
+
+        if (!response.ok) {
+          throw new Error("Backend health check failed");
+        }
+
+        const data = await response.json();
+        backendOnline = data.status === "ok";
+        availableGames = Array.isArray(data.availableGames)
+          ? data.availableGames
+          : [];
+
+        status.textContent = backendOnline
+          ? "Backend online"
+          : "Backend needs attention";
+
+        status.style.color = backendOnline ? "#86efac" : "#fca5a5";
+
+        updateMessage(
+          backendOnline
+            ? "Backend is reachable. TikTok LIVE and game events still need to be connected and tested."
+            : "The backend responded, but its health status is not OK."
+        );
+      } catch (error) {
+        backendOnline = false;
+        status.textContent = "Backend unavailable";
+        status.style.color = "#fca5a5";
+        updateMessage("Couldn't reach the backend. Refresh the page or check the Render service.");
+      }
+    }
+
+    function updateMessage(text) {
+      document.getElementById("message").textContent = text;
+    }
 
     function chooseGame(button) {
       document.querySelectorAll(".game").forEach(game => {
@@ -166,27 +232,58 @@
       button.querySelector(".selected-label").textContent = "CURRENTLY SELECTED";
       selected = button.dataset.game;
 
-      const names = {
-        racing: "Original Racing Game",
-        jungle: "Jungle Run",
-        city: "Save the City"
-      };
-
       document.getElementById("selectedGame").textContent = names[selected];
-      document.getElementById("message").textContent =
-        names[selected] + " selected. Connect the Roblox backend to launch it.";
+
+      if (!backendOnline) {
+        updateMessage("Game selected. The backend is currently unavailable.");
+      } else if (!availableGames.includes(selected)) {
+        updateMessage(
+          names[selected] + " selected, but this game is not configured on the backend yet."
+        );
+      } else {
+        updateMessage(
+          names[selected] + " selected. The backend supports this game, but LIVE events still need testing."
+        );
+      }
     }
 
     function launchGame() {
-      document.getElementById("message").textContent =
-        "Selected: " + selected +
-        ". A Roblox game ID and backend connection are required before launch works.";
+      updateMessage(
+        "Selected: " + names[selected] +
+        ". A Roblox experience link and working launch integration must be configured before this button can launch the game."
+      );
     }
 
-    function connectTikTok() {
-      document.getElementById("message").textContent =
-        "TikTok LIVE connection is not configured yet. We will build the secure connector next.";
+    async function connectTikTok() {
+      const button = document.getElementById("connectButton");
+      button.disabled = true;
+      button.textContent = "Checking...";
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/health`);
+
+        if (!response.ok) {
+          throw new Error("Backend unavailable");
+        }
+
+        const data = await response.json();
+
+        updateMessage(
+          "Backend connected. TikTok LIVE is not connected through this button yet. The current server uses a configured TikTok username and does not provide separate creator accounts."
+        );
+
+        if (data.status !== "ok") {
+          updateMessage("The backend responded, but needs attention before LIVE events can work.");
+        }
+      } catch (error) {
+        updateMessage("Couldn't reach the backend. Check Render and try again.");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Check LIVE connector";
+      }
     }
+
+    checkBackend();
   </script>
 </body>
 </html>
