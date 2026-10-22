@@ -730,16 +730,22 @@
   <script>
     const BACKEND_URL = "https://tiktok-race-queue.onrender.com";
 
+  
     const GAMES = {
       racing: {
         name: "TikTok Run",
         url: "https://www.roblox.com/games/97689573979587/tiktok"
       },
-      jungle: { name: "Jungle Run", url: "" },
-     savecity: {
-  name: "Save the City",
-  url: "https://www.roblox.com/games/134222367810857"
-}
+      jungle: {
+        name: "Jungle Run",
+        url: ""
+      },
+      city: {
+        name: "Save the City",
+        url: "https://www.roblox.com/games/134222367810857"
+      }
+    };
+
     let selectedGame = "racing";
     let backendOnline = false;
     let availableGames = [];
@@ -927,25 +933,35 @@ updateTikTokStatus();
 setInterval(updateTikTokStatus, 5000);
 
 
-    function updateCards() {
-      for (const id of Object.keys(GAMES)) {
-        const card = document.getElementById(`card-${id}`);
-        const status = document.getElementById(`status-${id}`);
+  function updateCards() {
+  for (const id of Object.keys(GAMES)) {
+    const card = document.getElementById(`card-${id}`);
+    const status = document.getElementById(`status-${id}`);
 
-        card.classList.toggle("selected", selectedGame === id);
+    if (card) {
+      card.classList.toggle("selected", selectedGame === id);
+    }
 
-        if (id === "racing") {
-          status.textContent = selectedGame === id
-            ? "★ Selected experience"
-            : "★ Featured experience";
-        } else if (!GAMES[id].url) {
-          status.textContent = "Needs game link and backend setup";
-        } else {
-          status.textContent = selectedGame === id
-            ? "Selected experience"
-            : "Available";
-        }
+    if (status) {
+      if (id === "racing") {
+        status.textContent = selectedGame === id
+          ? "★ Selected experience"
+          : "★ Featured experience";
+      } else if (!GAMES[id].url) {
+        status.textContent = "Coming soon";
+      } else {
+        status.textContent = selectedGame === id
+          ? "Selected experience"
+          : "Available";
       }
+    }
+  }
+
+  const selectedStatus = document.getElementById("selectedStatus");
+  if (selectedStatus) {
+    selectedStatus.textContent = GAMES[selectedGame].name;
+  }
+}
 
       document.getElementById("selectedStatus").textContent =
         GAMES[selectedGame].name;
