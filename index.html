@@ -847,6 +847,7 @@ async function updateTikTokStatus() {
 }
 
 
+
 tiktokForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -864,39 +865,21 @@ tiktokForm.addEventListener("submit", async (event) => {
   }
 
   tiktokConnectButton.disabled = true;
-  tiktokStatusBox.textContent = "Verifying access code...";
+  tiktokStatusBox.textContent = "Verifying Discord session and access code...";
   tiktokErrorBox.hidden = true;
 
   try {
-    const verifyResponse = await fetch(
-      "https://tiktok-race-queue.onrender.com/api/access/verify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
-      }
-    );
-
-    const verifyData = await verifyResponse.json();
-
-    if (!verifyResponse.ok || verifyData.valid !== true) {
-      throw new Error(
-        verifyData.error || "Invalid or expired daily access code."
-      );
-    }
-
-    tiktokStatusBox.textContent = `Connecting to @${username}...`;
-
     const response = await fetch("/api/tiktok/connect", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
       body: JSON.stringify({ username, code })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.error || `HTTP ${response.status}`);
+      throw new Error(data.error || data.message || `HTTP ${response.status}`);
     }
 
     tiktokStatusBox.textContent =
@@ -913,7 +896,6 @@ tiktokForm.addEventListener("submit", async (event) => {
     tiktokConnectButton.disabled = false;
   }
 });
-
 
 tiktokDisconnectButton.addEventListener("click", async () => {
   tiktokDisconnectButton.disabled = true;
