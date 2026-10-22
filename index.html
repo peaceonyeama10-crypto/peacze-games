@@ -627,44 +627,6 @@
     </section>
 
    
-<section class="section container" id="connect">
-  <div class="connect-panel">
-    <div>
-      <div class="eyebrow">03 / SYSTEM STATUS</div>
-      <h2>READY TO GO LIVE?</h2>
-      <p>
-        Check the server connection before streaming. The current backend
-        connects to one configured TikTok username; individual creator
-        sign-in is not set up yet.
-      </p>
-      <button class="btn btn-primary" id="checkButton" onclick="checkBackend(true)">CHECK SERVER ↻</button>
-    </div>
-    <div class="connection-box">
-      <div class="connection-row">
-        <span>Backend server</span>
-        <span class="connection-value" id="backendStatus">Checking...</span>
-      </div>
-      <div class="connection-row">
-        <span>Selected experience</span>
-        <span class="connection-value" id="selectedStatus">TikTok Run</span>
-      </div>
-      <div class="connection-row">
-        <span>TikTok LIVE</span>
-        <span class="connection-value" id="liveStatus">Not verified by website</span>
-      </div>
-      <div class="connection-row">
-        <span>Configured backend games</span>
-        <span class="connection-value" id="gamesStatus">Checking...</span>
-      </div>
-      <div id="message" role="status" aria-live="polite">Checking backend availability...</div>
-    </div>
-  </div>
-  <p class="note">
-    Note: a successful health check confirms the server responds; it does
-    not prove TikTok is connected or that gifts are being received. Never
-    put API keys or server tokens in this page.
-  </p>
-</section>
 
   
     <section class="section container" id="tiktok-connection">
