@@ -28,9 +28,23 @@ export default async function handler(req, res) {
       body: JSON.stringify(req.body)
     });
 
-    const data = await response.json();
+  
+    const text = await response.text();
 
-    return res.status(response.status).json(data);
+    try {
+      return res.status(response.status).json(JSON.parse(text));
+    } catch {
+      console.error(
+        "TikTok backend returned non-JSON:",
+        response.status,
+        text.slice(0, 300)
+      );
+
+      return res.status(502).json({
+        error: "TikTok backend returned a non-JSON response.",
+        backendStatus: response.status
+      });
+    }
   } catch (error) {
     console.error("TikTok connect proxy failed:", error.message);
 
