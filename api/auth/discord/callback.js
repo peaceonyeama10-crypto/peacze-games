@@ -96,7 +96,12 @@ export default async function handler(req, res) {
     }
 
     const user = await userResponse.json();
-
+    console.log("Discord approval diagnostic:", {
+  userIdLast4: user.id.slice(-4),
+  approvedCount: approvedIds.length,
+  matched: approvedIds.includes(user.id),
+  approvedIdLast4: approvedIds.map(id => id.slice(-4))
+});
     const approvedIds = APPROVED_DISCORD_IDS
       .split(",")
       .map(id => id.trim())
