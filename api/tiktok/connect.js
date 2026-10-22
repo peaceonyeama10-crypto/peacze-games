@@ -100,7 +100,10 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({
+  code,
+  discordUserId: data.discordUserId
+})
     });
 
     const verificationText = await verification.text();
