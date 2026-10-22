@@ -750,11 +750,13 @@
     let backendOnline = false;
     let availableGames = [];
 
-    const message = document.getElementById("message");
+  const message = document.getElementById("tiktok-connection-status");
 
-    function showMessage(text) {
-      message.textContent = text;
-    }
+function showMessage(text) {
+  if (message) {
+    message.textContent = text;
+  }
+}
 
     function setServerStatus(online) {
       backendOnline = online;
@@ -963,10 +965,7 @@ setInterval(updateTikTokStatus, 5000);
   }
 }
 
-      document.getElementById("selectedStatus").textContent =
-        GAMES[selectedGame].name;
-    }
-
+    
 
     async function chooseGame(id) {
       if (!GAMES[id]) return;
