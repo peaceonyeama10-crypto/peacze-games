@@ -951,22 +951,47 @@ setInterval(updateTikTokStatus, 5000);
         GAMES[selectedGame].name;
     }
 
-    function chooseGame(id) {
+
+    async function chooseGame(id) {
       if (!GAMES[id]) return;
 
-      selectedGame = id;
-      updateCards();
+      const backendGame = id === "city" ? "savecity" : id;
 
-      if (!availableGames.includes(id)) {
-        showMessage(
-          `${GAMES[id].name} is selected on this page only. It is not configured on the backend yet.`
-        );
+      if (!availableGames.includes(backendGame)) {
+        showMessage(`${GAMES[id].name} is not configured on the backend yet.`);
         return;
       }
 
-      showMessage(
-        `${GAMES[id].name} is selected on this page. Server-side game selection is not yet connected to a secure website account.`
-      );
+      const code = prompt("Enter your daily access code:");
+      if (!code || !code.trim()) return;
+
+      showMessage(`Switching to ${GAMES[id].name}...`);
+
+      try {
+        const response = await fetch("/api/games/select", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            game: backendGame,
+            code: code.trim()
+          })
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          showMessage(result.error || "Could not switch games.");
+          return;
+        }
+
+        selectedGame = id;
+        updateCards();
+        showMessage(`${GAMES[id].name} is now the active game!`);
+      } catch (error) {
+        showMessage("Could not contact the website. Try again.");
+      }
     }
 
     function launchGame(id) {
