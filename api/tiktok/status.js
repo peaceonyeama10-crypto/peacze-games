@@ -4,10 +4,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed." });
   }
 
-  if (req.headers.origin !== "https://peacze-games.vercel.app") {
-    return res.status(403).json({ error: "Origin not allowed." });
-  }
+ const allowedOrigins = [
+  "https://peacze-games.vercel.app",
+  "https://peacze-games-git-main-peace-sever.vercel.app"
+];
 
+const origin = req.headers.origin;
+
+if (origin && !allowedOrigins.includes(origin)) {
+  return res.status(403).json({ error: "Origin not allowed." });
+}
   const backend = process.env.TIKTOK_BACKEND_URL;
   const token = process.env.TIKTOK_QUEUE_TOKEN;
 
