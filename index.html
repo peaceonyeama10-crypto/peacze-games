@@ -809,6 +809,99 @@
       }
     }
 
+const tiktokForm = document.getElementById("tiktok-connect-form");
+const tiktokUsernameInput = document.getElementById("tiktok-username");
+const tiktokConnectButton = document.getElementById("tiktok-connect-button");
+const tiktokDisconnectButton = document.getElementById("tiktok-disconnect-button");
+const tiktokStatusBox = document.getElementById("tiktok-connection-status");
+const tiktokErrorBox = document.getElementById("tiktok-connection-error");
+
+async function updateTikTokStatus() {
+  try {
+    const response = await fetch("/api/tiktok/status");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `HTTP ${response.status}`);
+    }
+
+    tiktokStatusBox.textContent = data.message || data.status || "Unknown status";
+    tiktokErrorBox.hidden = !data.error;
+    tiktokErrorBox.textContent = data.error || "";
+  } catch (error) {
+    tiktokStatusBox.textContent = "Could not check TikTok status.";
+    tiktokErrorBox.hidden = false;
+    tiktokErrorBox.textContent = error.message;
+  }
+}
+
+tiktokForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const username = tiktokUsernameInput.value.trim().replace(/^@+/, "");
+  if (!username) {
+    tiktokStatusBox.textContent = "Enter a TikTok username.";
+    return;
+  }
+
+  tiktokConnectButton.disabled = true;
+  tiktokStatusBox.textContent = `Connecting to @${username}...`;
+  tiktokErrorBox.hidden = true;
+
+  try {
+    const response = await fetch("/api/tiktok/connect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username })
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `HTTP ${response.status}`);
+    }
+
+    tiktokStatusBox.textContent = data.message || data.status || "Connection requested.";
+    tiktokErrorBox.hidden = !data.error;
+    tiktokErrorBox.textContent = data.error || "";
+    await updateTikTokStatus();
+  } catch (error) {
+    tiktokStatusBox.textContent = "Connection request failed.";
+    tiktokErrorBox.hidden = false;
+    tiktokErrorBox.textContent = error.message;
+  } finally {
+    tiktokConnectButton.disabled = false;
+  }
+});
+
+tiktokDisconnectButton.addEventListener("click", async () => {
+  tiktokDisconnectButton.disabled = true;
+  tiktokStatusBox.textContent = "Disconnecting...";
+  tiktokErrorBox.hidden = true;
+
+  try {
+    const response = await fetch("/api/tiktok/disconnect", {
+      method: "POST"
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `HTTP ${response.status}`);
+    }
+
+    tiktokStatusBox.textContent = data.message || "Disconnected.";
+  } catch (error) {
+    tiktokStatusBox.textContent = "Disconnect failed.";
+    tiktokErrorBox.hidden = false;
+    tiktokErrorBox.textContent = error.message;
+  } finally {
+    tiktokDisconnectButton.disabled = false;
+  }
+});
+
+updateTikTokStatus();
+setInterval(updateTikTokStatus, 5000);
+
+
     function updateCards() {
       for (const id of Object.keys(GAMES)) {
         const card = document.getElementById(`card-${id}`);
