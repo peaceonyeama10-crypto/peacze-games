@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ username })
+      body: JSON.stringify({ username, code })
     });
 
     const text = await response.text();
