@@ -95,23 +95,21 @@ export default async function handler(req, res) {
       return res.status(401).send("Could not verify your Discord account.");
     }
 
-    const user = await userResponse.json();
-    console.log("Discord approval diagnostic:", {
-  userIdLast4: user.id.slice(-4),
-  approvedCount: approvedIds.length,
-  matched: approvedIds.includes(user.id),
-  approvedIdLast4: approvedIds.map(id => id.slice(-4))
-});
-    const approvedIds = APPROVED_DISCORD_IDS
-      .split(",")
-      .map(id => id.trim())
-      .filter(Boolean);
-      console.log("Approval diagnostic:", {
+  
+const user = await userResponse.json();
+
+const approvedIds = APPROVED_DISCORD_IDS
+  .split(",")
+  .map(id => id.trim())
+  .filter(Boolean);
+
+console.log("Approval diagnostic:", {
   discordIdLast4: user.id.slice(-4),
   approvedCount: approvedIds.length,
   matched: approvedIds.includes(user.id),
   approvedLast4: approvedIds.map(id => id.slice(-4))
 });
+
     if (!approvedIds.includes(user.id)) {
       return res.status(403).send(
         "Your Discord account has not been approved for Peacze Games."
