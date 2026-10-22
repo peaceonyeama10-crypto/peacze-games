@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
+      "src": "tiktok/**/*.js",
       "use": "@vercel/node"
     },
     {
