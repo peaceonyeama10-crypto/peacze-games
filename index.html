@@ -967,47 +967,49 @@ setInterval(updateTikTokStatus, 5000);
 
     
 
-    async function chooseGame(id) {
-      if (!GAMES[id]) return;
+  
+async function chooseGame(id) {
+  if (!GAMES[id]) return;
 
-      const backendGame = id === "city" ? "savecity" : id;
+  const backendGame = id === "city" ? "savecity" : id;
+  const code = prompt("Enter your daily access code:");
 
-      if (!availableGames.includes(backendGame)) {
-        showMessage(`${GAMES[id].name} is not configured on the backend yet.`);
-        return;
-      }
+  if (!code || !code.trim()) {
+    showMessage("Selection cancelled. Enter your access code to continue.");
+    return;
+  }
 
-      const code = prompt("Enter your daily access code:");
-      if (!code || !code.trim()) return;
+  showMessage(`Switching to ${GAMES[id].name}...`);
 
-      showMessage(`Switching to ${GAMES[id].name}...`);
+  try {
+    const response = await fetch("/api/games/select", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        game: backendGame,
+        code: code.trim()
+      })
+    });
 
-      try {
-        const response = await fetch("/api/games/select", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            game: backendGame,
-            code: code.trim()
-          })
-        });
+    const result = await response.json().catch(() => ({}));
 
-        const result = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          showMessage(result.error || "Could not switch games.");
-          return;
-        }
-
-        selectedGame = id;
-        updateCards();
-        showMessage(`${GAMES[id].name} is now the active game!`);
-      } catch (error) {
-        showMessage("Could not contact the website. Try again.");
-      }
+    if (!response.ok) {
+      showMessage(
+        result.error || result.message ||
+        `Game selection failed (HTTP ${response.status}).`
+      );
+      return;
     }
+
+    selectedGame = id;
+    updateCards();
+    showMessage(`${GAMES[id].name} is now the active game!`);
+  } catch (error) {
+    showMessage(`Could not switch games: ${error.message}`);
+  }
+}
 
     function launchGame(id) {
       const game = GAMES[id];
