@@ -673,28 +673,44 @@
           <p>Enter any TikTok username to connect its LIVE events to your Roblox game.</p>
         </div>
 
-        <div class="connection-box">
-          <form id="tiktok-connect-form">
-            <label for="tiktok-username">TikTok username</label>
-            <input
-              id="tiktok-username"
-              type="text"
-              placeholder="@username"
-              maxlength="25"
-              autocomplete="off"
-              required
-              style="width:100%;margin-top:10px;padding:13px;border:1px solid #403256;border-radius:9px;background:#100d1b;color:white;"
-            >
+    
+<div class="connection-box">
+  <form id="tiktok-connect-form">
+    <label for="daily-access-code">Daily Discord access code</label>
+    <input
+      id="daily-access-code"
+      type="text"
+      placeholder="Enter today's code"
+      maxlength="10"
+      autocomplete="off"
+      required
+      style="width:100%;margin-top:10px;padding:13px;border:1px solid #403256;border-radius:9px;background:#100d1b;color:white;"
+    >
 
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
-              <button class="btn btn-primary" type="submit" id="tiktok-connect-button">
-                CONNECT LIVE
-              </button>
-              <button class="btn btn-secondary" type="button" id="tiktok-disconnect-button">
-                DISCONNECT
-              </button>
-            </div>
-          </form>
+    <label for="tiktok-username" style="display:block;margin-top:14px;">
+      TikTok username
+    </label>
+    <input
+      id="tiktok-username"
+      type="text"
+      placeholder="@username"
+      maxlength="25"
+      autocomplete="off"
+      required
+      style="width:100%;margin-top:10px;padding:13px;border:1px solid #403256;border-radius:9px;background:#100d1b;color:white;"
+    >
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <button class="btn btn-primary" type="submit" id="tiktok-connect-button">
+        CONNECT LIVE
+      </button>
+      <button class="btn btn-secondary" type="button" id="tiktok-disconnect-button">
+        DISCONNECT
+      </button>
+    </div>
+  </form>
+</div>
+
 
           <div id="tiktok-connection-status" role="status" aria-live="polite" style="margin-top:16px;">
             Not connected.
@@ -717,7 +733,7 @@
   </footer>
 
   <script>
-    const BACKEND_URL = "https://tiktok-race-queue-1.onrender.com";
+    const BACKEND_URL = "https://tiktok-race-queue.onrender.com";
 
     const GAMES = {
       racing: {
@@ -835,43 +851,74 @@ async function updateTikTokStatus() {
   }
 }
 
+
 tiktokForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const username = tiktokUsernameInput.value.trim().replace(/^@+/, "");
+  const code = document.getElementById("daily-access-code").value.trim().toUpperCase();
+
   if (!username) {
     tiktokStatusBox.textContent = "Enter a TikTok username.";
     return;
   }
 
+  if (!code) {
+    tiktokStatusBox.textContent = "Enter today's Discord access code.";
+    return;
+  }
+
   tiktokConnectButton.disabled = true;
-  tiktokStatusBox.textContent = `Connecting to @${username}...`;
+  tiktokStatusBox.textContent = "Verifying access code...";
   tiktokErrorBox.hidden = true;
 
   try {
+    const verifyResponse = await fetch(
+      "https://tiktok-race-queue.onrender.com/api/access/verify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      }
+    );
+
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok || verifyData.valid !== true) {
+      throw new Error(
+        verifyData.error || "Invalid or expired daily access code."
+      );
+    }
+
+    tiktokStatusBox.textContent = `Connecting to @${username}...`;
+
     const response = await fetch("/api/tiktok/connect", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username })
+      body: JSON.stringify({ username, code })
     });
+
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.message || data.error || `HTTP ${response.status}`);
     }
 
-    tiktokStatusBox.textContent = data.message || data.status || "Connection requested.";
+    tiktokStatusBox.textContent =
+      data.message || data.status || "Connection requested.";
     tiktokErrorBox.hidden = !data.error;
     tiktokErrorBox.textContent = data.error || "";
+
     await updateTikTokStatus();
   } catch (error) {
     tiktokStatusBox.textContent = "Connection request failed.";
     tiktokErrorBox.hidden = false;
-    tiktokErrorBox.textContent = error.message;
+    tiktokErrorBox.textContent = error.message || "Something went wrong.";
   } finally {
     tiktokConnectButton.disabled = false;
   }
 });
+
 
 tiktokDisconnectButton.addEventListener("click", async () => {
   tiktokDisconnectButton.disabled = true;
