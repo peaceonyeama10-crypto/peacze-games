@@ -573,7 +573,7 @@
             <h3>TikTok Dance</h3>
             <p>Escape the jungle, dodge obstacles, and survive an adventure full of surprises.</p>
             <div class="game-state" id="status-jungle">Needs game link and backend setup</div>
-            <button class="btn btn-secondary" onclick="chooseGame('jungle')">PREVIEW SELECTION</button>
+            <button class="btn btn-primary" onclick="chooseGame('jungle')"> SELECT GAME</button>
             <button class="btn btn-secondary" onclick="launchGame('jungle')">PLAY ON ROBLOX ↗</button>
           </div>
         </article>
@@ -983,7 +983,7 @@ async function chooseGame(id) {
   showMessage(`Switching to ${GAMES[id].name}...`);
 
   try {
-    const response = await fetch("/api/games/select", {
+    const response = await fetch("/api/select", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
