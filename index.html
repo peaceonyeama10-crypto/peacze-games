@@ -570,7 +570,7 @@
             </svg>
           </div>
           <div class="game-content">
-            <h3>Jungle Run</h3>
+            <h3>TikTok Dance</h3>
             <p>Escape the jungle, dodge obstacles, and survive an adventure full of surprises.</p>
             <div class="game-state" id="status-jungle">Needs game link and backend setup</div>
             <button class="btn btn-secondary" onclick="chooseGame('jungle')">PREVIEW SELECTION</button>
@@ -593,7 +593,7 @@
             <h3>Save the City</h3>
             <p>Run through a futuristic city, dodge threats, and take on missions with your community.</p>
             <div class="game-state" id="status-city">Needs game link and backend setup</div>
-            <button class="btn btn-secondary" onclick="chooseGame('city')">PREVIEW SELECTION</button>
+            <button class="btn btn-primary" disabled>Currently Unavailable</button>
             <button class="btn btn-secondary" onclick="launchGame('city')">PLAY ON ROBLOX ↗</button>
           </div>
         </article>
@@ -731,20 +731,21 @@
     const BACKEND_URL = "https://tiktok-race-queue.onrender.com";
 
   
-    const GAMES = {
-      racing: {
-        name: "TikTok Run",
-        url: "https://www.roblox.com/games/97689573979587/tiktok"
-      },
-      jungle: {
-        name: "Jungle Run",
-        url: ""
-      },
-      city: {
-        name: "Save the City",
-        url: "https://www.roblox.com/games/134222367810857"
-      }
-    };
+   const GAMES = {
+  racing: {
+    name: "TikTok Run",
+    url: "https://www.roblox.com/games/97689573979587/tiktok"
+  },
+  jungle: {
+    name: "TikTok Dance",
+    url: "https://www.roblox.com/games/76220671168231/roblox-dance"
+  },
+  city: {
+    name: "Save the City",
+    url: "https://www.roblox.com/games/134222367810857",
+    available: false
+  }
+};
 
     let selectedGame = "racing";
     let backendOnline = false;
