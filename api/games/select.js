@@ -87,7 +87,7 @@ export default async function handler(req, res) {
     const code = String(req.body?.code || "").trim().toUpperCase();
     const game = String(req.body?.game || "");
 
-    if (!["racing", "savecity"].includes(game)) {
+    if (!["racing", "jungle"].includes(game)) {
       return res.status(400).json({
         error: "Choose a valid game."
       });
