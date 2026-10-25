@@ -983,7 +983,7 @@ async function chooseGame(id) {
   showMessage(`Switching to ${GAMES[id].name}...`);
 
   try {
-    const response = await fetch("/api/select", {
+    const response = await fetch("/api/games/select", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
