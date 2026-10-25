@@ -994,8 +994,9 @@ async function chooseGame(id) {
       })
     });
 
-    const result = await response.json().catch(() => ({}));
+   const result = await response.json().catch(() => ({}));
 
+console.log("Game selection response:", response.status, result);
  
 if (!response.ok) {
   showMessage(
