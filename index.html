@@ -996,13 +996,17 @@ async function chooseGame(id) {
 
     const result = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      showMessage(
-        result.error || result.message ||
-        `Game selection failed (HTTP ${response.status}).`
-      );
-      return;
-    }
+ 
+if (!response.ok) {
+  showMessage(
+    `Selection failed (${response.status}): ${
+      result.error || result.message || JSON.stringify(result)
+    }`
+  );
+  console.error("Game selection error:", response.status, result);
+  return;
+}
+
 
     selectedGame = id;
     updateCards();
