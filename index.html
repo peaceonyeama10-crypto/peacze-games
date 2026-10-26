@@ -592,8 +592,8 @@
           <div class="game-content">
             <h3>Save the City</h3>
             <p>Run through a futuristic city, dodge threats, and take on missions with your community.</p>
-            <div class="game-state" id="status-city">Needs game link and backend setup</div>
-            <button class="btn btn-primary" disabled>Currently Unavailable</button>
+            <div class="game-state" id="status-city">Available</div>
+            <button class="btn btn-primary" onclick="chooseGame('city')">   SELECT GAME </button>
             <button class="btn btn-secondary" onclick="launchGame('city')">PLAY ON ROBLOX ↗</button>
           </div>
         </article>
@@ -740,11 +740,11 @@
     name: "TikTok Dance",
     url: "https://www.roblox.com/games/76220671168231/roblox-dance"
   },
-  city: {
-    name: "Save the City",
-    url: "https://www.roblox.com/games/134222367810857",
-    available: false
-  }
+city: {
+  name: "Save the City",
+  url: "https://www.roblox.com/games/134222367810857",
+  available: true
+}
 };
 
     let selectedGame = "racing";
