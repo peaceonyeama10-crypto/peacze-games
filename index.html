@@ -774,9 +774,10 @@ function showMessage(text) {
 
     async function checkBackend(showDetails = false) {
       const button = document.getElementById("checkButton");
-      button.disabled = true;
-      button.textContent = "CHECKING...";
-
+    if (button) {
+  button.disabled = true;
+  button.textContent = "CHECKING...";
+}
       try {
         const response = await fetch(`${BACKEND_URL}/health`, {
           method: "GET"
@@ -825,8 +826,10 @@ function showMessage(text) {
           );
         }
       } finally {
-        button.disabled = false;
-        button.textContent = "CHECK SERVER ↻";
+       if (button) {
+  button.disabled = false;
+  button.textContent = "CHECK SERVER ↻";
+}
       }
     }
 
