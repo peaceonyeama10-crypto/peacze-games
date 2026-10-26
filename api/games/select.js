@@ -87,12 +87,13 @@ export default async function handler(req, res) {
     const code = String(req.body?.code || "").trim().toUpperCase();
     const game = String(req.body?.game || "");
 
-    if (!["racing", "jungle"].includes(game)) {
-      return res.status(400).json({
-        error: "Choose a valid game."
-      });
-    }
+ const allowedGames = ["racing", "jungle", "savecity"];
 
+if (!allowedGames.includes(game)) {
+  return res.status(400).json({
+    error: "Choose a valid game."
+  });
+}
     if (!code) {
       return res.status(400).json({
         error: "Enter your daily access code."
