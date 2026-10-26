@@ -759,18 +759,27 @@ function showMessage(text) {
   }
 }
 
-    function setServerStatus(online) {
-      backendOnline = online;
+   function setServerStatus(online) {
+  backendOnline = online;
 
-      document.getElementById("backendStatus").textContent =
-        online ? "Online" : "Unavailable";
+  const backendStatus = document.getElementById("backendStatus");
+  const navStatus = document.getElementById("navStatus");
+  const navDot = document.getElementById("navDot");
 
-      document.getElementById("navStatus").textContent =
-        online ? "Server online" : "Server unavailable";
+  if (backendStatus) {
+    backendStatus.textContent = online ? "Online" : "Unavailable";
+  }
 
-      document.getElementById("navDot").className =
-        online ? "dot online" : "dot offline";
-    }
+  if (navStatus) {
+    navStatus.textContent = online
+      ? "Server online"
+      : "Server unavailable";
+  }
+
+  if (navDot) {
+    navDot.className = online ? "dot online" : "dot offline";
+  }
+}
 
     async function checkBackend(showDetails = false) {
       const button = document.getElementById("checkButton");
@@ -1007,7 +1016,7 @@ if (!response.ok) {
     response: result,
     gameRequested: backendGame
   });
-
+alert(JSON.stringify(result, null, 2));
   showMessage(
     `Selection failed (${response.status}): ${
       result.error || result.message || JSON.stringify(result)
