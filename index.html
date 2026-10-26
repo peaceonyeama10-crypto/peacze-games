@@ -731,22 +731,25 @@
     const BACKEND_URL = "https://tiktok-race-queue.onrender.com";
 
   
-   const GAMES = {
+  const GAMES = {
   racing: {
     name: "TikTok Run",
-    url: "https://www.roblox.com/games/97689573979587/tiktok"
+    url: "https://www.roblox.com/games/97689573979587/tiktok",
+    available: true
   },
+
   jungle: {
     name: "TikTok Dance",
-    url: "https://www.roblox.com/games/76220671168231/roblox-dance"
+    url: "https://www.roblox.com/games/76220671168231/roblox-dance",
+    available: true
   },
-city: {
-  name: "Save the City",
-  url: "https://www.roblox.com/games/134222367810857",
-  available: true
-}
-};
 
+  city: {
+    name: "Save the City",
+    url: "https://www.roblox.com/games/134222367810857",
+    available: true
+  }
+};
     let selectedGame = "racing";
     let backendOnline = false;
     let availableGames = [];
