@@ -85,35 +85,32 @@ export default async function handler(req, res) {
     }
 
     const code = String(req.body?.code || "").trim().toUpperCase();
-    const game = String(req.body?.game || "");
+    const game = String(req.body?.game || "").trim();
+    const allowedGames = ["racing", "jungle", "savecity"];
 
- const allowedGames = ["racing", "jungle", "savecity"];
+    if (!allowedGames.includes(game)) {
+      return res.status(400).json({
+        error: "Choose a valid game."
+      });
+    }
 
-if (!allowedGames.includes(game)) {
-  return res.status(400).json({
-    error: "Choose a valid game."
-  });
-}
     if (!code) {
       return res.status(400).json({
         error: "Enter your daily access code."
       });
     }
 
-    const verification = await fetch(
-      `${backend}/api/access/verify`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          code,
-          discordUserId: data.discordUserId
-        })
-      }
-    );
+    const verification = await fetch(`${backend}/api/access/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        code,
+        discordUserId: data.discordUserId
+      })
+    });
 
     const verificationData = await verification.json().catch(() => null);
 
@@ -123,29 +120,30 @@ if (!allowedGames.includes(game)) {
       });
     }
 
-    const response = await fetch(`${backend}/api/select-game`, {
+    const response = await fetch(`${backend}/api/creator/session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ game })
+      body: JSON.stringify({
+        code,
+        discordUserId: data.discordUserId,
+        game
+      })
     });
 
-    const result = await response.text();
+    const resultData = await response.json().catch(() => null);
 
-    let resultData;
-    try {
-      resultData = JSON.parse(result);
-    } catch {
-      return res.status(502).json({
-        error: "Backend returned an invalid response."
-      });
+    if (!response.ok) {
+      return res.status(response.status).json(
+        resultData || { error: "Could not create creator session." }
+      );
     }
 
-    return res.status(response.status).json(resultData);
+    return res.status(201).json(resultData);
   } catch (error) {
-    console.error("Game selection proxy failed:", error.message);
+    console.error("Creator session proxy failed:", error.message);
     return res.status(502).json({
       error: "Could not reach the game backend."
     });
