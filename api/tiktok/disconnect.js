@@ -1,4 +1,6 @@
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
@@ -13,14 +15,6 @@ export default async function handler(req, res) {
 
   if (!origin || !allowedOrigins.includes(origin)) {
     return res.status(403).json({ error: "Origin not allowed." });
-  }
-
-  const discordUserId = String(req.body?.discordUserId || "").trim();
-
-  if (!/^\d{17,20}$/.test(discordUserId)) {
-    return res.status(400).json({
-      error: "A valid creator account is required."
-    });
   }
 
   const backend = process.env.TIKTOK_BACKEND_URL;
@@ -41,7 +35,9 @@ export default async function handler(req, res) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ discordUserId })
+        body: JSON.stringify({
+          discordUserId: req.body?.discordUserId
+        })
       }
     );
 
