@@ -1138,48 +1138,106 @@
       }
     }
 
-    async function chooseGame(id) {
-      if (!GAMES[id]) return;
+    
+async function chooseGame(id) {
+  if (!GAMES[id]) return;
 
-      const backendGame = id === "city" ? "savecity" : id;
-      const code = prompt("Enter your daily access code:");
+  const backendGame = id === "city" ? "savecity" : id;
+  const code = prompt("Enter your daily access code:");
 
-      if (!code || !code.trim()) {
-        showMessage("Selection cancelled. Enter your access code to continue.");
-        return;
-      }
+  if (!code || !code.trim()) {
+    showMessage("Selection cancelled. Enter your access code to continue.");
+    return;
+  }
 
-      showMessage(`Switching to ${GAMES[id].name}...`);
+  showMessage(`Creating your ${GAMES[id].name} registration code...`);
 
-      try {
-        const response = await fetch("/api/games/select", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
-          body: JSON.stringify({
-            game: backendGame,
-            code: code.trim()
-          })
-        });
+  try {
+    const response = await fetch("/api/games/select", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        game: backendGame,
+        code: code.trim()
+      })
+    });
 
-        const result = await response.json().catch(() => ({}));
+    const result = await response.json().catch(() => ({}));
 
-        if (!response.ok) {
-          showMessage(
-            `Selection failed (${response.status}): ${
-              result.error || result.message || JSON.stringify(result)
-            }`
-          );
-          return;
-        }
+    if (!response.ok) {
+      showMessage(
+        `Selection failed (${response.status}): ${
+          result.error || result.message || JSON.stringify(result)
+        }`
+      );
+      return;
+    }
 
-        selectedGame = id;
-        updateCards();
-        showMessage(`${GAMES[id].name} is now the active game!`);
-      } catch (error) {
-        showMessage(`Could not switch games: ${error.message}`);
+    if (!result.sessionCode) {
+      showMessage("The server did not return a registration code.");
+      return;
+    }
+
+    selectedGame = id;
+    updateCards();
+
+    showMessage(
+      `${GAMES[id].name} selected. Enter your registration code in Roblox within 10 minutes.`
+    );
+
+    let panel = document.getElementById("creator-registration-code");
+
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.id = "creator-registration-code";
+      panel.style.cssText =
+        "margin-top:16px;padding:18px;border:1px solid #a855ff;" +
+        "border-radius:12px;background:#100c1d;text-align:center;";
+
+      const status = document.getElementById("tiktok-connection-status");
+
+      if (status) {
+        status.insertAdjacentElement("afterend", panel);
+      } else {
+        document.body.appendChild(panel);
       }
     }
+
+    panel.replaceChildren();
+
+    const heading = document.createElement("h3");
+    heading.textContent = "YOUR ROBLOX REGISTRATION CODE";
+
+    const displayedCode = document.createElement("div");
+    displayedCode.textContent = result.sessionCode;
+    displayedCode.style.cssText =
+      "font-size:30px;font-weight:900;letter-spacing:6px;" +
+      "color:#43ddff;margin:12px 0;";
+
+    const expiry = document.createElement("p");
+    expiry.textContent = "Expires in 10 minutes.";
+
+    const copyButton = document.createElement("button");
+    copyButton.type = "button";
+    copyButton.textContent = "COPY REGISTRATION CODE";
+
+    copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(result.sessionCode);
+        copyButton.textContent = "COPIED!";
+      } catch {
+        showMessage("Copy failed. Please copy the code manually.");
+      }
+    });
+
+    panel.append(heading, displayedCode, expiry, copyButton);
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } catch (error) {
+    showMessage(`Could not create registration code: ${error.message}`);
+  }
+}
+
 
     function launchGame(id) {
       const game = GAMES[id];
