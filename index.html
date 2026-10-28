@@ -650,9 +650,87 @@
       }
     }
   </style>
+
+<style>
+#discord-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: radial-gradient(circle at top, #25204b, #080810 65%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+#discord-gate .gate-card {
+  max-width: 440px;
+}
+#discord-gate h1 {
+  font-size: clamp(36px, 8vw, 58px);
+  margin: 12px 0;
+  font-weight: 900;
+}
+#discord-gate p {
+  color: #d0cee0;
+  line-height: 1.6;
+}
+#discord-gate a,
+#discord-gate button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+#discord-gate a {
+  background: #5865F2;
+  color: white;
+}
+#discord-gate button {
+  background: #d7b65b;
+  color: #111;
+}
+</style>
+</head>
 </head>
 
 <body>
+ 
+<div id="discord-gate">
+  <div class="gate-card">
+    <div style="font-size:64px">👑</div>
+    <h1>JOIN DISCORD FIRST</h1>
+    <p>
+      Welcome to Crown Network! Join our Discord community
+      to connect with creators and explore our games.
+    </p>
+
+    <a href="https://discord.gg/9mkDN5Zcws"
+       target="_blank" rel="noopener noreferrer">
+      JOIN OUR DISCORD
+    </a>
+
+    <button id="continue-crown">
+      I'VE JOINED — CONTINUE
+    </button>
+  </div>
+</div>
+
+<script>
+document.getElementById("continue-crown").addEventListener("click", function () {
+  document.getElementById("discord-gate").remove();
+});
+</script>
+
   <header class="container" id="home">
     <nav aria-label="Main navigation">
       <a class="brand" href="#home" aria-label="CROWN NETWORK home">
