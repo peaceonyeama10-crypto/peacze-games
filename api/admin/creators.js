@@ -91,8 +91,8 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  if (!["GET", "POST", "PATCH"].includes(req.method)) {
-    res.setHeader("Allow", "GET, POST, PATCH");
+  if (!["GET", "POST", "PATCH", "DELETE"].includes(req.method)) {
+    res.setHeader("Allow", "GET, POST, PATCH, DELETE");
     return res.status(405).json({ error: "Method not allowed." });
   }
 
@@ -101,11 +101,11 @@ module.exports = async function handler(req, res) {
       ? req.query.discordUserId.trim()
       : "";
 
-  // The Render backend expects PATCH /api/admin/creators/:discordUserId
-  // (the ID in the path, not in the query string).
+  // The Render backend expects PATCH and DELETE at
+  // /api/admin/creators/:discordUserId (the ID in the path, not the query string).
   let targetPath = "/api/admin/creators";
 
-  if (req.method === "PATCH") {
+  if (req.method === "PATCH" || req.method === "DELETE") {
     if (!/^[0-9]{17,20}$/.test(discordUserId)) {
       return res.status(400).json({ error: "A valid Discord user ID is required." });
     }
