@@ -355,7 +355,8 @@ nav {
   transform: translateY(-2px);
 }
 
-.nav-links a[href="/index.html"] {
+
+.nav-links a[aria-current="page"] {
   color: #ffffff;
   background: linear-gradient(
     135deg,
@@ -366,10 +367,11 @@ nav {
   box-shadow: 0 0 18px #a855ff16;
 }
 
-.nav-links a[href="/index.html"]:hover {
+.nav-links a[aria-current="page"]:hover {
   border-color: #43ddff;
   box-shadow: 0 0 22px #43ddff25;
 }
+
 
 .nav-links .pill {
   min-height: 40px;
