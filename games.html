@@ -1,1 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080611">
+  <meta name="description" content="Select your CROWN NETWORK Roblox game and get your registration code.">
+  <title>CROWN NETWORK | SELECT A GAME</title>
+  <link rel="icon" type="image/png" href="/crown-network-icon.png">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080611;
+      --panel: #100c1d;
+      --pink: #ff4de1;
+      --purple: #a855ff;
+      --cyan: #43ddff;
+      --muted: #aaa2bf;
+      --border: #332447;
+      --green: #65f2ad;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: white;
+      font-family: Inter, system-ui, Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 10% 0%, #49216b80, transparent 42%),
+        radial-gradient(ellipse at 95% 15%, #073d6580, transparent 34%),
+        var(--bg);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .container {
+      width: min(1160px, 92%);
+      margin: auto;
+    }
+
+    nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid #ffffff12;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 1000;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      overflow: hidden;
+      border-radius: 13px;
+      border: 1px solid #b85cff80;
+      background: #0e091c;
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand strong {
+      background: linear-gradient(95deg, white, #ff65e8 48%, #53dfff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .hero {
+      padding: 65px 0 35px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 18px 0;
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1;
+      letter-spacing: -2.5px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #ff65e8, #b77bff 48%, #48e3ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      padding: 25px 0 35px;
+    }
+
+    .game-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: linear-gradient(155deg, #1c1430, #0e0a19 72%);
+      transition: .2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: #9c58c9;
+    }
+
+    .game-card.selected {
+      border-color: #bd67ff;
+      box-shadow: 0 0 22px #b17aff20;
+    }
+
+    .game-art {
+      height: 170px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 80%, #652f9255, transparent 68%),
+        linear-gradient(140deg, #211437, #0b0915);
+    }
+
+    .art-dance {
+      background:
+        radial-gradient(ellipse at 50% 80%, #235844, transparent 65%),
+        linear-gradient(140deg, #102b2a, #101020);
+    }
+
+    .art-city {
+      background:
+        radial-gradient(ellipse at 50% 80%, #174a68, transparent 70%),
+        linear-gradient(140deg, #1b1742, #101020);
+    }
+
+    .game-art .emoji {
+      font-size: 70px;
+      filter: drop-shadow(0 0 20px #b17aff80);
+    }
+
+    .tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 9px;
+      border: 1px solid #ffffff20;
+      border-radius: 7px;
+      background: #090713d9;
+      color: #f1dfff;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .game-content { padding: 19px; }
+
+    .game-content h2 {
+      margin: 0 0 10px;
+      font-size: 19px;
+    }
+
+    .game-content p {
+      min-height: 63px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .game-state {
+      margin: 13px 0;
+      color: #d5a4ff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .btn {
+      width: 100%;
+      min-height: 45px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      transition: .2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .primary {
+      color: #13091e;
+      background: linear-gradient(105deg, #ff68e7, #b57bff 54%, #52e2ff);
+    }
+
+    .secondary {
+      margin-top: 9px;
+      color: #f2eaff;
+      background: #151021;
+      border-color: #47305d;
+    }
+
+    .registration {
+      display: none;
+      margin: 0 auto 45px;
+      padding: 25px;
+      max-width: 650px;
+      border: 1px solid #a855ff;
+      border-radius: 17px;
+      background: linear-gradient(145deg, #171126, #0e0b19);
+      text-align: center;
+      box-shadow: 0 0 35px #a855ff15;
+    }
+
+    .registration.visible { display: block; }
+
+    .registration h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .registration p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .code-display {
+      margin: 20px 0;
+      color: var(--cyan);
+      font-size: clamp(26px, 6vw, 40px);
+      font-weight: 1000;
+      letter-spacing: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .access-form {
+      margin: 0 auto 45px;
+      max-width: 650px;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #100c1d;
+    }
+
+    .access-form label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .access-form input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #403256;
+      border-radius: 9px;
+      background: #0b0815;
+      color: white;
+    }
+
+    .access-form input:focus {
+      outline: 2px solid var(--purple);
+      outline-offset: 1px;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 15px;
+      color: #d6cbe8;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .error { color: #ff9cab; }
+
+    footer {
+      margin-top: 30px;
+      padding: 25px 0;
+      border-top: 1px solid #ffffff12;
+      color: #8e879f;
+      font-size: 11px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @media (max-width: 850px) {
+      .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      nav { padding: 13px 0; }
+      .nav-links { gap: 12px; font-size: 10px; }
+      .brand { font-size: 12px; letter-spacing: 0; }
+      .brand-mark { width: 34px; height: 34px; }
+      .game-grid { grid-template-columns: 1fr; }
+      .game-art { height: 190px; }
+      .hero { padding-top: 45px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container">
+    <nav aria-label="Main navigation">
+      <a class="brand" href="/index.html">
+        <span class="brand-mark">
+          <img src="/crown-network-icon.png" alt="Crown Network logo">
+        </span>
+        <span>CROWN <strong>NETWORK</strong></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/index.html">HOME</a>
+        <a href="/games.html" aria-current="page">GAMES</a>
+        <a href="/plans.html">PLANS</a>
+        <a href="https://discord.gg/9mkDN5Zcws"
+           target="_blank" rel="noopener noreferrer">COMMUNITY ↗</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow">CROWN NETWORK / GAME SELECTOR</div>
+      <h1>CHOOSE YOUR <span class="gradient">GAME.</span></h1>
+      <p class="intro">
+        Select the Roblox experience you want to use with your community.
+        Enter your daily access code to create a registration code for your
+        chosen game.
+      </p>
+    </section>
+
+    <section class="game-grid" aria-label="Choose a Roblox game">
+      <article class="game-card selected" id="card-racing">
+        <div class="game-art">
+          <span class="tag">FEATURED RUN</span>
+          <span class="emoji" aria-hidden="true">🏃</span>
+        </div>
+        <div class="game-content">
+          <h2>TIKTOK RUN</h2>
+          <p>Race against the clock and bring your TikTok viewers into the action.</p>
+          <div class="game-state" id="status-racing">★ DEFAULT SELECTION</div>
+          <button class="btn primary" type="button"
+                  onclick="chooseGame('racing')">SELECT THIS GAME</button>
+          <a class="btn secondary"
+             href="https://www.roblox.com/games/97689573979587/tiktok"
+             target="_blank" rel="noopener noreferrer">PLAY ON ROBLOX ↗</a>
+        </div>
+      </article>
+
+      <article class="game-card" id="card-jungle">
+        <div class="game-art art-dance">
+          <span class="tag">DANCE EXPERIENCE</span>
+          <span class="emoji" aria-hidden="true">🪩</span>
+        </div>
+        <div class="game-content">
+          <h2>TIKTOK DANCE</h2>
+          <p>Bring your community together in a Roblox dance experience.</p>
+          <div class="game-state" id="status-jungle">AVAILABLE</div>
+          <button class="btn primary" type="button"
+                  onclick="chooseGame('jungle')">SELECT THIS GAME</button>
+          <a class="btn secondary"
+             href="https://www.roblox.com/games/76220671168231/roblox-dance"
+             target="_blank" rel="noopener noreferrer">PLAY ON ROBLOX ↗</a>
+        </div>
+      </article>
+
+      <article class="game-card" id="card-city">
+        <div class="game-art art-city">
+          <span class="tag">CITY ADVENTURE</span>
+          <span class="emoji" aria-hidden="true">🌆</span>
+        </div>
+        <div class="game-content">
+          <h2>SAVE THE CITY</h2>
+          <p>Explore a futuristic city and take on missions with your community.</p>
+          <div class="game-state" id="status-city">AVAILABLE</div>
+          <button class="btn primary" type="button"
+                  onclick="chooseGame('city')">SELECT THIS GAME</button>
+          <a class="btn secondary"
+             href="https://www.roblox.com/games/134222367810857"
+             target="_blank" rel="noopener noreferrer">PLAY ON ROBLOX ↗</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="access-form" aria-labelledby="access-heading">
+      <label id="access-heading" for="daily-access-code">
+        DAILY DISCORD ACCESS CODE
+      </label>
+      <input id="daily-access-code" type="text"
+             placeholder="Enter today's access code"
+             maxlength="10" autocomplete="off">
+      <div class="message" id="selection-message" role="status"
+           aria-live="polite">
+        Choose a game above, then enter your daily access code.
+      </div>
+    </section>
+
+    <section class="registration" id="registration-panel"
+             aria-live="polite">
+      <h2>YOUR ROBLOX REGISTRATION CODE</h2>
+      <p id="registration-game"></p>
+      <div class="code-display" id="registration-code"></div>
+      <p>Enter this code in Roblox within 10 minutes.</p>
+      <button class="btn primary" type="button" id="copy-code">
+        COPY REGISTRATION CODE
+      </button>
+      <p id="copy-message"></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>CROWN NETWORK · INTERACTIVE GAMING</span>
+      <a href="/index.html">Back to home ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    const GAMES = {
+      racing: {
+        name: "TikTok Run",
+        backendGame: "racing",
+        url: "https://www.roblox.com/games/97689573979587/tiktok"
+      },
+      jungle: {
+        name: "TikTok Dance",
+        backendGame: "jungle",
+        url: "https://www.roblox.com/games/76220671168231/roblox-dance"
+      },
+      city: {
+        name: "Save the City",
+        backendGame: "savecity",
+        url: "https://www.roblox.com/games/134222367810857"
+      }
+    };
+
+    let selectedGame = "racing";
+    let busy = false;
+    let currentSessionCode = "";
+
+    const messageBox = document.getElementById("selection-message");
+    const accessCodeInput = document.getElementById("daily-access-code");
+    const registrationPanel = document.getElementById("registration-panel");
+
+    function showMessage(message, isError = false) {
+      messageBox.textContent = message;
+      messageBox.classList.toggle("error", isError);
+    }
+
+    function updateCards() {
+      for (const id of Object.keys(GAMES)) {
+        const card = document.getElementById(`card-${id}`);
+        const status = document.getElementById(`status-${id}`);
+
+        card.classList.toggle("selected", selectedGame === id);
+
+        status.textContent = selectedGame === id
+          ? "✓ SELECTED GAME"
+          : id === "racing"
+            ? "★ FEATURED EXPERIENCE"
+            : "AVAILABLE";
+      }
+    }
+
+    async function chooseGame(id) {
+      if (!GAMES[id] || busy) return;
+
+      selectedGame = id;
+      updateCards();
+
+      const code = accessCodeInput.value.trim().toUpperCase();
+
+      if (!code) {
+        showMessage(
+          `${GAMES[id].name} selected. Enter your daily access code below to continue.`
+        );
+        accessCodeInput.focus();
+        return;
+      }
+
+      await createRegistrationCode(id, code);
+    }
+
+    async function createRegistrationCode(id, code) {
+      if (busy) return;
+
+      busy = true;
+      const buttons = document.querySelectorAll(".game-content button");
+      buttons.forEach(button => button.disabled = true);
+      showMessage(`Verifying your access code and selecting ${GAMES[id].name}...`);
+
+      try {
+        const response = await fetch("/api/games/select", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            game: GAMES[id].backendGame,
+            code: code
+          })
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            result.error || result.message || `Request failed (${response.status})`
+          );
+        }
+
+        if (!result.sessionCode) {
+          throw new Error("The server did not return a registration code.");
+        }
+
+        currentSessionCode = result.sessionCode;
+
+        document.getElementById("registration-game").textContent =
+          `${GAMES[id].name} selected successfully.`;
+
+        document.getElementById("registration-code").textContent =
+          currentSessionCode;
+
+        document.getElementById("copy-message").textContent = "";
+        registrationPanel.classList.add("visible");
+
+        showMessage(
+          `${GAMES[id].name} selected! Your registration code is ready.`
+        );
+
+        registrationPanel.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      } catch (error) {
+        showMessage(error.message || "Could not select the game.", true);
+      } finally {
+        busy = false;
+        buttons.forEach(button => button.disabled = false);
+      }
+    }
+
+    accessCodeInput.addEventListener("change", () => {
+      accessCodeInput.value = accessCodeInput.value.trim().toUpperCase();
+    });
+
+    document.getElementById("copy-code").addEventListener("click", async () => {
+      if (!currentSessionCode) return;
+
+      try {
+        await navigator.clipboard.writeText(currentSessionCode);
+        document.getElementById("copy-message").textContent =
+          "Registration code copied!";
+      } catch {
+        document.getElementById("copy-message").textContent =
+          "Copy was blocked. Please select and copy the code manually.";
+      }
+    });
+
+    updateCards();
+  </script>
+</body>
+</html>
 
