@@ -41,7 +41,9 @@ export default async function handler(req, res) {
         })
     );
 
-    const session = String(cookies.peacze_session || "").split(".");
+    const sessionCookie = cookies.peacze_session;
+    const session = String(sessionCookie || "").split(".");
+
     if (session.length !== 2) {
       return res.status(401).json({
         error: "Log in with Discord first."
@@ -53,6 +55,7 @@ export default async function handler(req, res) {
       .createHmac("sha256", secret)
       .update(payload)
       .digest();
+
     const actual = Buffer.from(signature, "base64url");
 
     if (
@@ -84,7 +87,10 @@ export default async function handler(req, res) {
       });
     }
 
-    const code = String(req.body?.code || "").trim().toUpperCase();
+    const code = String(req.body?.code || "")
+      .trim()
+      .toUpperCase();
+
     const game = String(req.body?.game || "").trim();
     const allowedGames = ["racing", "jungle", "savecity"];
 
@@ -100,50 +106,69 @@ export default async function handler(req, res) {
       });
     }
 
-    const verification = await fetch(`${backend}/api/access/verify`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        code,
-        discordUserId: data.discordUserId
-      })
-    });
+    const verification = await fetch(
+      `${backend}/api/access/verify`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Cookie: `peacze_session=${encodeURIComponent(sessionCookie)}`
+        },
+        body: JSON.stringify({
+          code,
+          discordUserId: data.discordUserId
+        })
+      }
+    );
 
     const verificationData = await verification.json().catch(() => null);
 
     if (!verification.ok || verificationData?.valid !== true) {
+      console.error(
+        "Daily code verification rejected:",
+        verification.status,
+        verificationData?.error || "No backend error returned."
+      );
+
       return res.status(401).json({
         error: verificationData?.error || "Invalid or expired daily code."
       });
     }
 
-    const response = await fetch(`${backend}/api/creator/session`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        code,
-        discordUserId: data.discordUserId,
-        game
-      })
-    });
+    const response = await fetch(
+      `${backend}/api/creator/session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          code,
+          discordUserId: data.discordUserId,
+          game
+        })
+      }
+    );
 
     const resultData = await response.json().catch(() => null);
 
     if (!response.ok) {
       return res.status(response.status).json(
-        resultData || { error: "Could not create creator session." }
+        resultData || {
+          error: "Could not create creator session."
+        }
       );
     }
 
     return res.status(201).json(resultData);
   } catch (error) {
-    console.error("Creator session proxy failed:", error.message);
+    console.error(
+      "Creator session proxy failed:",
+      error.message
+    );
+
     return res.status(502).json({
       error: "Could not reach the game backend."
     });
