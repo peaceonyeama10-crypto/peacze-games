@@ -19,6 +19,7 @@ button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.
 .btn{border:1px solid var(--border);background:#171717;color:#eee;border-radius:9px;padding:10px 13px;font-size:12px}
 .btn:hover:not(:disabled){border-color:#94783c}.btn.gold{background:linear-gradient(110deg,#b58c35,#f1d78c);color:#171107;border:0;font-weight:bold}
 .btn.danger{border-color:#60312b;color:#ffb0a7}.btn.small{padding:7px 9px}
+.row-actions{display:flex;gap:8px;flex-wrap:nowrap}
 main{width:min(1450px,100%);margin:auto;padding:38px 5% 60px}
 .kicker{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:3px}
 h1{font-size:clamp(27px,4vw,38px);margin:10px 0}.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
@@ -366,6 +367,9 @@ function renderCreators() {
     row.appendChild(statusCell);
 
     const actionsCell = document.createElement("td");
+    const actionsWrap = document.createElement("div");
+    actionsWrap.className = "row-actions";
+
     const actionButton = document.createElement("button");
     actionButton.type = "button";
     actionButton.className = "btn small";
@@ -379,7 +383,18 @@ function renderCreators() {
       changeAccess(creator, currentlyRevoked ? "active" : "revoked", actionButton);
     });
 
-    actionsCell.appendChild(actionButton);
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "btn small danger";
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", () => {
+      deleteCreator(creator, deleteButton);
+    });
+
+    actionsWrap.appendChild(actionButton);
+    actionsWrap.appendChild(deleteButton);
+    actionsCell.appendChild(actionsWrap);
     row.appendChild(actionsCell);
     rows.appendChild(row);
   }
@@ -441,6 +456,31 @@ async function changeAccess(creator, accessStatus, button) {
     await loadCreators();
   } catch (error) {
     setMessage(error.message || "Could not update access.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function deleteCreator(creator, button) {
+  const name = creator.creatorName || creator.discordUserId;
+
+  const confirmed = window.confirm(
+    "Delete " + name + "?\n\n" +
+    "This removes their creator record. You can add them again later " +
+    "with \"Add creator\" using the same Discord ID."
+  );
+
+  if (!confirmed) return;
+
+  button.disabled = true;
+  setMessage("Deleting creator…");
+
+  try {
+    await apiRequest("DELETE", creator.discordUserId);
+    setMessage("Creator deleted. You can add them again any time.");
+    await loadCreators();
+  } catch (error) {
+    setMessage(error.message || "Could not delete the creator.");
   } finally {
     button.disabled = false;
   }
