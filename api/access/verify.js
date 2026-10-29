@@ -40,6 +40,11 @@ export default async function handler(req, res) {
     .filter(Boolean);
 
   if (!secret || approvedIds.length === 0) {
+    console.error("[ACCESS VERIFY] Missing configuration:", {
+      secretPresent: Boolean(secret),
+      approvedIdsPresent: approvedIds.length > 0
+    });
+
     return res.status(500).json({
       valid: false,
       error: "Access verification is not configured."
@@ -54,6 +59,7 @@ export default async function handler(req, res) {
         .filter(Boolean)
         .map(item => {
           const index = item.indexOf("=");
+
           return [
             item.slice(0, index),
             decodeURIComponent(item.slice(index + 1))
@@ -62,6 +68,7 @@ export default async function handler(req, res) {
     );
 
     const session = String(cookies.peacze_session || "").split(".");
+
     if (session.length !== 2) {
       return res.status(401).json({
         valid: false,
@@ -70,16 +77,17 @@ export default async function handler(req, res) {
     }
 
     const [payload, signature] = session;
-    const expected = crypto
+
+    const expectedSignature = crypto
       .createHmac("sha256", secret)
       .update(payload)
       .digest();
 
-    const actual = Buffer.from(signature, "base64url");
+    const actualSignature = Buffer.from(signature, "base64url");
 
     if (
-      actual.length !== expected.length ||
-      !crypto.timingSafeEqual(actual, expected)
+      actualSignature.length !== expectedSignature.length ||
+      !crypto.timingSafeEqual(actualSignature, expectedSignature)
     ) {
       return res.status(401).json({
         valid: false,
@@ -91,8 +99,10 @@ export default async function handler(req, res) {
       Buffer.from(payload, "base64url").toString("utf8")
     );
 
+    const discordUserId = String(data.discordUserId || "").trim();
+
     if (
-      !data.discordUserId ||
+      !/^\d{17,20}$/.test(discordUserId) ||
       !Number.isFinite(data.expiresAt) ||
       data.expiresAt <= Math.floor(Date.now() / 1000)
     ) {
@@ -102,7 +112,7 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!approvedIds.includes(data.discordUserId)) {
+    if (!approvedIds.includes(discordUserId)) {
       return res.status(403).json({
         valid: false,
         error: "Your Discord account is not approved."
@@ -113,15 +123,29 @@ export default async function handler(req, res) {
       .trim()
       .toUpperCase();
 
-    const expectedCode = getDailyCode(data.discordUserId, secret);
+    const expectedCode = getDailyCode(discordUserId, secret);
 
-    if (
-      submittedCode.length !== expectedCode.length ||
-      !crypto.timingSafeEqual(
+    const matches =
+      submittedCode.length === expectedCode.length &&
+      crypto.timingSafeEqual(
         Buffer.from(submittedCode),
         Buffer.from(expectedCode)
-      )
-    ) {
+      );
+
+    console.log("[ACCESS VERIFY] Code check:", {
+      submittedLength: submittedCode.length,
+      expectedLength: expectedCode.length,
+      matches,
+      userIdLast4: discordUserId.slice(-4),
+      torontoDate: new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Toronto",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date())
+    });
+
+    if (!matches) {
       return res.status(401).json({
         valid: false,
         error: "Invalid or expired daily code."
@@ -133,7 +157,8 @@ export default async function handler(req, res) {
       message: "Daily access code verified."
     });
   } catch (error) {
-    console.error("Access verification failed:", error);
+    console.error("[ACCESS VERIFY] Verification failed:", error);
+
     return res.status(400).json({
       valid: false,
       error: "Could not verify access."
