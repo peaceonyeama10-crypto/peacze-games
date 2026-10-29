@@ -1347,6 +1347,37 @@ async function chooseGame(id) {
     setInterval(updateTikTokStatus, 5000);
     checkBackend();
     setInterval(checkBackend, 30000);
+
+const discordLogoutButton = document.getElementById(
+  "discord-logout-button"
+);
+
+if (discordLogoutButton) {
+  discordLogoutButton.addEventListener("click", async () => {
+    discordLogoutButton.disabled = true;
+    discordLogoutButton.textContent = "LOGGING OUT...";
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin"
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Logout failed.");
+      }
+
+      window.location.reload();
+    } catch (error) {
+      alert(error.message || "Could not log out. Please try again.");
+      discordLogoutButton.disabled = false;
+      discordLogoutButton.textContent = "LOG OUT";
+    }
+  });
+}
+
   </script>
 </body>
 </html>
