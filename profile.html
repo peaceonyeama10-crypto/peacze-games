@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080611">
+  <meta name="description" content="Manage your CROWN NETWORK account and TikTok connection.">
+  <title>CROWN NETWORK | MY PROFILE</title>
+  <link rel="icon" type="image/png" href="/crown-network-icon.png">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080611;
+      --panel: #100c1d;
+      --pink: #ff4de1;
+      --purple: #a855ff;
+      --cyan: #43ddff;
+      --muted: #aaa2bf;
+      --border: #332447;
+      --green: #65f2ad;
+      --red: #ff9cab;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: white;
+      font-family: Inter, system-ui, Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 10% 0%, #49216b80, transparent 42%),
+        radial-gradient(ellipse at 95% 15%, #073d6580, transparent 34%),
+        var(--bg);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+
+    .container {
+      width: min(1050px, 92%);
+      margin: auto;
+    }
+
+    nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+      border-bottom: 1px solid #ffffff12;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 1000;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid #b85cff80;
+      background: #0e091c;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand strong {
+      background: linear-gradient(95deg, white, #ff65e8 48%, #53dfff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 19px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] {
+      color: var(--cyan);
+    }
+
+    .hero {
+      padding: 58px 0 28px;
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin: 15px 0;
+      font-size: clamp(38px, 7vw, 62px);
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #ff65e8, #b77bff 48%, #48e3ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .intro {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding-bottom: 55px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: linear-gradient(155deg, #1c1430, #0e0a19 72%);
+    }
+
+    .profile-avatar {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 17px;
+      border: 1px solid #a855ff80;
+      border-radius: 23px;
+      background: linear-gradient(140deg, #32204d, #111023);
+      font-size: 32px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 20px 0;
+      padding: 12px;
+      border: 1px solid #ffffff12;
+      border-radius: 10px;
+      background: #09071380;
+      font-size: 11px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #887b9c;
+    }
+
+    .dot.online { background: var(--green); }
+    .dot.offline { background: var(--red); }
+
+    .btn {
+      width: 100%;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 14px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+      transition: transform .2s, filter .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .primary {
+      color: #13091e;
+      background: linear-gradient(105deg, #ff68e7, #b57bff 54%, #52e2ff);
+    }
+
+    .secondary {
+      color: #f2eaff;
+      background: #151021;
+      border-color: #47305d;
+    }
+
+    .danger {
+      color: #ffb5c0;
+      background: #29111f;
+      border-color: #653047;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .main-panels {
+      display: grid;
+      gap: 18px;
+    }
+
+    .account-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .account-heading p {
+      margin: 7px 0 0;
+    }
+
+    .badge {
+      padding: 8px 10px;
+      border: 1px solid #4a355e;
+      border-radius: 999px;
+      color: #e6d2ff;
+      background: #171025;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .connection-card {
+      padding: 18px;
+      border: 1px solid #ffffff12;
+      border-radius: 13px;
+      background: #0b0815a8;
+    }
+
+    .connection-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 16px;
+    }
+
+    .service-icon {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1px solid #ffffff1a;
+      border-radius: 13px;
+      background: #171025;
+      font-size: 23px;
+    }
+
+    .connection-header p {
+      margin: 5px 0 0;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 8px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 46px;
+      padding: 12px 14px;
+      border: 1px solid #403256;
+      border-radius: 9px;
+      outline: none;
+      background: #090713;
+      color: white;
+    }
+
+    input:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 2px #a855ff24;
+    }
+
+    input::placeholder { color: #817790; }
+
+    .help {
+      margin: 9px 0 15px;
+      color: #938aa8;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .message {
+      min-height: 23px;
+      margin-top: 12px;
+      color: #d6cbe8;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .error { color: var(--red); }
+    .success { color: var(--green); }
+
+    .signed-out {
+      padding: 25px;
+      border: 1px solid #a855ff66;
+      border-radius: 17px;
+      background: #100c1d;
+      text-align: center;
+    }
+
+    .signed-out .profile-avatar {
+      margin: 0 auto 18px;
+    }
+
+    .signed-out p {
+      max-width: 450px;
+      margin: 10px auto 20px;
+    }
+
+    [hidden] { display: none !important; }
+
+    footer {
+      padding: 25px 0;
+      border-top: 1px solid #ffffff12;
+      color: #8e879f;
+      font-size: 11px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .profile-sidebar { order: 0; }
+      .main-panels { order: 1; }
+      .hero { padding-top: 42px; }
+    }
+
+    @media (max-width: 480px) {
+      nav {
+        padding: 14px 0;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links { gap: 14px; }
+      .brand { font-size: 12px; }
+      .panel { padding: 17px; }
+      .connection-card { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container">
+    <nav aria-label="Main navigation">
+      <a class="brand" href="/index.html">
+        <span class="brand-mark">
+          <img src="/crown-network-icon.png" alt="CROWN NETWORK logo">
+        </span>
+        <span>CROWN <strong>NETWORK</strong></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/index.html">HOME</a>
+        <a href="/games.html">GAMES</a>
+        <a href="/plans.html">PLANS</a>
+        <a href="/profile.html" aria-current="page">MY PROFILE</a>
+        <a href="https://discord.gg/9mkDN5Zcws"
+           target="_blank" rel="noopener noreferrer">COMMUNITY ↗</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow">CROWN NETWORK / ACCOUNT CENTER</div>
+      <h1>YOUR <span class="gradient">PROFILE.</span></h1>
+      <p class="intro">
+        Manage your account and your TikTok LIVE connection from one place.
+        Sign in with Discord to access your creator settings.
+      </p>
+    </section>
+
+    <section class="signed-out" id="signed-out" hidden>
+      <div class="profile-avatar">♛</div>
+      <div class="eyebrow">MEMBERS ONLY</div>
+      <h2>Sign in to continue</h2>
+      <p class="muted">
+        Sign in with Discord to access your profile and manage your TikTok
+        connection. Your account controls are only available after the
+        server confirms your session.
+      </p>
+      <a class="btn primary" href="/api/auth/discord/login">
+        CONTINUE WITH DISCORD
+      </a>
+      <div class="message" id="login-message" role="status"></div>
+    </section>
+
+    <section class="layout" id="profile-layout" hidden>
+      <aside class="panel profile-sidebar">
+        <div class="profile-avatar">♛</div>
+        <div class="eyebrow">CREATOR ACCOUNT</div>
+        <h2 style="margin-top:10px" id="discord-name">Discord account</h2>
+        <p class="muted" id="discord-description">
+          Your Discord session is being checked.
+        </p>
+
+        <div class="status-row">
+          <span>Discord login</span>
+          <span class="status">
+            <span class="dot" id="discord-dot"></span>
+            <span id="discord-status">CHECKING</span>
+          </span>
+        </div>
+
+        <div class="stack">
+          <button class="btn secondary" id="refresh-status" type="button">
+            REFRESH CONNECTION STATUS
+          </button>
+          <button class="btn danger" id="logout-button" type="button">
+            LOG OUT
+          </button>
+        </div>
+
+        <div class="message" id="account-message" role="status"></div>
+      </aside>
+
+      <div class="main-panels">
+        <section class="panel">
+          <div class="account-heading">
+            <div>
+              <div class="eyebrow">01 / ACCOUNT CONNECTIONS</div>
+              <h2 style="margin-top:8px">Connected accounts</h2>
+              <p class="muted">Manage the services used by your creator setup.</p>
+            </div>
+            <span class="badge">ACCOUNT SETTINGS</span>
+          </div>
+
+          <div class="connection-card">
+            <div class="connection-header">
+              <div class="service-icon" aria-hidden="true">◉</div>
+              <div style="flex:1;min-width:0">
+                <h3>Discord</h3>
+                <p class="muted">Your account login and access verification.</p>
+              </div>
+              <span class="status">
+                <span class="dot" id="discord-card-dot"></span>
+                <span id="discord-card-status">CHECKING</span>
+              </span>
+            </div>
+
+            <p class="muted" id="discord-account-detail">
+              Checking your Discord session with the server.
+            </p>
+
+            <a class="btn secondary" href="/api/auth/discord/login"
+               id="discord-relogin" hidden>
+              SIGN IN WITH DISCORD
+            </a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="account-heading">
+            <div>
+              <div class="eyebrow">02 / TIKTOK LIVE</div>
+              <h2 style="margin-top:8px">Connect your TikTok</h2>
+              <p class="muted">
+                Connect the TikTok LIVE username you want to use with
+                CROWN NETWORK.
+              </p>
+            </div>
+            <span class="badge">LIVE CONNECTION</span>
+          </div>
+
+          <div class="connection-card">
+            <div class="connection-header">
+              <div class="service-icon" aria-hidden="true">♪</div>
+              <div style="flex:1;min-width:0">
+                <h3>TikTok LIVE</h3>
+                <p class="muted">Live status is reported by your server.</p>
+              </div>
+              <span class="status">
+                <span class="dot" id="tiktok-dot"></span>
+                <span id="tiktok-state">CHECKING</span>
+              </span>
+            </div>
+
+            <p class="muted" id="tiktok-current">
+              Checking your TikTok connection...
+            </p>
+
+            <form id="tiktok-form">
+              <label for="tiktok-username">TIKTOK USERNAME</label>
+              <input
+                id="tiktok-username"
+                name="username"
+                type="text"
+                placeholder="Enter your TikTok username"
+                maxlength="24"
+                autocomplete="off"
+                spellcheck="false"
+                required
+              >
+
+              <label for="daily-access-code">DAILY DISCORD ACCESS CODE</label>
+              <input
+                id="daily-access-code"
+                name="code"
+                type="text"
+                placeholder="Enter today's access code"
+                maxlength="10"
+                autocomplete="off"
+                spellcheck="false"
+                required
+              >
+
+              <p class="help">
+                Enter your TikTok username without the @ symbol and your
+                current daily access code. The server verifies the request.
+              </p>
+
+              <div class="stack">
+                <button class="btn primary" id="connect-button" type="submit">
+                  CONNECT TIKTOK LIVE
+                </button>
+                <button class="btn danger" id="disconnect-button"
+                        type="button">
+                  DISCONNECT TIKTOK
+                </button>
+              </div>
+            </form>
+
+            <div class="message" id="tiktok-message"
+                 role="status" aria-live="polite"></div>
+            <div class="message error" id="tiktok-error"
+                 role="alert" hidden></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="eyebrow">03 / ACCOUNT SECURITY</div>
+          <h2 style="margin-top:8px">Your account</h2>
+          <p class="muted">
+            CROWN NETWORK uses Discord sign-in to verify your account.
+            Never share your Discord password, session cookies, or private
+            authentication tokens with anyone.
+          </p>
+          <p class="muted">
+            Disconnecting TikTok ends the current TikTok connection on the
+            server. It does not delete your Discord account.
+          </p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>CROWN NETWORK · INTERACTIVE GAMING</span>
+      <a href="/index.html">Back to home ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const loginPanel = document.getElementById("signed-out");
+    const profileLayout = document.getElementById("profile-layout");
+
+    const discordName = document.getElementById("discord-name");
+    const discordDescription = document.getElementById("discord-description");
+    const discordStatus = document.getElementById("discord-status");
+    const discordDot = document.getElementById("discord-dot");
+    const discordCardStatus = document.getElementById("discord-card-status");
+    const discordCardDot = document.getElementById("discord-card-dot");
+    const discordAccountDetail = document.getElementById("discord-account-detail");
+    const discordRelogin = document.getElementById("discord-relogin");
+
+    const tiktokForm = document.getElementById("tiktok-form");
+    const usernameInput = document.getElementById("tiktok-username");
+    const accessCodeInput = document.getElementById("daily-access-code");
+    const connectButton = document.getElementById("connect-button");
+    const disconnectButton = document.getElementById("disconnect-button");
+    const tiktokState = document.getElementById("tiktok-state");
+    const tiktokDot = document.getElementById("tiktok-dot");
+    const tiktokCurrent = document.getElementById("tiktok-current");
+    const tiktokMessage = document.getElementById("tiktok-message");
+    const tiktokError = document.getElementById("tiktok-error");
+
+    let signedIn = false;
+    let requestBusy = false;
+
+    function setDot(element, online) {
+      element.classList.toggle("online", online === true);
+      element.classList.toggle("offline", online === false);
+    }
+
+    function showTikTokMessage(message, isError = false) {
+      tiktokMessage.textContent = isError ? "" : message;
+      tiktokError.textContent = isError ? message : "";
+      tiktokError.hidden = !isError;
+    }
+
+    function setSignedInState(isSignedIn, data = {}) {
+      signedIn = isSignedIn;
+      loginPanel.hidden = isSignedIn;
+      profileLayout.hidden = !isSignedIn;
+
+      const name =
+        data.discordUser?.global_name ||
+        data.discordUser?.username ||
+        data.user?.global_name ||
+        data.user?.username ||
+        data.discord?.username ||
+        data.username ||
+        "";
+
+      if (isSignedIn) {
+        discordName.textContent = name || "Discord account";
+        discordDescription.textContent = name
+          ? "Signed in with Discord."
+          : "Your Discord session has been accepted by the server.";
+
+        discordStatus.textContent = "SIGNED IN";
+        discordCardStatus.textContent = "CONNECTED";
+        discordAccountDetail.textContent = name
+          ? `Signed in as ${name}.`
+          : "Your Discord session is active.";
+
+        setDot(discordDot, true);
+        setDot(discordCardDot, true);
+        discordRelogin.hidden = true;
+      } else {
+        discordStatus.textContent = "SIGNED OUT";
+        discordCardStatus.textContent = "NOT CONNECTED";
+        setDot(discordDot, false);
+        setDot(discordCardDot, false);
+        discordRelogin.hidden = false;
+      }
+    }
+
+    async function readJson(response) {
+      return response.json().catch(() => ({}));
+    }
+
+    async function updateTikTokStatus() {
+      if (!signedIn) return;
+
+      tiktokState.textContent = "CHECKING";
+      tiktokCurrent.textContent = "Checking your TikTok connection...";
+      setDot(tiktokDot, null);
+
+      try {
+        const response = await fetch("/api/tiktok/status", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json" }
+        });
+
+        const data = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          setSignedInState(false);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || data.error || `Request failed (${response.status})`
+          );
+        }
+
+        const status = String(data.status || "unknown").toLowerCase();
+        const username = String(data.username || "").replace(/^@+/, "");
+        const message = data.message || "";
+
+        tiktokState.textContent = status.replace(/[_-]/g, " ").toUpperCase();
+
+        const isConnected = status === "connected";
+        const isDisconnected = status === "disconnected";
+
+        setDot(tiktokDot, isConnected ? true : isDisconnected ? false : null);
+
+        if (username) {
+          usernameInput.value = username;
+          tiktokCurrent.textContent = `TikTok username: @${username}. ${message}`;
+        } else {
+          tiktokCurrent.textContent = message || (
+            isDisconnected
+              ? "No TikTok account is currently connected."
+              : "The server has not provided a connected username."
+          );
+        }
+
+        if (data.error) {
+          showTikTokMessage(data.error, true);
+        } else {
+          showTikTokMessage("");
+        }
+      } catch (error) {
+        tiktokState.textContent = "UNAVAILABLE";
+        setDot(tiktokDot, false);
+        tiktokCurrent.textContent = "Could not retrieve the TikTok connection status.";
+        showTikTokMessage(error.message || "Status check failed.", true);
+      }
+    }
+
+    async function checkAccount() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has("error")) {
+        document.getElementById("login-message").textContent =
+          "Discord sign-in was not completed. Please try again.";
+      }
+
+      try {
+        // The existing status endpoint is used to check whether the
+        // server accepts this browser's session.
+        const response = await fetch("/api/tiktok/status", {
+          method: "GET",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json" }
+        });
+
+        const data = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          setSignedInState(false);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || data.error || `Request failed (${response.status})`
+          );
+        }
+
+        setSignedInState(true, data);
+        await updateTikTokStatus();
+      } catch (error) {
+        // Do not show private controls if the server cannot confirm the session.
+        setSignedInState(false);
+        document.getElementById("login-message").textContent =
+          "Could not verify your login with the server. Please sign in or try again.";
+      }
+    }
+
+    tiktokForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (!signedIn || requestBusy) return;
+
+      const username = usernameInput.value.trim().replace(/^@+/, "");
+      const code = accessCodeInput.value.trim().toUpperCase();
+
+      if (!/^[A-Za-z0-9._]{2,24}$/.test(username)) {
+        showTikTokMessage("Enter a valid TikTok username.", true);
+        usernameInput.focus();
+        return;
+      }
+
+      if (!code) {
+        showTikTokMessage("Enter your daily Discord access code.", true);
+        accessCodeInput.focus();
+        return;
+      }
+
+      requestBusy = true;
+      connectButton.disabled = true;
+      disconnectButton.disabled = true;
+      tiktokState.textContent = "CONNECTING";
+      tiktokCurrent.textContent = `Requesting connection to @${username}...`;
+      showTikTokMessage("Verifying your account and access code...");
+
+      try {
+        const response = await fetch("/api/tiktok/connect", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ username, code })
+        });
+
+        const data = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          setSignedInState(false);
+          throw new Error("Your login or access code was rejected. Sign in again or check today's code.");
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || data.message || `Request failed (${response.status})`
+          );
+        }
+
+        showTikTokMessage(data.message || "TikTok connection request submitted.");
+        await updateTikTokStatus();
+      } catch (error) {
+        showTikTokMessage(error.message || "Could not connect TikTok.", true);
+      } finally {
+        requestBusy = false;
+        connectButton.disabled = false;
+        disconnectButton.disabled = false;
+      }
+    });
+
+    disconnectButton.addEventListener("click", async () => {
+      if (!signedIn || requestBusy) return;
+
+      if (!window.confirm("Disconnect the current TikTok LIVE connection?")) {
+        return;
+      }
+
+      requestBusy = true;
+      disconnectButton.disabled = true;
+      connectButton.disabled = true;
+      tiktokState.textContent = "DISCONNECTING";
+      showTikTokMessage("Disconnecting TikTok...");
+
+      try {
+        const response = await fetch("/api/tiktok/disconnect", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json" }
+        });
+
+        const data = await readJson(response);
+
+        if (response.status === 401 || response.status === 403) {
+          setSignedInState(false);
+          throw new Error("Your session is no longer authorized. Please sign in again.");
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || data.message || `Request failed (${response.status})`
+          );
+        }
+
+        showTikTokMessage(data.message || "TikTok disconnected.", false);
+        await updateTikTokStatus();
+      } catch (error) {
+        showTikTokMessage(error.message || "Could not disconnect TikTok.", true);
+      } finally {
+        requestBusy = false;
+        disconnectButton.disabled = false;
+        connectButton.disabled = false;
+      }
+    });
+
+    document.getElementById("refresh-status").addEventListener("click", async () => {
+      if (!signedIn) return;
+      await updateTikTokStatus();
+      document.getElementById("account-message").textContent =
+        "Connection status refreshed.";
+    });
+
+    document.getElementById("logout-button").addEventListener("click", async () => {
+      const button = document.getElementById("logout-button");
+      button.disabled = true;
+      document.getElementById("account-message").textContent = "Signing out...";
+
+      try {
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) {
+          const data = await readJson(response);
+          throw new Error(
+            data.message || data.error || `Logout failed (${response.status})`
+          );
+        }
+
+        window.location.replace("/profile.html");
+      } catch (error) {
+        document.getElementById("account-message").textContent =
+          error.message || "Could not log out. Please try again.";
+        button.disabled = false;
+      }
+    });
+
+    accessCodeInput.addEventListener("input", () => {
+      const start = accessCodeInput.selectionStart;
+      const end = accessCodeInput.selectionEnd;
+      const uppercase = accessCodeInput.value.toUpperCase();
+
+      if (accessCodeInput.value !== uppercase) {
+        accessCodeInput.value = uppercase;
+
+        try {
+          accessCodeInput.setSelectionRange(start, end);
+        } catch (_) {}
+      }
+    });
+
+    checkAccount();
+  </script>
+</body>
+</html>
