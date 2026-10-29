@@ -146,7 +146,7 @@ export default async function handler(req, res) {
       `peacze_session=${payload}.${signature}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_SECONDS}`
     ]);
 
-    return res.redirect(302, "/");
+    res.redirect("/games.html");
   } catch (err) {
     console.error("Discord OAuth callback failed:", err);
     return res.status(500).send("Login failed. Please try again.");
