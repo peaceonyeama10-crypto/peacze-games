@@ -180,6 +180,7 @@ const databaseStatus = document.getElementById("databaseStatus");
 let creators = [];
 let loadingCreators = false;
 let sessionCheckRunning = false;
+let editingCreator = null;
 
 function localDateString(date = new Date()) {
   const adjusted = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -383,6 +384,15 @@ function renderCreators() {
       changeAccess(creator, currentlyRevoked ? "active" : "revoked", actionButton);
     });
 
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "btn small";
+    editButton.textContent = "Edit";
+
+    editButton.addEventListener("click", () => {
+      openCreatorModal(creator);
+    });
+
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "btn small danger";
@@ -392,6 +402,7 @@ function renderCreators() {
       deleteCreator(creator, deleteButton);
     });
 
+    actionsWrap.appendChild(editButton);
     actionsWrap.appendChild(actionButton);
     actionsWrap.appendChild(deleteButton);
     actionsCell.appendChild(actionsWrap);
@@ -486,16 +497,48 @@ async function deleteCreator(creator, button) {
   }
 }
 
-function openCreatorModal() {
+function openCreatorModal(creator) {
   creatorForm.reset();
-  document.getElementById("startDate").value = localDateString();
-  document.getElementById("expiryDate").value = localDateString();
+
+  const title = document.getElementById("modalTitle");
+  const intro = document.querySelector(".modal-intro");
+  const discordInput = document.getElementById("discordId");
+  const saveButton = document.getElementById("saveCreator");
+
+  if (creator) {
+    editingCreator = creator;
+    title.textContent = "Edit creator";
+    intro.textContent =
+      "Update this creator's details. The Discord ID cannot be changed.";
+    document.getElementById("creatorName").value = creator.creatorName || "";
+    discordInput.value = creator.discordUserId;
+    discordInput.readOnly = true;
+    document.getElementById("tiktokUsername").value = creator.tiktokUsername || "";
+    document.getElementById("plan").value = creator.plan || "FREE TRIAL";
+    document.getElementById("startDate").value =
+      creator.startsAt || localDateString();
+    document.getElementById("expiryDate").value =
+      creator.expiresOn || localDateString();
+    saveButton.textContent = "Save changes";
+  } else {
+    editingCreator = null;
+    title.textContent = "Add creator";
+    intro.textContent =
+      "Create a creator record in the database. A Discord ID can only be registered once.";
+    discordInput.readOnly = false;
+    document.getElementById("startDate").value = localDateString();
+    document.getElementById("expiryDate").value = localDateString();
+    saveButton.textContent = "Save creator";
+  }
+
   creatorModal.hidden = false;
   document.getElementById("creatorName").focus();
 }
 
 function closeCreatorModal() {
   creatorModal.hidden = true;
+  editingCreator = null;
+  document.getElementById("discordId").readOnly = false;
 }
 
 document.getElementById("logoutButton").addEventListener("click", async () => {
@@ -526,7 +569,7 @@ document.getElementById("refreshButton").addEventListener("click", async () => {
   if (await verifyAdminSession()) await loadCreators();
 });
 
-document.getElementById("addButton").addEventListener("click", openCreatorModal);
+document.getElementById("addButton").addEventListener("click", () => openCreatorModal());
 document.getElementById("cancelCreator").addEventListener("click", closeCreatorModal);
 document.getElementById("search").addEventListener("input", renderCreators);
 document.getElementById("filter").addEventListener("change", renderCreators);
@@ -562,20 +605,32 @@ creatorForm.addEventListener("submit", async event => {
   };
 
   const saveButton = document.getElementById("saveCreator");
+  const wasEditing = Boolean(editingCreator);
   saveButton.disabled = true;
   saveButton.textContent = "Saving…";
 
   try {
-    await apiRequest("POST", null, creator);
+    if (wasEditing) {
+      await apiRequest("PATCH", editingCreator.discordUserId, {
+        creatorName: creator.creatorName,
+        tiktokUsername: creator.tiktokUsername,
+        plan: creator.plan,
+        startsAt: creator.startsAt,
+        expiresOn: creator.expiresOn
+      });
+    } else {
+      await apiRequest("POST", null, creator);
+    }
+
     closeCreatorModal();
     creatorForm.reset();
-    setMessage("Creator saved successfully.");
+    setMessage(wasEditing ? "Creator updated successfully." : "Creator saved successfully.");
     await loadCreators();
   } catch (error) {
     setMessage(error.message || "Could not save the creator.");
   } finally {
     saveButton.disabled = false;
-    saveButton.textContent = "Save creator";
+    saveButton.textContent = editingCreator ? "Save changes" : "Save creator";
   }
 });
 
