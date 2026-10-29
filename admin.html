@@ -8,103 +8,58 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 22px;
-      color: #f6f4ee;
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      padding: 22px; color: #f6f4ee;
       background: radial-gradient(ellipse at top, #302515, #090909 60%);
       font-family: Arial, Helvetica, sans-serif;
     }
     .card {
-      width: 100%;
-      max-width: 420px;
-      padding: 36px;
-      background: #111;
-      border: 1px solid #554426;
-      border-radius: 20px;
+      width: 100%; max-width: 420px; padding: 36px;
+      background: #111; border: 1px solid #554426; border-radius: 20px;
       box-shadow: 0 24px 80px #0009;
     }
     .logo {
-      width: 58px;
-      height: 58px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 20px;
-      border: 1px solid #c7a653;
-      border-radius: 16px;
-      color: #f0d58c;
-      background: #211a0e;
+      width: 58px; height: 58px; display: grid; place-items: center;
+      margin: 0 auto 20px; border: 1px solid #c7a653;
+      border-radius: 16px; color: #f0d58c; background: #211a0e;
       font-size: 28px;
     }
     .eyebrow {
-      color: #d9b75f;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 3px;
-      text-align: center;
+      color: #d9b75f; font-size: 10px; font-weight: bold;
+      letter-spacing: 3px; text-align: center;
     }
-    h1 {
-      margin: 12px 0 10px;
-      text-align: center;
-      font-size: 27px;
-    }
+    h1 { margin: 12px 0 10px; text-align: center; font-size: 27px; }
     .description {
-      margin: 0 0 28px;
-      color: #999;
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.7;
+      margin: 0 0 28px; color: #999; text-align: center;
+      font-size: 13px; line-height: 1.7;
     }
     label {
-      display: block;
-      margin-bottom: 9px;
-      color: #ddd;
-      font-size: 12px;
-      font-weight: bold;
+      display: block; margin-bottom: 9px; color: #ddd;
+      font-size: 12px; font-weight: bold;
     }
     input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #38332a;
-      border-radius: 10px;
-      outline: none;
-      background: #090909;
-      color: white;
-      font-size: 14px;
+      width: 100%; padding: 14px; border: 1px solid #38332a;
+      border-radius: 10px; outline: none; background: #090909;
+      color: white; font-size: 14px;
     }
     input:focus { border-color: #d9b75f; }
     button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
-      background: linear-gradient(110deg, #b58c35, #f0d58c);
-      color: #15110a;
-      font-weight: 800;
-      cursor: pointer;
+      width: 100%; margin-top: 15px; padding: 14px; border: 0;
+      border-radius: 10px; background: linear-gradient(110deg, #b58c35, #f0d58c);
+      color: #15110a; font-weight: 800; cursor: pointer;
     }
     button:hover { filter: brightness(1.08); }
     button:disabled { opacity: .65; cursor: wait; }
     #message {
-      min-height: 20px;
-      margin: 14px 0 0;
-      color: #f1a1a1;
-      font-size: 12px;
-      text-align: center;
-      line-height: 1.6;
+      min-height: 20px; margin: 14px 0 0; color: #f1a1a1;
+      font-size: 12px; text-align: center; line-height: 1.6;
     }
     .footer {
-      margin-top: 25px;
-      padding-top: 18px;
-      border-top: 1px solid #29251d;
-      color: #777;
-      text-align: center;
-      font-size: 11px;
+      margin-top: 25px; padding-top: 18px; border-top: 1px solid #29251d;
+      color: #777; text-align: center; font-size: 11px;
     }
     .footer a { color: #d9b75f; text-decoration: none; }
+    [hidden] { display: none !important; }
   </style>
 </head>
 <body>
@@ -117,22 +72,22 @@
       Verify your administrator access to continue.
     </p>
 
-    <form id="adminForm">
+    <form id="adminForm" hidden>
       <label for="adminCode">ADMIN ACCESS CODE</label>
-      <input
-        id="adminCode"
-        type="password"
+      <input id="adminCode" type="password"
         placeholder="Enter your private access code"
-        autocomplete="current-password"
-        required
-      >
+        autocomplete="current-password" required>
       <button id="submitButton" type="submit">VERIFY ACCESS</button>
       <p id="message" role="status" aria-live="polite"></p>
     </form>
 
+    <p id="loadingMessage" role="status" aria-live="polite"
+       style="color:#aaa;text-align:center;font-size:13px">
+      Checking admin session...
+    </p>
+
     <div class="footer">
-      Protected administrator area ·
-      <a href="/profile.html">Return to profile</a>
+      Protected administrator area · <a href="/profile.html">Return to profile</a>
     </div>
   </main>
 
@@ -141,17 +96,38 @@
     const input = document.getElementById("adminCode");
     const button = document.getElementById("submitButton");
     const message = document.getElementById("message");
+    const loading = document.getElementById("loadingMessage");
+
+    async function checkSession() {
+      try {
+        const response = await fetch("/api/admin/session", {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.authorized === true) {
+          window.location.replace("/admin-dashboard.html");
+          return;
+        }
+      } catch (error) {
+        // If checking fails, show the passcode form.
+      }
+
+      loading.hidden = true;
+      form.hidden = false;
+    }
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
-
       message.style.color = "#f1a1a1";
       message.textContent = "";
       button.disabled = true;
       button.textContent = "VERIFYING...";
 
       try {
-        // The server endpoint will be added in the security step.
         const response = await fetch("/api/admin/verify", {
           method: "POST",
           credentials: "same-origin",
@@ -162,7 +138,7 @@
         const result = await response.json();
 
         if (response.ok && result.authorized === true) {
-          window.location.assign("/admin-dashboard.html");
+          window.location.replace("/admin-dashboard.html");
           return;
         }
 
@@ -170,13 +146,15 @@
           result.error || "Access denied. Check your authorization.";
       } catch (error) {
         message.textContent =
-          "Admin verification is not connected yet. No access was granted.";
+          "Could not contact the verification server. Try again.";
       } finally {
         button.disabled = false;
         button.textContent = "VERIFY ACCESS";
         input.value = "";
       }
     });
+
+    checkSession();
   </script>
 </body>
 </html>
