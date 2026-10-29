@@ -150,6 +150,7 @@ tbody tr:hover{background:#171717}
   Checking administrator session...
 </div>
 
+
 <script>
 const dashboard = document.getElementById("dashboard");
 const loading = document.getElementById("loading");
@@ -162,6 +163,7 @@ async function verifyAdminSession() {
       credentials: "same-origin",
       cache: "no-store"
     });
+
     const result = await response.json();
 
     if (response.ok && result.authorized === true) {
@@ -170,22 +172,47 @@ async function verifyAdminSession() {
       return true;
     }
   } catch (error) {
-    // Fail closed: don't display the dashboard if session verification fails.
+    // Keep the dashboard hidden if verification fails.
   }
 
   window.location.replace("/admin.html");
   return false;
 }
 
-document.getElementById("logoutButton").addEventListener("click", () => {
-  message.textContent =
-    "Logout endpoint has not been added yet. Close the browser to end this preview session.";
+document.getElementById("logoutButton").addEventListener("click", async () => {
+  const button = document.getElementById("logoutButton");
+  button.disabled = true;
+  message.textContent = "Signing out...";
+
+  try {
+    const response = await fetch("/api/admin/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || result.success !== true) {
+      throw new Error(result.error || "Logout failed.");
+    }
+
+    window.location.replace("/admin.html");
+  } catch (error) {
+    message.textContent =
+      error.message || "Could not sign out. Please try again.";
+    button.disabled = false;
+  }
 });
 
 document.getElementById("refreshButton").addEventListener("click", async () => {
   message.textContent = "Checking your admin session...";
   const valid = await verifyAdminSession();
-  if (valid) message.textContent = "Session verified. Database connection is not added yet.";
+
+  if (valid) {
+    message.textContent =
+      "Session verified. Database connection is not added yet.";
+  }
 });
 
 document.getElementById("addButton").addEventListener("click", () => {
@@ -195,5 +222,6 @@ document.getElementById("addButton").addEventListener("click", () => {
 
 verifyAdminSession();
 </script>
+
 </body>
 </html>
