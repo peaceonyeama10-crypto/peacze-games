@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
 
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).send("Method not allowed.");
@@ -14,14 +16,14 @@ export default async function handler(req, res) {
 
   const state = crypto.randomBytes(32).toString("hex");
 
-  res.setHeader("Cache-Control", "no-store");
   res.setHeader("Set-Cookie", [
     `discord_oauth_state=${state}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth/discord; Max-Age=600`
   ]);
 
   const params = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: "https://peacze-games.vercel.app/api/auth/discord/callback",
+    redirect_uri:
+      "https://peacze-games.vercel.app/api/auth/discord/callback",
     response_type: "code",
     scope: "identify",
     state
