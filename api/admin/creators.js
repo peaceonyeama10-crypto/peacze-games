@@ -101,15 +101,19 @@ module.exports = async function handler(req, res) {
       ? req.query.discordUserId.trim()
       : "";
 
-  const target = new URL("/api/admin/creators", backend);
+  // The Render backend expects PATCH /api/admin/creators/:discordUserId
+  // (the ID in the path, not in the query string).
+  let targetPath = "/api/admin/creators";
 
   if (req.method === "PATCH") {
     if (!/^[0-9]{17,20}$/.test(discordUserId)) {
       return res.status(400).json({ error: "A valid Discord user ID is required." });
     }
 
-    target.searchParams.set("discordUserId", discordUserId);
+    targetPath = `/api/admin/creators/${discordUserId}`;
   }
+
+  const target = new URL(targetPath, backend);
 
   const headers = {
     "Authorization": `Bearer ${secret}`,
