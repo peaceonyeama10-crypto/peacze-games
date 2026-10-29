@@ -21,13 +21,9 @@
       --green: #65f2ad;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -40,19 +36,10 @@
         var(--bg);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
 
     button:disabled {
       opacity: 0.55;
@@ -117,18 +104,14 @@
       font-weight: 800;
     }
 
-    .nav-links a {
-      transition: color 0.2s;
-    }
+    .nav-links a { transition: color 0.2s; }
 
     .nav-links a:hover,
     .nav-links a[aria-current="page"] {
       color: white;
     }
 
-    .nav-links a[aria-current="page"] {
-      color: var(--cyan);
-    }
+    .nav-links a[aria-current="page"] { color: var(--cyan); }
 
     .eyebrow {
       color: var(--cyan);
@@ -270,9 +253,7 @@
       letter-spacing: 1px;
     }
 
-    .game-content {
-      padding: 19px;
-    }
+    .game-content { padding: 19px; }
 
     .game-content h3 {
       margin: 0 0 10px;
@@ -356,9 +337,7 @@
       color: white;
     }
 
-    .access-form input::placeholder {
-      color: #817790;
-    }
+    .access-form input::placeholder { color: #817790; }
 
     .access-form input:focus {
       outline: 2px solid var(--purple);
@@ -374,9 +353,7 @@
       overflow-wrap: anywhere;
     }
 
-    .error {
-      color: #ff9cab;
-    }
+    .error { color: #ff9cab; }
 
     .registration {
       display: none;
@@ -387,9 +364,7 @@
       box-shadow: 0 0 35px #a855ff15;
     }
 
-    .registration.visible {
-      display: block;
-    }
+    .registration.visible { display: block; }
 
     .registration h2 {
       margin-top: 0;
@@ -433,18 +408,14 @@
       gap: 12px;
     }
 
-    .footer-inner a:hover {
-      color: white;
-    }
+    .footer-inner a:hover { color: white; }
 
     @media (max-width: 850px) {
       .game-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .game-card:last-child {
-        grid-column: 1 / -1;
-      }
+      .game-card:last-child { grid-column: 1 / -1; }
     }
 
     @media (max-width: 560px) {
@@ -470,31 +441,21 @@
         height: 34px;
       }
 
-      .hero {
-        padding-top: 45px;
-      }
+      .hero { padding-top: 45px; }
 
       .section-heading {
         align-items: flex-start;
         flex-direction: column;
       }
 
-      .game-grid {
-        grid-template-columns: 1fr;
-      }
+      .game-grid { grid-template-columns: 1fr; }
 
-      .game-card:last-child {
-        grid-column: auto;
-      }
+      .game-card:last-child { grid-column: auto; }
 
-      .game-art {
-        height: 190px;
-      }
+      .game-art { height: 190px; }
 
       .access-form,
-      .registration {
-        padding: 19px;
-      }
+      .registration { padding: 19px; }
     }
   </style>
 </head>
@@ -517,6 +478,7 @@
         <a href="/index.html">HOME</a>
         <a href="/games.html" aria-current="page">GAMES</a>
         <a href="/plans.html">PLANS</a>
+        <a href="/profile.html">MY PROFILE</a>
         <a
           href="https://discord.gg/9mkDN5Zcws"
           target="_blank"
@@ -569,12 +531,7 @@
             <button class="btn btn-primary" type="button" onclick="chooseGame('racing')">
               SELECT EXPERIENCE
             </button>
-            <a
-              class="btn btn-secondary"
-              href="https://www.roblox.com/games/97689573979587/tiktok"
-              target="_blank"
-              rel="noopener noreferrer"
-            >PLAY ON ROBLOX ↗</a>
+            <a class="btn btn-secondary" href="https://www.roblox.com/games/97689573979587/tiktok" target="_blank" rel="noopener noreferrer">PLAY ON ROBLOX ↗</a>
           </div>
         </article>
 
@@ -632,9 +589,7 @@
     </section>
 
     <section class="access-form" aria-labelledby="access-heading">
-      <label id="access-heading" for="daily-access-code">
-        DAILY DISCORD ACCESS CODE
-      </label>
+      <label id="access-heading" for="daily-access-code">DAILY DISCORD ACCESS CODE</label>
 
       <input
         id="daily-access-code"
@@ -646,31 +601,17 @@
         spellcheck="false"
       >
 
-      <div
-        class="message"
-        id="selection-message"
-        role="status"
-        aria-live="polite"
-      >
+      <div class="message" id="selection-message" role="status" aria-live="polite">
         Choose a game above, then enter your daily access code.
       </div>
     </section>
 
-    <section
-      class="registration"
-      id="registration-panel"
-      aria-live="polite"
-      aria-labelledby="registration-heading"
-    >
+    <section class="registration" id="registration-panel" aria-live="polite" aria-labelledby="registration-heading">
       <h2 id="registration-heading">YOUR ROBLOX REGISTRATION CODE</h2>
       <p id="registration-game"></p>
       <div class="code-display" id="registration-code"></div>
       <p>Enter this code in Roblox within 10 minutes.</p>
-
-      <button class="btn btn-primary" type="button" id="copy-code">
-        COPY REGISTRATION CODE
-      </button>
-
+      <button class="btn btn-primary" type="button" id="copy-code">COPY REGISTRATION CODE</button>
       <p id="copy-message"></p>
     </section>
   </main>
@@ -747,7 +688,6 @@
         return;
       }
 
-      // Open only the configured Roblox game URL.
       window.open(game.url, "_blank", "noopener,noreferrer");
     }
 
@@ -761,9 +701,7 @@
       accessCodeInput.value = code;
 
       if (!code) {
-        showMessage(
-          `${GAMES[id].name} selected. Enter your daily access code below to continue.`
-        );
+        showMessage(`${GAMES[id].name} selected. Enter your daily access code below to continue.`);
         accessCodeInput.focus();
         return;
       }
@@ -782,17 +720,12 @@
       });
 
       copyButton.disabled = true;
-
-      showMessage(
-        `Verifying your access code and selecting ${GAMES[id].name}...`
-      );
+      showMessage(`Verifying your access code and selecting ${GAMES[id].name}...`);
 
       try {
         const response = await fetch("/api/games/select", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
           body: JSON.stringify({
             game: GAMES[id].backendGame,
@@ -811,23 +744,16 @@
         }
 
         if (!result.sessionCode) {
-          throw new Error(
-            "The server did not return a registration code. Please try again."
-          );
+          throw new Error("The server did not return a registration code. Please try again.");
         }
 
         currentSessionCode = String(result.sessionCode);
-
-        registrationGame.textContent =
-          `${GAMES[id].name} selected successfully.`;
-
+        registrationGame.textContent = `${GAMES[id].name} selected successfully.`;
         registrationCode.textContent = currentSessionCode;
         copyMessage.textContent = "";
         registrationPanel.classList.add("visible");
 
-        showMessage(
-          `${GAMES[id].name} selected! Your registration code is ready.`
-        );
+        showMessage(`${GAMES[id].name} selected! Your registration code is ready.`);
 
         registrationPanel.scrollIntoView({
           behavior: "smooth",
@@ -840,17 +766,14 @@
         );
       } finally {
         busy = false;
-
         gameButtons.forEach(button => {
           button.disabled = false;
         });
-
         copyButton.disabled = false;
       }
     }
 
     accessCodeInput.addEventListener("input", () => {
-      // Keep the code format consistent with the server request.
       const start = accessCodeInput.selectionStart;
       const end = accessCodeInput.selectionEnd;
       const uppercaseValue = accessCodeInput.value.toUpperCase();
@@ -873,7 +796,7 @@
       }
     });
 
-    document.getElementById("copy-code").addEventListener("click", async () => {
+    copyButton.addEventListener("click", async () => {
       if (!currentSessionCode) {
         copyMessage.textContent = "Generate a registration code first.";
         return;
@@ -885,10 +808,8 @@
         }
 
         await navigator.clipboard.writeText(currentSessionCode);
-
         copyMessage.textContent = "Registration code copied!";
       } catch {
-        // Fallback for browsers that block clipboard access.
         const temporaryInput = document.createElement("textarea");
         temporaryInput.value = currentSessionCode;
         temporaryInput.setAttribute("readonly", "");
