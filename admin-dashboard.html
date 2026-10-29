@@ -23,8 +23,9 @@ body{margin:0;background:radial-gradient(ellipse at top,#261e11,transparent 45%)
 .status{color:var(--gold2);font-size:11px;border:1px solid var(--border);border-radius:20px;padding:9px 12px}
 button,input,select{font:inherit}
 button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
 .btn{border:1px solid var(--border);background:#171717;color:#eee;border-radius:9px;padding:10px 13px;font-size:12px}
-.btn:hover{border-color:#94783c}
+.btn:hover:not(:disabled){border-color:#94783c}
 .btn.gold{background:linear-gradient(110deg,#b58c35,#f1d78c);color:#171107;border:0;font-weight:bold}
 main{width:min(1450px,100%);margin:auto;padding:38px 5% 60px}
 .kicker{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:3px}
@@ -43,7 +44,7 @@ h1{font-size:clamp(27px,4vw,38px);margin:10px 0}
 .section-head h2{font-size:16px;margin:0 0 6px}
 .section-head p{font-size:11px;color:var(--muted);margin:0}
 .toolbar{padding:16px 22px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-input,select{background:#090909;color:#eee;border:1px solid #343027;border-radius:9px;padding:11px 12px;outline:none}
+input,select{width:100%;background:#090909;color:#eee;border:1px solid #343027;border-radius:9px;padding:11px 12px;outline:none}
 input:focus,select:focus{border-color:var(--gold)}
 #search{flex:1;min-width:190px}
 .table-wrap{overflow-x:auto}
@@ -57,8 +58,17 @@ tbody tr:hover{background:#171717}
 .muted{color:var(--muted)}
 .notice{margin-top:20px;padding:14px 16px;border:1px solid #4b4027;border-radius:10px;color:#cbbd9b;background:#1a160e;font-size:12px;line-height:1.7}
 #message{min-height:18px;color:#e7c779;font-size:12px;padding:0 22px 12px}
+.modal-backdrop{position:fixed;inset:0;background:#000c;z-index:5;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto}
+.modal{width:min(620px,100%);background:#111;border:1px solid #4b4027;border-radius:16px;padding:24px;box-shadow:0 20px 80px #000}
+.modal h2{margin:0 0 8px;font-size:22px}
+.modal-intro{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:11px;color:#cbbd9b}
+.form-warning{margin-top:18px;padding:12px;border:1px solid #4b4027;border-radius:9px;color:#cbbd9b;font-size:11px;line-height:1.7}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
 @media(max-width:850px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.header{align-items:flex-start;flex-direction:column}}
-@media(max-width:520px){.topbar{padding:13px 4%}.status{display:none}main{padding:28px 4% 40px}.stats{gap:9px}.stat{padding:15px}.stat-value{font-size:25px}.section-head{padding:17px}.toolbar{padding:13px}.header-actions{width:100%}.header-actions button{flex:1}}
+@media(max-width:520px){.topbar{padding:13px 4%}.status{display:none}main{padding:28px 4% 40px}.stats{gap:9px}.stat{padding:15px}.stat-value{font-size:25px}.section-head{padding:17px}.toolbar{padding:13px}.header-actions{width:100%}.header-actions button{flex:1}.form-grid{grid-template-columns:1fr}.modal{padding:19px}}
 </style>
 </head>
 <body>
@@ -69,7 +79,7 @@ tbody tr:hover{background:#171717}
   </div>
   <div class="top-actions">
     <span class="status">● ADMIN PORTAL</span>
-    <button class="btn" id="logoutButton">Log out</button>
+    <button class="btn" id="logoutButton" type="button">Log out</button>
   </div>
 </header>
 
@@ -81,42 +91,26 @@ tbody tr:hover{background:#171717}
       <p class="subtitle">Manage creator access, plans and subscriptions from one place.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" id="refreshButton">↻ Refresh</button>
-      <button class="btn gold" id="addButton">＋ Add creator</button>
+      <button class="btn" id="refreshButton" type="button">↻ Refresh</button>
+      <button class="btn gold" id="addButton" type="button">＋ Add creator</button>
     </div>
   </section>
 
   <section class="stats">
-    <article class="stat">
-      <div class="stat-label">TOTAL CREATORS</div>
-      <div class="stat-value" id="total">—</div>
-      <div class="stat-note">Creator records</div>
-    </article>
-    <article class="stat">
-      <div class="stat-label">ACTIVE ACCESS</div>
-      <div class="stat-value gold-text" id="active">—</div>
-      <div class="stat-note">Active subscriptions</div>
-    </article>
-    <article class="stat">
-      <div class="stat-label">EXPIRING SOON</div>
-      <div class="stat-value" id="expiring">—</div>
-      <div class="stat-note">Within seven days</div>
-    </article>
-    <article class="stat">
-      <div class="stat-label">REVOKED / EXPIRED</div>
-      <div class="stat-value" id="inactive">—</div>
-      <div class="stat-note">Inactive access</div>
-    </article>
+    <article class="stat"><div class="stat-label">TOTAL CREATORS</div><div class="stat-value" id="total">—</div><div class="stat-note">Creator records</div></article>
+    <article class="stat"><div class="stat-label">ACTIVE ACCESS</div><div class="stat-value gold-text" id="active">—</div><div class="stat-note">Active subscriptions</div></article>
+    <article class="stat"><div class="stat-label">EXPIRING SOON</div><div class="stat-value" id="expiring">—</div><div class="stat-note">Within seven days</div></article>
+    <article class="stat"><div class="stat-label">REVOKED / EXPIRED</div><div class="stat-value" id="inactive">—</div><div class="stat-note">Inactive access</div></article>
   </section>
 
   <section class="section">
     <div class="section-head">
       <div><h2>Creator Management</h2><p>Search and review creator records.</p></div>
-      <span class="pill">DATABASE NOT CONNECTED</span>
+      <span class="pill" id="databaseStatus">DATABASE NOT CONNECTED</span>
     </div>
     <div class="toolbar">
-      <input id="search" type="search" placeholder="Search name, Discord ID or TikTok username">
-      <select id="filter">
+      <input id="search" type="search" placeholder="Search name, Discord ID or TikTok username" aria-label="Search creators">
+      <select id="filter" aria-label="Filter creators">
         <option value="all">All creators</option>
         <option value="active">Active</option>
         <option value="expiring">Expiring soon</option>
@@ -125,9 +119,7 @@ tbody tr:hover{background:#171717}
     </div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr><th>CREATOR</th><th>DISCORD ID</th><th>TIKTOK</th><th>PLAN</th><th>EXPIRY</th><th>STATUS</th></tr>
-        </thead>
+        <thead><tr><th>CREATOR</th><th>DISCORD ID</th><th>TIKTOK</th><th>PLAN</th><th>EXPIRY</th><th>STATUS</th></tr></thead>
         <tbody id="creatorRows"></tbody>
       </table>
       <div class="empty" id="empty">
@@ -141,22 +133,78 @@ tbody tr:hover{background:#171717}
 
   <div class="notice">
     <strong>Preview mode:</strong> creator management is not connected to PostgreSQL yet.
-    Add, edit, expiry, and revoke actions will remain disabled until their protected
-    server endpoints are implemented and tested.
+    The form below does not save or change real creator access.
   </div>
 </main>
 
-<div id="loading" style="text-align:center;padding:100px 20px;color:#c9b16f">
+<div id="loading" style="text-align:center;padding:100px 20px;color:#c9b16f" role="status">
   Checking administrator session...
 </div>
 
+<div class="modal-backdrop" id="creatorModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Add creator</h2>
+    <p class="modal-intro">Enter the creator details. This form is a preview and will not create a database record yet.</p>
+
+    <form id="creatorForm">
+      <div class="form-grid">
+        <div class="field">
+          <label for="creatorName">Creator display name *</label>
+          <input id="creatorName" name="creatorName" maxlength="100" required autocomplete="off" placeholder="Creator name">
+        </div>
+        <div class="field">
+          <label for="discordId">Discord user ID *</label>
+          <input id="discordId" name="discordId" maxlength="25" required inputmode="numeric" pattern="[0-9]{17,20}" placeholder="Discord ID">
+        </div>
+        <div class="field">
+          <label for="tiktokUsername">TikTok username *</label>
+          <input id="tiktokUsername" name="tiktokUsername" maxlength="24" required pattern="@?[A-Za-z0-9._]+" placeholder="@username">
+        </div>
+        <div class="field">
+          <label for="plan">Plan *</label>
+          <select id="plan" name="plan" required>
+            <option value="FREE TRIAL">Free Trial</option>
+            <option value="PROMOTER">Promoter</option>
+            <option value="PREMIUM">Premium</option>
+            <option value="CUSTOM">Custom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="startDate">Start date *</label>
+          <input id="startDate" name="startDate" type="date" required>
+        </div>
+        <div class="field">
+          <label for="expiryDate">Expiry date *</label>
+          <input id="expiryDate" name="expiryDate" type="date" required>
+        </div>
+      </div>
+
+      <div class="form-warning">
+        Preview only: clicking “Preview details” validates these fields but does not save them or grant access. Database saving will be enabled after the protected API is built.
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" id="cancelCreator" type="button">Cancel</button>
+        <button class="btn gold" type="submit">Preview details</button>
+      </div>
+    </form>
+  </section>
+</div>
 
 <script>
+"use strict";
+
 const dashboard = document.getElementById("dashboard");
 const loading = document.getElementById("loading");
 const message = document.getElementById("message");
+const creatorModal = document.getElementById("creatorModal");
+const creatorForm = document.getElementById("creatorForm");
+let sessionCheckRunning = false;
 
 async function verifyAdminSession() {
+  if (sessionCheckRunning) return false;
+  sessionCheckRunning = true;
+
   try {
     const response = await fetch("/api/admin/session", {
       method: "GET",
@@ -172,9 +220,14 @@ async function verifyAdminSession() {
       return true;
     }
   } catch (error) {
-    // Keep the dashboard hidden if verification fails.
+    // Fail closed if the session endpoint cannot be reached.
+  } finally {
+    sessionCheckRunning = false;
   }
 
+  dashboard.hidden = true;
+  loading.hidden = false;
+  loading.textContent = "Admin session not valid. Redirecting to login...";
   window.location.replace("/admin.html");
   return false;
 }
@@ -199,29 +252,83 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
 
     window.location.replace("/admin.html");
   } catch (error) {
-    message.textContent =
-      error.message || "Could not sign out. Please try again.";
+    message.textContent = error.message || "Could not sign out. Please try again.";
     button.disabled = false;
   }
 });
 
 document.getElementById("refreshButton").addEventListener("click", async () => {
-  message.textContent = "Checking your admin session...";
+  message.textContent = "Checking administrator session...";
   const valid = await verifyAdminSession();
 
   if (valid) {
-    message.textContent =
-      "Session verified. Database connection is not added yet.";
+    message.textContent = "Session verified. Creator database is not connected yet.";
   }
 });
 
-document.getElementById("addButton").addEventListener("click", () => {
+function openCreatorModal() {
+  creatorForm.reset();
+
+  const today = new Date();
+  const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 10);
+
+  document.getElementById("startDate").value = localToday;
+  document.getElementById("expiryDate").value = localToday;
+  creatorModal.hidden = false;
+  document.getElementById("creatorName").focus();
+}
+
+function closeCreatorModal() {
+  creatorModal.hidden = true;
+}
+
+document.getElementById("addButton").addEventListener("click", openCreatorModal);
+document.getElementById("cancelCreator").addEventListener("click", closeCreatorModal);
+
+creatorModal.addEventListener("click", event => {
+  if (event.target === creatorModal) closeCreatorModal();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !creatorModal.hidden) closeCreatorModal();
+});
+
+creatorForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!creatorForm.reportValidity()) return;
+
+  const startDate = document.getElementById("startDate").value;
+  const expiryDate = document.getElementById("expiryDate").value;
+
+  if (expiryDate < startDate) {
+    message.textContent = "Expiry date cannot be before the start date.";
+    return;
+  }
+
+  const preview = {
+    name: document.getElementById("creatorName").value.trim(),
+    discordId: document.getElementById("discordId").value.trim(),
+    tiktokUsername: document.getElementById("tiktokUsername").value.trim().replace(/^@/, ""),
+    plan: document.getElementById("plan").value,
+    startDate,
+    expiryDate
+  };
+
+  if (!preview.name || !preview.discordId || !preview.tiktokUsername) {
+    message.textContent = "Please complete every required field.";
+    return;
+  }
+
   message.textContent =
-    "Creator creation is disabled until the protected database API is ready.";
+    "Preview validated for " + preview.name +
+    ". Nothing was saved; the protected database API is not ready yet.";
+
+  closeCreatorModal();
 });
 
 verifyAdminSession();
 </script>
-
 </body>
 </html>
