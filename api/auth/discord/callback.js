@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+const SESSION_SECONDS = 30 * 24 * 60 * 60;
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -33,6 +35,8 @@ export default async function handler(req, res) {
       .filter(Boolean)
       .map(item => {
         const index = item.indexOf("=");
+        if (index < 0) return [item, ""];
+
         return [
           item.slice(0, index),
           decodeURIComponent(item.slice(index + 1))
@@ -42,18 +46,22 @@ export default async function handler(req, res) {
 
   const expectedState = cookies.discord_oauth_state;
 
-  res.setHeader("Set-Cookie",
-    "discord_oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/api/auth/discord; Max-Age=0"
-  );
-
   if (error || !code || !state || !expectedState) {
-    return res.status(400).send("Discord login was cancelled or failed.");
+    res.setHeader("Set-Cookie",
+      "discord_oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/api/auth/discord; Max-Age=0"
+    );
+    return res.status(400).send(
+      "Discord login was cancelled or failed. Please try again."
+    );
   }
 
   const a = Buffer.from(String(state));
   const b = Buffer.from(String(expectedState));
 
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+    res.setHeader("Set-Cookie",
+      "discord_oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/api/auth/discord; Max-Age=0"
+    );
     return res.status(400).send("Invalid login state. Please try again.");
   }
 
@@ -77,7 +85,9 @@ export default async function handler(req, res) {
     );
 
     if (!tokenResponse.ok) {
-      return res.status(401).send("Discord login failed. Please try again.");
+      return res.status(401).send(
+        "Discord login failed. Please try again."
+      );
     }
 
     const tokenData = await tokenResponse.json();
@@ -92,23 +102,23 @@ export default async function handler(req, res) {
     );
 
     if (!userResponse.ok) {
-      return res.status(401).send("Could not verify your Discord account.");
+      return res.status(401).send(
+        "Could not verify your Discord account."
+      );
     }
 
-  
-const user = await userResponse.json();
+    const user = await userResponse.json();
 
-const approvedIds = APPROVED_DISCORD_IDS
-  .split(",")
-  .map(id => id.trim())
-  .filter(Boolean);
+    const approvedIds = APPROVED_DISCORD_IDS
+      .split(",")
+      .map(id => id.trim())
+      .filter(Boolean);
 
-console.log("Approval diagnostic:", {
-  discordIdLast4: user.id.slice(-4),
-  approvedCount: approvedIds.length,
-  matched: approvedIds.includes(user.id),
-  approvedLast4: approvedIds.map(id => id.slice(-4))
-});
+    console.log("Approval diagnostic:", {
+      discordIdLast4: user.id.slice(-4),
+      approvedCount: approvedIds.length,
+      matched: approvedIds.includes(user.id)
+    });
 
     if (!approvedIds.includes(user.id)) {
       return res.status(403).send(
@@ -116,10 +126,14 @@ console.log("Approval diagnostic:", {
       );
     }
 
-    const expiresAt = Math.floor(Date.now() / 1000) + 12 * 60 * 60;
+    const expiresAt =
+      Math.floor(Date.now() / 1000) + SESSION_SECONDS;
 
     const payload = Buffer.from(
-      JSON.stringify({ discordUserId: user.id, expiresAt })
+      JSON.stringify({
+        discordUserId: user.id,
+        expiresAt
+      })
     ).toString("base64url");
 
     const signature = crypto
@@ -129,7 +143,7 @@ console.log("Approval diagnostic:", {
 
     res.setHeader("Set-Cookie", [
       "discord_oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/api/auth/discord; Max-Age=0",
-      `peacze_session=${payload}.${signature}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${12 * 60 * 60}`
+      `peacze_session=${payload}.${signature}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_SECONDS}`
     ]);
 
     return res.redirect(302, "/");
