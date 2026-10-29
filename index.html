@@ -1423,7 +1423,30 @@ async function chooseGame(id) {
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
+// Hidden CROWN NETWORK admin shortcut
+(() => {
+  const logo = document.querySelector("nav .brand");
+  if (!logo) return;
 
+  let clicks = 0;
+  let resetTimer;
+
+  logo.addEventListener("click", (event) => {
+    clicks++;
+
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      clicks = 0;
+    }, 3000);
+
+    if (clicks >= 5) {
+      event.preventDefault();
+      clicks = 0;
+      clearTimeout(resetTimer);
+      window.location.href = "/admin.html";
+    }
+  });
+})();
     updateCards();
     updateTikTokStatus();
     setInterval(updateTikTokStatus, 5000);
