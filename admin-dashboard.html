@@ -6,67 +6,45 @@
 <meta name="theme-color" content="#090909">
 <title>Admin Dashboard | CROWN NETWORK</title>
 <style>
-:root {
-  --bg:#090909; --panel:#111; --panel2:#171717;
-  --border:#29251b; --gold:#d8b45a; --gold2:#f1d78c;
-  --text:#f5f5f5; --muted:#929292;
-}
+:root{--bg:#090909;--panel:#111;--panel2:#171717;--border:#29251b;--gold:#d8b45a;--gold2:#f1d78c;--text:#f5f5f5;--muted:#929292}
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(ellipse at top,#261e11,transparent 45%),var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
 [hidden]{display:none!important}
 .topbar{min-height:72px;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--border);background:#0b0b0bf2;position:sticky;top:0;z-index:2}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:42px;height:42px;display:grid;place-items:center;border:1px solid #856a32;border-radius:12px;color:var(--gold2);background:#211a0e;font-size:22px}
-.brand strong{letter-spacing:2px;font-size:13px}
-.brand small{display:block;margin-top:5px;color:var(--muted);font-size:10px;letter-spacing:2px}
-.top-actions{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;display:grid;place-items:center;border:1px solid #856a32;border-radius:12px;color:var(--gold2);background:#211a0e;font-size:22px}
+.brand strong{letter-spacing:2px;font-size:13px}.brand small{display:block;margin-top:5px;color:var(--muted);font-size:10px;letter-spacing:2px}
+.top-actions,.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .status{color:var(--gold2);font-size:11px;border:1px solid var(--border);border-radius:20px;padding:9px 12px}
-button,input,select{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
 .btn{border:1px solid var(--border);background:#171717;color:#eee;border-radius:9px;padding:10px 13px;font-size:12px}
-.btn:hover:not(:disabled){border-color:#94783c}
-.btn.gold{background:linear-gradient(110deg,#b58c35,#f1d78c);color:#171107;border:0;font-weight:bold}
+.btn:hover:not(:disabled){border-color:#94783c}.btn.gold{background:linear-gradient(110deg,#b58c35,#f1d78c);color:#171107;border:0;font-weight:bold}
+.btn.danger{border-color:#60312b;color:#ffb0a7}.btn.small{padding:7px 9px}
 main{width:min(1450px,100%);margin:auto;padding:38px 5% 60px}
 .kicker{color:var(--gold);font-size:10px;font-weight:bold;letter-spacing:3px}
-h1{font-size:clamp(27px,4vw,38px);margin:10px 0}
-.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+h1{font-size:clamp(27px,4vw,38px);margin:10px 0}.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
 .header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:30px}
-.header-actions{display:flex;gap:10px;flex-wrap:wrap}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:25px}
 .stat{padding:22px;background:linear-gradient(145deg,#171717,#101010);border:1px solid var(--border);border-radius:14px;min-width:0}
-.stat-label{font-size:11px;color:var(--muted)}
-.stat-value{font-size:30px;font-weight:800;margin:15px 0 7px}
-.stat-note{font-size:11px;color:#a5a5a5}
-.gold-text{color:var(--gold2)}
+.stat-label{font-size:11px;color:var(--muted)}.stat-value{font-size:30px;font-weight:800;margin:15px 0 7px}.stat-note{font-size:11px;color:#a5a5a5}.gold-text{color:var(--gold2)}
 .section{background:#101010;border:1px solid var(--border);border-radius:15px;overflow:hidden}
 .section-head{padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--border)}
-.section-head h2{font-size:16px;margin:0 0 6px}
-.section-head p{font-size:11px;color:var(--muted);margin:0}
+.section-head h2{font-size:16px;margin:0 0 6px}.section-head p{font-size:11px;color:var(--muted);margin:0}
 .toolbar{padding:16px 22px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
 input,select{width:100%;background:#090909;color:#eee;border:1px solid #343027;border-radius:9px;padding:11px 12px;outline:none}
-input:focus,select:focus{border-color:var(--gold)}
-#search{flex:1;min-width:190px}
-.table-wrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:800px;text-align:left}
+input:focus,select:focus{border-color:var(--gold)}#search{flex:1;min-width:190px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:1050px;text-align:left}
 th{font-size:10px;color:#a6a6a6;font-weight:600;letter-spacing:1px;background:#141414}
-th,td{padding:17px 20px;border-bottom:1px solid #242424}
-td{font-size:12px;color:#ddd}
-tbody tr:hover{background:#171717}
+th,td{padding:15px 16px;border-bottom:1px solid #242424}td{font-size:12px;color:#ddd}tbody tr:hover{background:#171717}
 .empty{text-align:center;padding:45px 20px;color:var(--muted);line-height:1.8}
 .pill{display:inline-block;padding:6px 9px;border-radius:20px;border:1px solid #4b4027;color:var(--gold2);font-size:10px;white-space:nowrap}
-.muted{color:var(--muted)}
-.notice{margin-top:20px;padding:14px 16px;border:1px solid #4b4027;border-radius:10px;color:#cbbd9b;background:#1a160e;font-size:12px;line-height:1.7}
-#message{min-height:18px;color:#e7c779;font-size:12px;padding:0 22px 12px}
+.pill.good{border-color:#28583b;color:#9be2b0}.pill.bad{border-color:#69352d;color:#ffb0a7}.pill.soon{border-color:#7b632b;color:#f1d78c}
+.muted{color:var(--muted)}.notice{margin-top:20px;padding:14px 16px;border:1px solid #4b4027;border-radius:10px;color:#cbbd9b;background:#1a160e;font-size:12px;line-height:1.7}
+#message{min-height:18px;color:#e7c779;font-size:12px;padding:12px 22px}
 .modal-backdrop{position:fixed;inset:0;background:#000c;z-index:5;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto}
 .modal{width:min(620px,100%);background:#111;border:1px solid #4b4027;border-radius:16px;padding:24px;box-shadow:0 20px 80px #000}
-.modal h2{margin:0 0 8px;font-size:22px}
-.modal-intro{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:20px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.field{display:flex;flex-direction:column;gap:7px;min-width:0}
-.field label{font-size:11px;color:#cbbd9b}
-.form-warning{margin-top:18px;padding:12px;border:1px solid #4b4027;border-radius:9px;color:#cbbd9b;font-size:11px;line-height:1.7}
-.modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
+.modal h2{margin:0 0 8px;font-size:22px}.modal-intro{color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:11px;color:#cbbd9b}.modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
 @media(max-width:850px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.header{align-items:flex-start;flex-direction:column}}
 @media(max-width:520px){.topbar{padding:13px 4%}.status{display:none}main{padding:28px 4% 40px}.stats{gap:9px}.stat{padding:15px}.stat-value{font-size:25px}.section-head{padding:17px}.toolbar{padding:13px}.header-actions{width:100%}.header-actions button{flex:1}.form-grid{grid-template-columns:1fr}.modal{padding:19px}}
 </style>
@@ -97,16 +75,16 @@ tbody tr:hover{background:#171717}
   </section>
 
   <section class="stats">
-    <article class="stat"><div class="stat-label">TOTAL CREATORS</div><div class="stat-value" id="total">—</div><div class="stat-note">Creator records</div></article>
-    <article class="stat"><div class="stat-label">ACTIVE ACCESS</div><div class="stat-value gold-text" id="active">—</div><div class="stat-note">Active subscriptions</div></article>
+    <article class="stat"><div class="stat-label">TOTAL CREATORS</div><div class="stat-value" id="total">—</div><div class="stat-note">Saved creator records</div></article>
+    <article class="stat"><div class="stat-label">ACTIVE ACCESS</div><div class="stat-value gold-text" id="active">—</div><div class="stat-note">Currently eligible by dates/status</div></article>
     <article class="stat"><div class="stat-label">EXPIRING SOON</div><div class="stat-value" id="expiring">—</div><div class="stat-note">Within seven days</div></article>
     <article class="stat"><div class="stat-label">REVOKED / EXPIRED</div><div class="stat-value" id="inactive">—</div><div class="stat-note">Inactive access</div></article>
   </section>
 
   <section class="section">
     <div class="section-head">
-      <div><h2>Creator Management</h2><p>Search and review creator records.</p></div>
-      <span class="pill" id="databaseStatus">DATABASE NOT CONNECTED</span>
+      <div><h2>Creator Management</h2><p>Records loaded from the creator database.</p></div>
+      <span class="pill" id="databaseStatus">CONNECTING…</span>
     </div>
     <div class="toolbar">
       <input id="search" type="search" placeholder="Search name, Discord ID or TikTok username" aria-label="Search creators">
@@ -115,25 +93,26 @@ tbody tr:hover{background:#171717}
         <option value="active">Active</option>
         <option value="expiring">Expiring soon</option>
         <option value="inactive">Expired / revoked</option>
+        <option value="scheduled">Not started</option>
       </select>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>CREATOR</th><th>DISCORD ID</th><th>TIKTOK</th><th>PLAN</th><th>EXPIRY</th><th>STATUS</th></tr></thead>
+        <thead><tr><th>CREATOR</th><th>DISCORD ID</th><th>TIKTOK</th><th>PLAN</th><th>START</th><th>EXPIRY</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
         <tbody id="creatorRows"></tbody>
       </table>
       <div class="empty" id="empty">
         <div style="font-size:28px;margin-bottom:12px;color:#d8b45a">♛</div>
-        <strong>No creator records loaded</strong><br>
-        This preview does not read or modify your real creator database.
+        <strong>No creator records found</strong><br>
+        Try refreshing or changing your search/filter.
       </div>
     </div>
     <p id="message" role="status" aria-live="polite"></p>
   </section>
 
   <div class="notice">
-    <strong>Preview mode:</strong> creator management is not connected to PostgreSQL yet.
-    The form below does not save or change real creator access.
+    <strong>Access control:</strong> this dashboard sends changes to the protected API.
+    Subscription enforcement in daily verification and Roblox session creation is a separate required step.
   </div>
 </main>
 
@@ -144,25 +123,24 @@ tbody tr:hover{background:#171717}
 <div class="modal-backdrop" id="creatorModal" hidden>
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h2 id="modalTitle">Add creator</h2>
-    <p class="modal-intro">Enter the creator details. This form is a preview and will not create a database record yet.</p>
-
+    <p class="modal-intro">Create a creator record in the database. A Discord ID can only be registered once.</p>
     <form id="creatorForm">
       <div class="form-grid">
         <div class="field">
           <label for="creatorName">Creator display name *</label>
-          <input id="creatorName" name="creatorName" maxlength="100" required autocomplete="off" placeholder="Creator name">
+          <input id="creatorName" maxlength="100" required autocomplete="off" placeholder="Creator name">
         </div>
         <div class="field">
           <label for="discordId">Discord user ID *</label>
-          <input id="discordId" name="discordId" maxlength="25" required inputmode="numeric" pattern="[0-9]{17,20}" placeholder="Discord ID">
+          <input id="discordId" maxlength="20" required inputmode="numeric" pattern="[0-9]{17,20}" placeholder="Discord ID">
         </div>
         <div class="field">
           <label for="tiktokUsername">TikTok username *</label>
-          <input id="tiktokUsername" name="tiktokUsername" maxlength="24" required pattern="@?[A-Za-z0-9._]+" placeholder="@username">
+          <input id="tiktokUsername" maxlength="25" required pattern="@?[A-Za-z0-9._]+" placeholder="@username">
         </div>
         <div class="field">
           <label for="plan">Plan *</label>
-          <select id="plan" name="plan" required>
+          <select id="plan" required>
             <option value="FREE TRIAL">Free Trial</option>
             <option value="PROMOTER">Promoter</option>
             <option value="PREMIUM">Premium</option>
@@ -171,21 +149,16 @@ tbody tr:hover{background:#171717}
         </div>
         <div class="field">
           <label for="startDate">Start date *</label>
-          <input id="startDate" name="startDate" type="date" required>
+          <input id="startDate" type="date" required>
         </div>
         <div class="field">
           <label for="expiryDate">Expiry date *</label>
-          <input id="expiryDate" name="expiryDate" type="date" required>
+          <input id="expiryDate" type="date" required>
         </div>
       </div>
-
-      <div class="form-warning">
-        Preview only: clicking “Preview details” validates these fields but does not save them or grant access. Database saving will be enabled after the protected API is built.
-      </div>
-
       <div class="modal-actions">
         <button class="btn" id="cancelCreator" type="button">Cancel</button>
-        <button class="btn gold" type="submit">Preview details</button>
+        <button class="btn gold" id="saveCreator" type="submit">Save creator</button>
       </div>
     </form>
   </section>
@@ -199,7 +172,62 @@ const loading = document.getElementById("loading");
 const message = document.getElementById("message");
 const creatorModal = document.getElementById("creatorModal");
 const creatorForm = document.getElementById("creatorForm");
+const rows = document.getElementById("creatorRows");
+const empty = document.getElementById("empty");
+const databaseStatus = document.getElementById("databaseStatus");
+
+let creators = [];
+let loadingCreators = false;
 let sessionCheckRunning = false;
+
+function localDateString(date = new Date()) {
+  const adjusted = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return adjusted.toISOString().slice(0, 10);
+}
+
+function setMessage(text) {
+  message.textContent = text || "";
+}
+
+async function apiRequest(method, discordUserId, body) {
+  const url = new URL("/api/admin/creators", window.location.origin);
+
+  if (discordUserId) {
+    url.searchParams.set("discordUserId", discordUserId);
+  }
+
+  const options = {
+    method,
+    credentials: "same-origin",
+    cache: "no-store",
+    headers: { "Accept": "application/json" }
+  };
+
+  if (body !== undefined) {
+    options.headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(url, options);
+  let result;
+
+  try {
+    result = await response.json();
+  } catch {
+    throw new Error("The server returned an invalid response.");
+  }
+
+  if (response.status === 401) {
+    window.location.replace("/admin.html");
+    throw new Error("Administrator session expired. Please log in again.");
+  }
+
+  if (!response.ok) {
+    throw new Error(result.error || "The request failed.");
+  }
+
+  return result;
+}
 
 async function verifyAdminSession() {
   if (sessionCheckRunning) return false;
@@ -219,8 +247,8 @@ async function verifyAdminSession() {
       loading.hidden = true;
       return true;
     }
-  } catch (error) {
-    // Fail closed if the session endpoint cannot be reached.
+  } catch {
+    // Fail closed.
   } finally {
     sessionCheckRunning = false;
   }
@@ -232,10 +260,204 @@ async function verifyAdminSession() {
   return false;
 }
 
+function statusFor(creator) {
+  if (creator.status) return creator.status;
+
+  if (creator.accessStatus !== "active") return "revoked";
+
+  const today = localDateString();
+  if (creator.startsAt && creator.startsAt > today) return "scheduled";
+  if (creator.expiresOn && creator.expiresOn < today) return "expired";
+
+  return "active";
+}
+
+function isExpiring(creator) {
+  if (statusFor(creator) !== "active" || !creator.expiresOn) return false;
+
+  const today = localDateString();
+  const expiry = new Date(creator.expiresOn + "T00:00:00");
+  const current = new Date(today + "T00:00:00");
+  const days = Math.round((expiry - current) / 86400000);
+
+  return days >= 0 && days <= 7;
+}
+
+function statusPill(creator) {
+  const status = statusFor(creator);
+  const pill = document.createElement("span");
+  pill.className = "pill";
+
+  if (status === "active") {
+    pill.classList.add(isExpiring(creator) ? "soon" : "good");
+    pill.textContent = isExpiring(creator) ? "EXPIRING SOON" : "ACTIVE";
+  } else if (status === "scheduled") {
+    pill.classList.add("soon");
+    pill.textContent = "NOT STARTED";
+  } else if (status === "revoked") {
+    pill.classList.add("bad");
+    pill.textContent = "REVOKED";
+  } else {
+    pill.classList.add("bad");
+    pill.textContent = "EXPIRED";
+  }
+
+  return pill;
+}
+
+function addCell(row, text) {
+  const cell = document.createElement("td");
+  cell.textContent = text || "—";
+  row.appendChild(cell);
+  return cell;
+}
+
+function renderStats() {
+  document.getElementById("total").textContent = creators.length;
+  document.getElementById("active").textContent =
+    creators.filter(c => statusFor(c) === "active").length;
+  document.getElementById("expiring").textContent =
+    creators.filter(isExpiring).length;
+  document.getElementById("inactive").textContent =
+    creators.filter(c => ["expired", "revoked"].includes(statusFor(c))).length;
+}
+
+function renderCreators() {
+  const search = document.getElementById("search").value.trim().toLowerCase();
+  const filter = document.getElementById("filter").value;
+
+  const filtered = creators.filter(creator => {
+    const status = statusFor(creator);
+    const searchable = [
+      creator.creatorName,
+      creator.discordUserId,
+      creator.tiktokUsername,
+      creator.plan
+    ].join(" ").toLowerCase();
+
+    if (search && !searchable.includes(search)) return false;
+
+    if (filter === "active" && status !== "active") return false;
+    if (filter === "expiring" && !isExpiring(creator)) return false;
+    if (filter === "inactive" && !["expired", "revoked"].includes(status)) return false;
+    if (filter === "scheduled" && status !== "scheduled") return false;
+
+    return true;
+  });
+
+  rows.replaceChildren();
+
+  for (const creator of filtered) {
+    const row = document.createElement("tr");
+
+    addCell(row, creator.creatorName);
+    addCell(row, creator.discordUserId);
+    addCell(row, creator.tiktokUsername ? "@" + creator.tiktokUsername.replace(/^@/, "") : "—");
+    addCell(row, creator.plan);
+    addCell(row, creator.startsAt || "—");
+    addCell(row, creator.expiresOn || "—");
+
+    const statusCell = document.createElement("td");
+    statusCell.appendChild(statusPill(creator));
+    row.appendChild(statusCell);
+
+    const actionsCell = document.createElement("td");
+    const actionButton = document.createElement("button");
+    actionButton.type = "button";
+    actionButton.className = "btn small";
+
+    const currentlyRevoked = creator.accessStatus === "revoked";
+    actionButton.textContent = currentlyRevoked ? "Restore" : "Revoke";
+
+    if (!currentlyRevoked) actionButton.classList.add("danger");
+
+    actionButton.addEventListener("click", () => {
+      changeAccess(creator, currentlyRevoked ? "active" : "revoked", actionButton);
+    });
+
+    actionsCell.appendChild(actionButton);
+    row.appendChild(actionsCell);
+    rows.appendChild(row);
+  }
+
+  empty.hidden = filtered.length !== 0;
+  empty.querySelector("strong").textContent =
+    creators.length === 0 ? "No creator records saved yet" : "No matching creators";
+  empty.lastChild.textContent =
+    creators.length === 0
+      ? " Add your first creator to get started."
+      : " Try another search or filter.";
+
+  renderStats();
+}
+
+async function loadCreators() {
+  if (loadingCreators) return;
+  loadingCreators = true;
+
+  const refreshButton = document.getElementById("refreshButton");
+  refreshButton.disabled = true;
+  databaseStatus.textContent = "CONNECTING…";
+  databaseStatus.className = "pill";
+  setMessage("Loading creator records…");
+
+  try {
+    const result = await apiRequest("GET");
+    if (!Array.isArray(result.creators)) {
+      throw new Error("The creator API returned an unexpected response.");
+    }
+
+    creators = result.creators;
+    databaseStatus.textContent = "DATABASE CONNECTED";
+    databaseStatus.className = "pill good";
+    renderCreators();
+    setMessage("Loaded " + creators.length + " creator record(s).");
+  } catch (error) {
+    databaseStatus.textContent = "CONNECTION ERROR";
+    databaseStatus.className = "pill bad";
+    setMessage(error.message || "Could not load creator records.");
+  } finally {
+    loadingCreators = false;
+    refreshButton.disabled = false;
+  }
+}
+
+async function changeAccess(creator, accessStatus, button) {
+  const action = accessStatus === "revoked" ? "revoke access from" : "restore access for";
+  const name = creator.creatorName || creator.discordUserId;
+
+  if (!window.confirm("Are you sure you want to " + action + " " + name + "?")) return;
+
+  button.disabled = true;
+  setMessage("Updating access…");
+
+  try {
+    await apiRequest("PATCH", creator.discordUserId, { accessStatus });
+    setMessage("Creator access updated.");
+    await loadCreators();
+  } catch (error) {
+    setMessage(error.message || "Could not update access.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function openCreatorModal() {
+  creatorForm.reset();
+  document.getElementById("startDate").value = localDateString();
+  document.getElementById("expiryDate").value = localDateString();
+  creatorModal.hidden = false;
+  document.getElementById("creatorName").focus();
+}
+
+function closeCreatorModal() {
+  creatorModal.hidden = true;
+}
+
 document.getElementById("logoutButton").addEventListener("click", async () => {
   const button = document.getElementById("logoutButton");
   button.disabled = true;
-  message.textContent = "Signing out...";
+  setMessage("Signing out…");
 
   try {
     const response = await fetch("/api/admin/logout", {
@@ -245,46 +467,25 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
     });
 
     const result = await response.json();
-
     if (!response.ok || result.success !== true) {
       throw new Error(result.error || "Logout failed.");
     }
 
     window.location.replace("/admin.html");
   } catch (error) {
-    message.textContent = error.message || "Could not sign out. Please try again.";
+    setMessage(error.message || "Could not sign out.");
     button.disabled = false;
   }
 });
 
 document.getElementById("refreshButton").addEventListener("click", async () => {
-  message.textContent = "Checking administrator session...";
-  const valid = await verifyAdminSession();
-
-  if (valid) {
-    message.textContent = "Session verified. Creator database is not connected yet.";
-  }
+  if (await verifyAdminSession()) await loadCreators();
 });
-
-function openCreatorModal() {
-  creatorForm.reset();
-
-  const today = new Date();
-  const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
-    .toISOString().slice(0, 10);
-
-  document.getElementById("startDate").value = localToday;
-  document.getElementById("expiryDate").value = localToday;
-  creatorModal.hidden = false;
-  document.getElementById("creatorName").focus();
-}
-
-function closeCreatorModal() {
-  creatorModal.hidden = true;
-}
 
 document.getElementById("addButton").addEventListener("click", openCreatorModal);
 document.getElementById("cancelCreator").addEventListener("click", closeCreatorModal);
+document.getElementById("search").addEventListener("input", renderCreators);
+document.getElementById("filter").addEventListener("change", renderCreators);
 
 creatorModal.addEventListener("click", event => {
   if (event.target === creatorModal) closeCreatorModal();
@@ -303,32 +504,42 @@ creatorForm.addEventListener("submit", async event => {
   const expiryDate = document.getElementById("expiryDate").value;
 
   if (expiryDate < startDate) {
-    message.textContent = "Expiry date cannot be before the start date.";
+    setMessage("Expiry date cannot be before the start date.");
     return;
   }
 
-  const preview = {
-    name: document.getElementById("creatorName").value.trim(),
-    discordId: document.getElementById("discordId").value.trim(),
+  const creator = {
+    creatorName: document.getElementById("creatorName").value.trim(),
+    discordUserId: document.getElementById("discordId").value.trim(),
     tiktokUsername: document.getElementById("tiktokUsername").value.trim().replace(/^@/, ""),
     plan: document.getElementById("plan").value,
-    startDate,
-    expiryDate
+    startsAt: startDate,
+    expiresOn: expiryDate
   };
 
-  if (!preview.name || !preview.discordId || !preview.tiktokUsername) {
-    message.textContent = "Please complete every required field.";
-    return;
+  const saveButton = document.getElementById("saveCreator");
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving…";
+
+  try {
+    await apiRequest("POST", null, creator);
+    closeCreatorModal();
+    creatorForm.reset();
+    setMessage("Creator saved successfully.");
+    await loadCreators();
+  } catch (error) {
+    setMessage(error.message || "Could not save the creator.");
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = "Save creator";
   }
-
-  message.textContent =
-    "Preview validated for " + preview.name +
-    ". Nothing was saved; the protected database API is not ready yet.";
-
-  closeCreatorModal();
 });
 
-verifyAdminSession();
+(async function init() {
+  if (await verifyAdminSession()) {
+    await loadCreators();
+  }
+})();
 </script>
 </body>
 </html>
