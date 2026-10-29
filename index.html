@@ -1423,9 +1423,9 @@ async function chooseGame(id) {
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
-// Hidden CROWN NETWORK admin shortcut
+// SECRET CROWN NETWORK ADMIN ACCESS
 (() => {
-  const logo = document.querySelector("nav .brand");
+  const logo = document.querySelector("header .brand");
   if (!logo) return;
 
   let clicks = 0;
@@ -1435,14 +1435,13 @@ async function chooseGame(id) {
     clicks++;
 
     clearTimeout(resetTimer);
+
     resetTimer = setTimeout(() => {
       clicks = 0;
     }, 3000);
 
     if (clicks >= 5) {
       event.preventDefault();
-      clicks = 0;
-      clearTimeout(resetTimer);
       window.location.href = "/admin.html";
     }
   });
