@@ -744,345 +744,419 @@ nav {
     </div>
   </footer>
 
-  <script>
-    "use strict";
 
-    const loginPanel = document.getElementById("signed-out");
-    const profileLayout = document.getElementById("profile-layout");
+<script>
+  "use strict";
 
-    const discordName = document.getElementById("discord-name");
-    const discordDescription = document.getElementById("discord-description");
-    const discordStatus = document.getElementById("discord-status");
-    const discordDot = document.getElementById("discord-dot");
-    const discordCardStatus = document.getElementById("discord-card-status");
-    const discordCardDot = document.getElementById("discord-card-dot");
-    const discordAccountDetail = document.getElementById("discord-account-detail");
-    const discordRelogin = document.getElementById("discord-relogin");
+  const loginPanel = document.getElementById("signed-out");
+  const profileLayout = document.getElementById("profile-layout");
 
-    const tiktokForm = document.getElementById("tiktok-form");
-    const usernameInput = document.getElementById("tiktok-username");
-    const accessCodeInput = document.getElementById("daily-access-code");
-    const connectButton = document.getElementById("connect-button");
-    const disconnectButton = document.getElementById("disconnect-button");
-    const tiktokState = document.getElementById("tiktok-state");
-    const tiktokDot = document.getElementById("tiktok-dot");
-    const tiktokCurrent = document.getElementById("tiktok-current");
-    const tiktokMessage = document.getElementById("tiktok-message");
-    const tiktokError = document.getElementById("tiktok-error");
+  const discordName = document.getElementById("discord-name");
+  const discordDescription = document.getElementById("discord-description");
+  const discordStatus = document.getElementById("discord-status");
+  const discordDot = document.getElementById("discord-dot");
+  const discordCardStatus = document.getElementById("discord-card-status");
+  const discordCardDot = document.getElementById("discord-card-dot");
+  const discordAccountDetail = document.getElementById("discord-account-detail");
+  const discordRelogin = document.getElementById("discord-relogin");
 
-    let signedIn = false;
-    let requestBusy = false;
+  const tiktokForm = document.getElementById("tiktok-form");
+  const usernameInput = document.getElementById("tiktok-username");
+  const accessCodeInput = document.getElementById("daily-access-code");
+  const connectButton = document.getElementById("connect-button");
+  const disconnectButton = document.getElementById("disconnect-button");
+  const tiktokState = document.getElementById("tiktok-state");
+  const tiktokDot = document.getElementById("tiktok-dot");
+  const tiktokCurrent = document.getElementById("tiktok-current");
+  const tiktokMessage = document.getElementById("tiktok-message");
+  const tiktokError = document.getElementById("tiktok-error");
 
-    function setDot(element, online) {
-      element.classList.toggle("online", online === true);
-      element.classList.toggle("offline", online === false);
-    }
+  let signedIn = false;
+  let requestBusy = false;
+  let statusTimer = null;
+  let statusRequestInProgress = false;
 
-    function showTikTokMessage(message, isError = false) {
-      tiktokMessage.textContent = isError ? "" : message;
-      tiktokError.textContent = isError ? message : "";
-      tiktokError.hidden = !isError;
-    }
+  function setDot(element, state) {
+    element.classList.toggle("online", state === true);
+    element.classList.toggle("offline", state === false);
+  }
 
-    function setSignedInState(isSignedIn, data = {}) {
-      signedIn = isSignedIn;
-      loginPanel.hidden = isSignedIn;
-      profileLayout.hidden = !isSignedIn;
+  function showTikTokMessage(message, isError = false) {
+    tiktokMessage.textContent = isError ? "" : message;
+    tiktokError.textContent = isError ? message : "";
+    tiktokError.hidden = !isError;
+  }
 
-      const name =
-        data.discordUser?.global_name ||
-        data.discordUser?.username ||
-        data.user?.global_name ||
-        data.user?.username ||
-        data.discord?.username ||
-        data.username ||
-        "";
+  function startStatusPolling() {
+    stopStatusPolling();
 
-      if (isSignedIn) {
-        discordName.textContent = name || "Discord account";
-        discordDescription.textContent = name
-          ? "Signed in with Discord."
-          : "Your Discord session has been accepted by the server.";
-
-        discordStatus.textContent = "SIGNED IN";
-        discordCardStatus.textContent = "CONNECTED";
-        discordAccountDetail.textContent = name
-          ? `Signed in as ${name}.`
-          : "Your Discord session is active.";
-
-        setDot(discordDot, true);
-        setDot(discordCardDot, true);
-        discordRelogin.hidden = true;
-      } else {
-        discordStatus.textContent = "SIGNED OUT";
-        discordCardStatus.textContent = "NOT CONNECTED";
-        setDot(discordDot, false);
-        setDot(discordCardDot, false);
-        discordRelogin.hidden = false;
+    statusTimer = setInterval(() => {
+      if (signedIn && !statusRequestInProgress) {
+        updateTikTokStatus();
       }
+    }, 2000);
+  }
+
+  function stopStatusPolling() {
+    if (statusTimer !== null) {
+      clearInterval(statusTimer);
+      statusTimer = null;
     }
+  }
 
-    async function readJson(response) {
-      return response.json().catch(() => ({}));
+  function setSignedInState(isSignedIn, data = {}) {
+    signedIn = isSignedIn;
+    loginPanel.hidden = isSignedIn;
+    profileLayout.hidden = !isSignedIn;
+
+    const name =
+      data.discordUser?.global_name ||
+      data.discordUser?.username ||
+      data.user?.global_name ||
+      data.user?.username ||
+      data.discord?.username ||
+      data.username ||
+      "";
+
+    if (isSignedIn) {
+      discordName.textContent = name || "Discord account";
+      discordDescription.textContent = name
+        ? "Signed in with Discord."
+        : "Your Discord session has been accepted by the server.";
+
+      discordStatus.textContent = "SIGNED IN";
+      discordCardStatus.textContent = "CONNECTED";
+      discordAccountDetail.textContent = name
+        ? `Signed in as ${name}.`
+        : "Your Discord session is active.";
+
+      setDot(discordDot, true);
+      setDot(discordCardDot, true);
+      discordRelogin.hidden = true;
+    } else {
+      stopStatusPolling();
+
+      discordStatus.textContent = "SIGNED OUT";
+      discordCardStatus.textContent = "NOT CONNECTED";
+      setDot(discordDot, false);
+      setDot(discordCardDot, false);
+      discordRelogin.hidden = false;
     }
+  }
 
-    async function updateTikTokStatus() {
-      if (!signedIn) return;
+  async function readJson(response) {
+    return response.json().catch(() => ({}));
+  }
 
-      tiktokState.textContent = "CHECKING";
-      tiktokCurrent.textContent = "Checking your TikTok connection...";
-      setDot(tiktokDot, null);
+  async function updateTikTokStatus() {
+    if (!signedIn || statusRequestInProgress) return;
 
-      try {
-        const response = await fetch("/api/tiktok/status", {
-          method: "GET",
-          credentials: "same-origin",
-          headers: { "Accept": "application/json" }
-        });
+    statusRequestInProgress = true;
 
-        const data = await readJson(response);
+    try {
+      const response = await fetch("/api/tiktok/status", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
 
-        if (response.status === 401 || response.status === 403) {
-          setSignedInState(false);
-          return;
-        }
+      const data = await readJson(response);
 
-        if (!response.ok) {
-          throw new Error(
-            data.message || data.error || `Request failed (${response.status})`
-          );
-        }
-
-        const status = String(data.status || "unknown").toLowerCase();
-        const username = String(data.username || "").replace(/^@+/, "");
-        const message = data.message || "";
-
-        tiktokState.textContent = status.replace(/[_-]/g, " ").toUpperCase();
-
-        const isConnected = status === "connected";
-        const isDisconnected = status === "disconnected";
-
-        setDot(tiktokDot, isConnected ? true : isDisconnected ? false : null);
-
-        if (username) {
-          usernameInput.value = username;
-          tiktokCurrent.textContent = `TikTok username: @${username}. ${message}`;
-        } else {
-          tiktokCurrent.textContent = message || (
-            isDisconnected
-              ? "No TikTok account is currently connected."
-              : "The server has not provided a connected username."
-          );
-        }
-
-        if (data.error) {
-          showTikTokMessage(data.error, true);
-        } else {
-          showTikTokMessage("");
-        }
-      } catch (error) {
-        tiktokState.textContent = "UNAVAILABLE";
-        setDot(tiktokDot, false);
-        tiktokCurrent.textContent = "Could not retrieve the TikTok connection status.";
-        showTikTokMessage(error.message || "Status check failed.", true);
-      }
-    }
-
-    async function checkAccount() {
-      const params = new URLSearchParams(window.location.search);
-
-      if (params.has("error")) {
-        document.getElementById("login-message").textContent =
-          "Discord sign-in was not completed. Please try again.";
-      }
-
-      try {
-        // The existing status endpoint is used to check whether the
-        // server accepts this browser's session.
-        const response = await fetch("/api/tiktok/status", {
-          method: "GET",
-          credentials: "same-origin",
-          headers: { "Accept": "application/json" }
-        });
-
-        const data = await readJson(response);
-
-        if (response.status === 401 || response.status === 403) {
-          setSignedInState(false);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(
-            data.message || data.error || `Request failed (${response.status})`
-          );
-        }
-
-        setSignedInState(true, data);
-        await updateTikTokStatus();
-      } catch (error) {
-        // Do not show private controls if the server cannot confirm the session.
+      if (response.status === 401 || response.status === 403) {
         setSignedInState(false);
-        document.getElementById("login-message").textContent =
-          "Could not verify your login with the server. Please sign in or try again.";
+        return;
       }
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || data.error || `Request failed (${response.status})`
+        );
+      }
+
+      const status = String(data.status || "unknown").toLowerCase();
+      const username = String(data.username || "").replace(/^@+/, "");
+      const message = String(data.message || "");
+
+      const isConnected = status === "connected";
+      const isDisconnected = status === "disconnected";
+      const isConnecting = status === "connecting";
+
+      tiktokState.textContent = status
+        .replace(/[_-]/g, " ")
+        .toUpperCase();
+
+      setDot(
+        tiktokDot,
+        isConnected ? true : isDisconnected ? false : null
+      );
+
+      if (username) {
+        if (document.activeElement !== usernameInput) {
+          usernameInput.value = username;
+        }
+
+        tiktokCurrent.textContent =
+          `TikTok username: @${username}. ${message}`.trim();
+      } else {
+        tiktokCurrent.textContent = message || (
+          isConnecting
+            ? "Waiting for TikTok to finish connecting..."
+            : isDisconnected
+              ? "No TikTok account is currently connected."
+              : "Waiting for the server to report your connection status."
+        );
+      }
+
+      if (isConnected) {
+        showTikTokMessage(
+          message || `Successfully connected to @${username || "TikTok"}.`
+        );
+      } else if (data.error) {
+        showTikTokMessage(data.error, true);
+      } else if (isDisconnected && !requestBusy) {
+        showTikTokMessage(message || "TikTok is disconnected.");
+      } else if (!isConnecting && !requestBusy) {
+        showTikTokMessage(message);
+      }
+    } catch (error) {
+      tiktokState.textContent = "UNAVAILABLE";
+      setDot(tiktokDot, false);
+      tiktokCurrent.textContent =
+        "Could not retrieve the TikTok connection status.";
+
+      if (!requestBusy) {
+        showTikTokMessage(
+          error.message || "Status check failed.",
+          true
+        );
+      }
+    } finally {
+      statusRequestInProgress = false;
+    }
+  }
+
+  async function checkAccount() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("error")) {
+      document.getElementById("login-message").textContent =
+        "Discord sign-in was not completed. Please try again.";
     }
 
-    tiktokForm.addEventListener("submit", async event => {
-      event.preventDefault();
+    try {
+      const response = await fetch("/api/tiktok/status", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
 
-      if (!signedIn || requestBusy) return;
+      const data = await readJson(response);
 
-      const username = usernameInput.value.trim().replace(/^@+/, "");
-      const code = accessCodeInput.value.trim().toUpperCase();
-
-      if (!/^[A-Za-z0-9._]{2,24}$/.test(username)) {
-        showTikTokMessage("Enter a valid TikTok username.", true);
-        usernameInput.focus();
+      if (response.status === 401 || response.status === 403) {
+        setSignedInState(false);
         return;
       }
 
-      if (!code) {
-        showTikTokMessage("Enter your daily Discord access code.", true);
-        accessCodeInput.focus();
-        return;
+      if (!response.ok) {
+        throw new Error(
+          data.message || data.error || `Request failed (${response.status})`
+        );
       }
 
-      requestBusy = true;
-      connectButton.disabled = true;
-      disconnectButton.disabled = true;
-      tiktokState.textContent = "CONNECTING";
-      tiktokCurrent.textContent = `Requesting connection to @${username}...`;
-      showTikTokMessage("Verifying your account and access code...");
-
-      try {
-        const response = await fetch("/api/tiktok/connect", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({ username, code })
-        });
-
-        const data = await readJson(response);
-
-        if (response.status === 401 || response.status === 403) {
-          setSignedInState(false);
-          throw new Error("Your login or access code was rejected. Sign in again or check today's code.");
-        }
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || data.message || `Request failed (${response.status})`
-          );
-        }
-
-        showTikTokMessage(data.message || "TikTok connection request submitted.");
-        await updateTikTokStatus();
-      } catch (error) {
-        showTikTokMessage(error.message || "Could not connect TikTok.", true);
-      } finally {
-        requestBusy = false;
-        connectButton.disabled = false;
-        disconnectButton.disabled = false;
-      }
-    });
-
-    disconnectButton.addEventListener("click", async () => {
-      if (!signedIn || requestBusy) return;
-
-      if (!window.confirm("Disconnect the current TikTok LIVE connection?")) {
-        return;
-      }
-
-      requestBusy = true;
-      disconnectButton.disabled = true;
-      connectButton.disabled = true;
-      tiktokState.textContent = "DISCONNECTING";
-      showTikTokMessage("Disconnecting TikTok...");
-
-      try {
-        const response = await fetch("/api/tiktok/disconnect", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Accept": "application/json" }
-        });
-
-        const data = await readJson(response);
-
-        if (response.status === 401 || response.status === 403) {
-          setSignedInState(false);
-          throw new Error("Your session is no longer authorized. Please sign in again.");
-        }
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || data.message || `Request failed (${response.status})`
-          );
-        }
-
-        showTikTokMessage(data.message || "TikTok disconnected.", false);
-        await updateTikTokStatus();
-      } catch (error) {
-        showTikTokMessage(error.message || "Could not disconnect TikTok.", true);
-      } finally {
-        requestBusy = false;
-        disconnectButton.disabled = false;
-        connectButton.disabled = false;
-      }
-    });
-
-    document.getElementById("refresh-status").addEventListener("click", async () => {
-      if (!signedIn) return;
+      setSignedInState(true, data);
       await updateTikTokStatus();
-      document.getElementById("account-message").textContent =
-        "Connection status refreshed.";
-    });
+      startStatusPolling();
+    } catch (error) {
+      setSignedInState(false);
+      document.getElementById("login-message").textContent =
+        "Could not verify your login with the server. Please sign in or try again.";
+    }
+  }
 
-    document.getElementById("logout-button").addEventListener("click", async () => {
-      const button = document.getElementById("logout-button");
-      button.disabled = true;
-      document.getElementById("account-message").textContent = "Signing out...";
+  tiktokForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!signedIn || requestBusy) return;
+
+    const username = usernameInput.value.trim().replace(/^@+/, "");
+    const code = accessCodeInput.value.trim().toUpperCase();
+
+    if (!/^[A-Za-z0-9._]{2,24}$/.test(username)) {
+      showTikTokMessage("Enter a valid TikTok username.", true);
+      usernameInput.focus();
+      return;
+    }
+
+    if (!code) {
+      showTikTokMessage("Enter your daily Discord access code.", true);
+      accessCodeInput.focus();
+      return;
+    }
+
+    requestBusy = true;
+    connectButton.disabled = true;
+    disconnectButton.disabled = true;
+
+    tiktokState.textContent = "CONNECTING";
+    setDot(tiktokDot, null);
+    tiktokCurrent.textContent = `Requesting connection to @${username}...`;
+    showTikTokMessage("Verifying your account and access code...");
+
+    try {
+      const response = await fetch("/api/tiktok/connect", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ username, code })
+      });
+
+      const data = await readJson(response);
+
+      if (response.status === 401 || response.status === 403) {
+        setSignedInState(false);
+        throw new Error(
+          "Your login or access code was rejected. Sign in again or check today's code."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.message || `Request failed (${response.status})`
+        );
+      }
+
+      showTikTokMessage(
+        data.message || "Connection requested. Waiting for TikTok..."
+      );
+
+      await updateTikTokStatus();
+    } catch (error) {
+      showTikTokMessage(
+        error.message || "Could not connect TikTok.",
+        true
+      );
+    } finally {
+      requestBusy = false;
+      connectButton.disabled = false;
+      disconnectButton.disabled = false;
+    }
+  });
+
+  disconnectButton.addEventListener("click", async () => {
+    if (!signedIn || requestBusy) return;
+
+    if (!window.confirm("Disconnect the current TikTok LIVE connection?")) {
+      return;
+    }
+
+    requestBusy = true;
+    disconnectButton.disabled = true;
+    connectButton.disabled = true;
+
+    tiktokState.textContent = "DISCONNECTING";
+    showTikTokMessage("Disconnecting TikTok...");
+
+    try {
+      const response = await fetch("/api/tiktok/disconnect", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Accept": "application/json" }
+      });
+
+      const data = await readJson(response);
+
+      if (response.status === 401 || response.status === 403) {
+        setSignedInState(false);
+        throw new Error(
+          "Your session is no longer authorized. Please sign in again."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.message || `Request failed (${response.status})`
+        );
+      }
+
+      showTikTokMessage(data.message || "TikTok disconnected.");
+      await updateTikTokStatus();
+    } catch (error) {
+      showTikTokMessage(
+        error.message || "Could not disconnect TikTok.",
+        true
+      );
+    } finally {
+      requestBusy = false;
+      disconnectButton.disabled = false;
+      connectButton.disabled = false;
+    }
+  });
+
+  document.getElementById("refresh-status").addEventListener("click", async () => {
+    if (!signedIn) return;
+
+    await updateTikTokStatus();
+
+    document.getElementById("account-message").textContent =
+      "Connection status refreshed.";
+  });
+
+  document.getElementById("logout-button").addEventListener("click", async () => {
+    const button = document.getElementById("logout-button");
+
+    button.disabled = true;
+    document.getElementById("account-message").textContent = "Signing out...";
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Accept": "application/json" }
+      });
+
+      if (!response.ok) {
+        const data = await readJson(response);
+        throw new Error(
+          data.message || data.error || `Logout failed (${response.status})`
+        );
+      }
+
+      stopStatusPolling();
+      window.location.replace("/profile.html");
+    } catch (error) {
+      document.getElementById("account-message").textContent =
+        error.message || "Could not log out. Please try again.";
+
+      button.disabled = false;
+    }
+  });
+
+  accessCodeInput.addEventListener("input", () => {
+    const start = accessCodeInput.selectionStart;
+    const end = accessCodeInput.selectionEnd;
+    const uppercase = accessCodeInput.value.toUpperCase();
+
+    if (accessCodeInput.value !== uppercase) {
+      accessCodeInput.value = uppercase;
 
       try {
-        const response = await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Accept": "application/json" }
-        });
+        accessCodeInput.setSelectionRange(start, end);
+      } catch (_) {}
+    }
+  });
 
-        if (!response.ok) {
-          const data = await readJson(response);
-          throw new Error(
-            data.message || data.error || `Logout failed (${response.status})`
-          );
-        }
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && signedIn) {
+      updateTikTokStatus();
+    }
+  });
 
-        window.location.replace("/profile.html");
-      } catch (error) {
-        document.getElementById("account-message").textContent =
-          error.message || "Could not log out. Please try again.";
-        button.disabled = false;
-      }
-    });
-
-    accessCodeInput.addEventListener("input", () => {
-      const start = accessCodeInput.selectionStart;
-      const end = accessCodeInput.selectionEnd;
-      const uppercase = accessCodeInput.value.toUpperCase();
-
-      if (accessCodeInput.value !== uppercase) {
-        accessCodeInput.value = uppercase;
-
-        try {
-          accessCodeInput.setSelectionRange(start, end);
-        } catch (_) {}
-      }
-    });
-
-    checkAccount();
-  </script>
+  checkAccount();
+</script>
 </body>
 </html>
