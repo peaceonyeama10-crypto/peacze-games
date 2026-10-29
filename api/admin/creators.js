@@ -1,5 +1,7 @@
 const crypto = require("crypto");
 
+const SESSION_SECONDS = 8 * 60 * 60;
+
 function getCookie(req, name) {
   const cookies = (req.headers.cookie || "").split(";");
 
@@ -15,6 +17,9 @@ function getCookie(req, name) {
   return null;
 }
 
+// Must stay identical to the check in api/admin/session.js:
+// cookie format is issuedAt.nonce.signature, where
+// signature = HMAC-SHA256(ADMIN_PASSCODE, "issuedAt.nonce") in hex.
 function verifyAdminSession(req) {
   const passcode = process.env.ADMIN_PASSCODE;
   if (!passcode) return false;
@@ -23,19 +28,34 @@ function verifyAdminSession(req) {
   if (!token) return false;
 
   const parts = token.split(".");
-  if (parts.length !== 2) return false;
+  if (parts.length !== 3) return false;
 
-  const [nonce, signature] = parts;
+  const [issuedAtText, nonce, suppliedSignature] = parts;
+  const issuedAt = Number(issuedAtText);
 
-  if (!/^[a-f0-9]{64}$/i.test(nonce)) return false;
-  if (!/^[a-f0-9]{64}$/i.test(signature)) return false;
+  if (
+    !Number.isSafeInteger(issuedAt) ||
+    !/^[a-f0-9]{48}$/.test(nonce) ||
+    !/^[a-f0-9]{64}$/.test(suppliedSignature)
+  ) {
+    return false;
+  }
+
+  const now = Date.now();
+
+  if (
+    issuedAt > now + 30000 ||
+    now - issuedAt >= SESSION_SECONDS * 1000
+  ) {
+    return false;
+  }
 
   const expected = crypto
     .createHmac("sha256", passcode)
-    .update(nonce)
+    .update(`${issuedAtText}.${nonce}`)
     .digest("hex");
 
-  const actualBuffer = Buffer.from(signature, "hex");
+  const actualBuffer = Buffer.from(suppliedSignature, "hex");
   const expectedBuffer = Buffer.from(expected, "hex");
 
   if (
