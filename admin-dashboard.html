@@ -222,10 +222,14 @@ async function apiRequest(method, discordUserId, body) {
     throw new Error("Administrator session expired. Please log in again.");
   }
 
-  if (!response.ok) {
-    throw new Error(result.error || "The request failed.");
-  }
+if (!response.ok) {
+  const details =
+    typeof result.error === "string"
+      ? result.error
+      : JSON.stringify(result.error || result, null, 2);
 
+  throw new Error(details);
+}
   return result;
 }
 
@@ -415,7 +419,7 @@ async function loadCreators() {
   } catch (error) {
     databaseStatus.textContent = "CONNECTION ERROR";
     databaseStatus.className = "pill bad";
-    setMessage(error.message || "Could not load creator records.");
+    setMessage(String(error.message || error || "Could not load creator records."));
   } finally {
     loadingCreators = false;
     refreshButton.disabled = false;
