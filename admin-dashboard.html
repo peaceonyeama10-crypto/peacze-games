@@ -182,9 +182,24 @@ let loadingCreators = false;
 let sessionCheckRunning = false;
 let editingCreator = null;
 
+// Always calculate dates using Toronto's calendar date.
 function localDateString(date = new Date()) {
-  const adjusted = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return adjusted.toISOString().slice(0, 10);
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(date);
+
+  const values = {};
+
+  for (const part of parts) {
+    if (part.type !== "literal") {
+      values[part.type] = part.value;
+    }
+  }
+
+  return `${values.year}-${values.month}-${values.day}`;
 }
 
 function setMessage(text) {
@@ -224,14 +239,15 @@ async function apiRequest(method, discordUserId, body) {
     throw new Error("Administrator session expired. Please log in again.");
   }
 
-if (!response.ok) {
-  const details =
-    typeof result.error === "string"
-      ? result.error
-      : JSON.stringify(result.error || result, null, 2);
+  if (!response.ok) {
+    const details =
+      typeof result.error === "string"
+        ? result.error
+        : JSON.stringify(result.error || result, null, 2);
 
-  throw new Error(details);
-}
+    throw new Error(details);
+  }
+
   return result;
 }
 
@@ -266,14 +282,30 @@ async function verifyAdminSession() {
   return false;
 }
 
+// Calculate status from the dates and access setting.
+// Do not trust a stale creator.status value returned by the API.
 function statusFor(creator) {
-  if (creator.status) return creator.status;
-
-  if (creator.accessStatus !== "active") return "revoked";
+  if (creator.accessStatus !== "active") {
+    return "revoked";
+  }
 
   const today = localDateString();
-  if (creator.startsAt && creator.startsAt > today) return "scheduled";
-  if (creator.expiresOn && creator.expiresOn < today) return "expired";
+
+  const start = creator.startsAt
+    ? String(creator.startsAt).slice(0, 10)
+    : "";
+
+  const expiry = creator.expiresOn
+    ? String(creator.expiresOn).slice(0, 10)
+    : "";
+
+  if (start && start > today) {
+    return "scheduled";
+  }
+
+  if (expiry && expiry < today) {
+    return "expired";
+  }
 
   return "active";
 }
@@ -282,7 +314,7 @@ function isExpiring(creator) {
   if (statusFor(creator) !== "active" || !creator.expiresOn) return false;
 
   const today = localDateString();
-  const expiry = new Date(creator.expiresOn + "T00:00:00");
+  const expiry = new Date(String(creator.expiresOn).slice(0, 10) + "T00:00:00");
   const current = new Date(today + "T00:00:00");
   const days = Math.round((expiry - current) / 86400000);
 
