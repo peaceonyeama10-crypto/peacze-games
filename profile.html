@@ -410,6 +410,86 @@
       .panel { padding: 17px; }
       .connection-card { padding: 14px; }
     }
+ 
+/* ===== CROWN NETWORK NEON NAVIGATION ===== */
+nav {
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.nav-links {
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #b9b0ce;
+  transition:
+    color .2s,
+    background .2s,
+    border-color .2s,
+    box-shadow .2s,
+    transform .2s;
+}
+
+.nav-links a:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #a855ff20, #43ddff12);
+  border-color: #a855ff65;
+  box-shadow: 0 0 18px #a855ff18;
+  transform: translateY(-2px);
+}
+
+.nav-links a[aria-current="page"] {
+  color: #fff;
+  background: linear-gradient(135deg, #a855ff30, #43ddff16);
+  border-color: #a855ff75;
+  box-shadow: 0 0 18px #a855ff16;
+}
+
+.nav-links a[aria-current="page"]:hover {
+  border-color: #43ddff;
+  box-shadow: 0 0 22px #43ddff25;
+}
+
+@media (max-width: 850px) {
+  nav {
+    flex-wrap: wrap;
+    padding: 14px 0;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .nav-links a {
+    min-height: 36px;
+    padding: 0 9px;
+    border-radius: 9px;
+    font-size: 10px;
+    letter-spacing: .4px;
+  }
+}
+
   </style>
 </head>
 
