@@ -956,7 +956,7 @@ nav {
     subscriptionRequestInProgress = true;
 
     try {
-      const response = await fetch("/api/tiktok/subscription", {
+      const response = await fetch("/api/tiktok/status?include=subscription", {
         method: "GET",
         credentials: "same-origin",
         cache: "no-store",
@@ -965,14 +965,14 @@ nav {
 
       const data = await readJson(response);
 
-      if (response.ok && data.status === "ok" && data.subscription) {
+      if (response.ok && data.subscription) {
         subscription = data.subscription;
         renderSubscription();
       } else if (!subscription) {
         drawSubscription({
           tone: "muted",
           headline: "SUBSCRIPTION UNAVAILABLE",
-          detail: data.message || "Could not load your subscription details."
+          detail: data.subscriptionError || "Could not load your subscription details."
         }, "");
       }
     } catch (error) {
