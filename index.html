@@ -805,34 +805,6 @@ nav {
     
   </style>
 
-<section class="demo-section container" id="demo">
-  <div class="demo-panel">
-
-    <div>
-      <div class="eyebrow">SEE IT IN ACTION</div>
-      <h2>YOUR LIVE.<br>
-        <span class="gradient-text">YOUR COMMUNITY.</span>
-      </h2>
-      <p class="hero-copy">
-        Watch how CROWN NETWORK turns your TikTok
-        LIVE audience into part of the Roblox action.
-      </p>
-    </div>
-
-    <div class="demo-phone">
-      <video
-        src="/demo-video.mp4"
-        controls
-        autoplay
-        muted
-        loop
-        playsinline>
-      </video>
-    </div>
-
-  </div>
-</section>
-
 <style>
 #discord-gate {
   position: fixed;
@@ -880,6 +852,47 @@ nav {
 #discord-gate button {
   background: #d7b65b;
   color: #111;
+}
+.demo-section {
+  padding: 35px 0 55px;
+}
+
+.demo-panel {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  align-items: center;
+  gap: 36px;
+  padding: 30px;
+  border: 1px solid #68418a;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #171126, #0c0916);
+}
+
+.demo-panel h2 {
+  font-size: clamp(27px, 4vw, 42px);
+  margin: 14px 0;
+}
+
+.demo-phone {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 3px solid #47305d;
+  border-radius: 28px;
+  background: #05040a;
+}
+
+.demo-phone video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 700px) {
+  .demo-panel {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -1012,7 +1025,30 @@ document.getElementById("continue-crown").addEventListener("click", function () 
         </article>
       </div>
     </section>
+<section class="demo-section container" id="demo">
+  <div class="demo-panel">
+    <div>
+      <div class="eyebrow">SEE IT IN ACTION</div>
+      <h2>YOUR LIVE.<br>
+        <span class="gradient-text">YOUR COMMUNITY.</span>
+      </h2>
+      <p class="hero-copy">
+        Watch how CROWN NETWORK turns your TikTok
+        LIVE audience into part of the Roblox action.
+      </p>
+    </div>
 
+    <div class="demo-phone">
+      <video
+        src="/demo-video.mp4"
+        controls
+        muted
+        loop
+        playsinline>
+      </video>
+    </div>
+  </div>
+</section>
     <section class="section container" id="tiktok-connection">
       <div class="connect-panel">
         <div>
