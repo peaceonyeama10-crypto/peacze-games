@@ -20,8 +20,8 @@ function verifySession(req) {
       .update(payload)
       .digest("base64url");
 
-    const a = Buffer.from(signature, "hex");
-    const b = Buffer.from(expected, "hex");
+const a = Buffer.from(signature, "base64url");
+const b = Buffer.from(expected, "base64url");
 
    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
   console.log("[AUTH CHECK] Signature mismatch");
