@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUSTYSPEAKS | CROWN NETWORK</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #080711;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 22px 7%;
+      border-bottom: 1px solid #29213e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      color: #bd83ff;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    header a {
+      color: #c8b8df;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: auto;
+      padding: 55px 22px;
+    }
+
+    .heading {
+      margin-bottom: 35px;
+    }
+
+    .heading small {
+      color: #b77aff;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: clamp(35px, 6vw, 58px);
+      margin: 12px 0;
+    }
+
+    .heading p {
+      color: #a99dbb;
+      line-height: 1.6;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 9px 14px;
+      border: 1px solid #3a3150;
+      border-radius: 30px;
+      color: #bba7d9;
+      font-size: 12px;
+    }
+
+    .characters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .character {
+      background: linear-gradient(145deg, #171225, #0e0c18);
+      border: 1px solid #332747;
+      border-radius: 18px;
+      padding: 23px;
+    }
+
+    .character h2 {
+      font-size: 21px;
+      margin-bottom: 7px;
+    }
+
+    .character p {
+      color: #a99dbb;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      color: #c8b8df;
+      font-size: 12px;
+      margin: 15px 0 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      background: #090712;
+      border: 1px solid #44345c;
+      color: white;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 15px;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .test-button {
+      width: 100%;
+      margin-top: 18px;
+      background: linear-gradient(90deg, #963cff, #d34cff);
+      color: white;
+    }
+
+    .settings {
+      margin-top: 25px;
+      background: #12101d;
+      border: 1px solid #332747;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    .settings h2 {
+      margin-bottom: 18px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #29213e;
+    }
+
+    .setting-row:last-child {
+      border-bottom: 0;
+    }
+
+    .setting-row span {
+      color: #c8b8df;
+      font-size: 14px;
+    }
+
+    input[type="checkbox"] {
+      width: 19px;
+      height: 19px;
+      accent-color: #b34cff;
+    }
+
+    .roblox-link {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 14px 20px;
+      background: #201532;
+      border: 1px solid #7041a5;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .notice {
+      color: #887b9d;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 20px;
+    }
+
+    #message {
+      color: #c99aff;
+      margin-top: 18px;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #655a78;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">CROWN NETWORK</div>
+  <a href="/index.html">← BACK TO HOME</a>
+</header>
+
+<main>
+  <section class="heading">
+    <small>CROWN NETWORK • AI VOICE SYSTEM</small>
+    <h1>CRUSTYSPEAKS</h1>
+    <p>Character voice control center for your SpongeBob Roblox experience.</p>
+    <div class="status">DASHBOARD CREATED • VOICE CONNECTION NOT CONFIGURED</div>
+  </section>
+
+  <section class="characters">
+
+    <div class="character">
+      <h2>🧽 SpongeBob</h2>
+      <p>Energetic, cheerful and excited.</p>
+      <label for="spongebobVoice">Voice selection</label>
+      <select id="spongebobVoice">
+        <option value="alloy">Alloy</option>
+        <option value="ash">Ash</option>
+        <option value="coral">Coral</option>
+        <option value="echo">Echo</option>
+        <option value="fable">Fable</option>
+        <option value="onyx">Onyx</option>
+        <option value="nova">Nova</option>
+        <option value="sage">Sage</option>
+        <option value="shimmer">Shimmer</option>
+      </select>
+      <button class="test-button" onclick="testVoice('SpongeBob')">TEST VOICE</button>
+    </div>
+
+    <div class="character">
+      <h2>⭐ Patrick</h2>
+      <p>Goofy, playful and unpredictable.</p>
+      <label for="patrickVoice">Voice selection</label>
+      <select id="patrickVoice">
+        <option value="alloy">Alloy</option>
+        <option value="ash">Ash</option>
+        <option value="coral">Coral</option>
+        <option value="echo">Echo</option>
+        <option value="fable">Fable</option>
+        <option value="onyx">Onyx</option>
+        <option value="nova">Nova</option>
+        <option value="sage">Sage</option>
+        <option value="shimmer">Shimmer</option>
+      </select>
+      <button class="test-button" onclick="testVoice('Patrick')">TEST VOICE</button>
+    </div>
+
+    <div class="character">
+      <h2>🦑 Squidward</h2>
+      <p>Dry, sarcastic and unimpressed.</p>
+      <label for="squidwardVoice">Voice selection</label>
+      <select id="squidwardVoice">
+        <option value="alloy">Alloy</option>
+        <option value="ash">Ash</option>
+        <option value="coral">Coral</option>
+        <option value="echo">Echo</option>
+        <option value="fable">Fable</option>
+        <option value="onyx">Onyx</option>
+        <option value="nova">Nova</option>
+        <option value="sage">Sage</option>
+        <option value="shimmer">Shimmer</option>
+      </select>
+      <button class="test-button" onclick="testVoice('Squidward')">TEST VOICE</button>
+    </div>
+
+    <div class="character">
+      <h2>🦀 Mr. Krabs</h2>
+      <p>Gruff, greedy and obsessed with money.</p>
+      <label for="mrkrabsVoice">Voice selection</label>
+      <select id="mrkrabsVoice">
+        <option value="alloy">Alloy</option>
+        <option value="ash">Ash</option>
+        <option value="coral">Coral</option>
+        <option value="echo">Echo</option>
+        <option value="fable">Fable</option>
+        <option value="onyx">Onyx</option>
+        <option value="nova">Nova</option>
+        <option value="sage">Sage</option>
+        <option value="shimmer">Shimmer</option>
+      </select>
+      <button class="test-button" onclick="testVoice('MrKrabs')">TEST VOICE</button>
+    </div>
+
+  </section>
+
+  <section class="settings">
+    <h2>Voice Settings</h2>
+
+    <div class="setting-row">
+      <span>Enable character voices</span>
+      <input type="checkbox" id="voicesEnabled" checked>
+    </div>
+
+    <div class="setting-row">
+      <span>Voice reactions to TikTok comments</span>
+      <input type="checkbox" id="commentVoices" checked>
+    </div>
+
+    <div class="setting-row">
+      <span>Voice reactions to TikTok gifts</span>
+      <input type="checkbox" id="giftVoices" checked>
+    </div>
+
+    <p id="message">Voice settings are currently local to this page.</p>
+
+    <a class="roblox-link"
+       href="https://create.roblox.com/dashboard/creations/experiences/10773881856/overview"
+       target="_blank" rel="noopener">
+      OPEN ROBLOX CREATOR DASHBOARD ↗
+    </a>
+
+    <p class="notice">
+      This is the dashboard interface only. Voice selections and test buttons
+      are not connected to the live voice service yet. We'll connect them
+      to the backend in the next steps.
+    </p>
+  </section>
+</main>
+
+<footer>
+  CROWN NETWORK © 2026 • CRUSTYSPEAKS
+</footer>
+
+<script>
+  function testVoice(character) {
+    document.getElementById("message").textContent =
+      character + " voice testing will be connected in the next step.";
+  }
+
+  document.querySelectorAll("select, input").forEach(control => {
+    control.addEventListener("change", () => {
+      document.getElementById("message").textContent =
+        "Setting changed locally. Backend connection is coming next.";
+    });
+  });
+</script>
+
+</body>
+</html>
