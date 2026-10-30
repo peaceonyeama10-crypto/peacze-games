@@ -4,7 +4,10 @@ function verifySession(req) {
   const cookie = req.headers.cookie || "";
   const match = cookie.match(/(?:^|;\s*)peacze_session=([^;]+)/);
 
-  if (!match) return null;
+  if (!match) {
+  console.log("[AUTH CHECK] Cookie missing");
+  return null;
+}
 
   try {
     const token = decodeURIComponent(match[1]);
@@ -20,9 +23,10 @@ function verifySession(req) {
     const a = Buffer.from(signature, "hex");
     const b = Buffer.from(expected, "hex");
 
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-      return null;
-    }
+   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+  console.log("[AUTH CHECK] Signature mismatch");
+  return null;
+}
 
     const session = JSON.parse(
       Buffer.from(payload, "base64url").toString("utf8")
