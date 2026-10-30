@@ -433,13 +433,69 @@
     }
   });
 
-  document.getElementById("commentVoices").addEventListener("change", () => {
-    setMessage("Comment voice preference changed locally.");
-  });
+  async function saveVoiceSettings() {
+  const settings = {
+    voicesEnabled: document.getElementById("voicesEnabled").checked,
+    commentVoices: document.getElementById("commentVoices").checked,
+    giftVoices: document.getElementById("giftVoices").checked
+  };
 
-  document.getElementById("giftVoices").addEventListener("change", () => {
-    setMessage("Gift voice preference changed locally.");
-  });
+  try {
+    const response = await fetch("/api/crustyspeaks/settings", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(settings)
+    });
+
+    if (!response.ok) {
+      throw new Error("Settings save failed: " + response.status);
+    }
+
+    setMessage("Voice settings saved successfully.");
+  } catch (error) {
+    console.error("[CRUSTYSPEAKS SETTINGS]", error);
+    setMessage("Could not save settings. Check your connection.");
+  }
+}
+
+document.querySelectorAll(
+  "#voicesEnabled, #commentVoices, #giftVoices"
+).forEach(control => {
+  control.addEventListener("change", saveVoiceSettings);
+});
+async function loadVoiceSettings() {
+  try {
+    const response = await fetch("/api/crustyspeaks/settings", {
+      method: "GET",
+      credentials: "same-origin"
+    });
+
+    if (!response.ok) {
+      throw new Error("Settings load failed: " + response.status);
+    }
+
+    const data = await response.json();
+    const settings = data.settings;
+
+    document.getElementById("voicesEnabled").checked =
+      settings.voicesEnabled;
+
+    document.getElementById("commentVoices").checked =
+      settings.commentVoices;
+
+    document.getElementById("giftVoices").checked =
+      settings.giftVoices;
+
+  } catch (error) {
+    console.error("[CRUSTYSPEAKS SETTINGS LOAD]", error);
+    setMessage("Could not load saved voice settings.");
+  }
+}
+
+loadVoiceSettings();
 </script>
 
 </body>
