@@ -17,8 +17,8 @@ function verifySession(req) {
       .update(payload)
       .digest("base64url");
 
-    const a = Buffer.from(signature);
-    const b = Buffer.from(expected);
+    const a = Buffer.from(signature, "base64url");
+    const b = Buffer.from(expected, "base64url");
 
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
       return null;
@@ -71,8 +71,11 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(
-      `${backend.replace(/\/$/, "")}/api/crustyspeaks/settings`,
+      const response = await fetch(
+      `${backend.replace(/\/$/, "")}/api/crustyspeaks/settings` +
+        (req.method === "GET"
+          ? `?discordUserId=${encodeURIComponent(discordUserId)}`
+          : ""),
       {
         method: req.method,
         headers: {
