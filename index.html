@@ -1038,13 +1038,10 @@ document.getElementById("continue-crown").addEventListener("click", function () 
     </div>
 
     <div class="demo-phone">
-      <video
-        src="/demo-video.mp4"
-        controls
-        muted
-        loop
-        playsinline>
-      </video>
+     <video controls muted loop playsinline preload="metadata">
+  <source src="/demo-video.mp4" type="video/mp4">
+  Your browser does not support this video.
+</video>
     </div>
   </div>
 </section>
