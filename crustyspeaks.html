@@ -103,23 +103,6 @@
       margin-bottom: 22px;
     }
 
-    label {
-      display: block;
-      color: #c8b8df;
-      font-size: 12px;
-      margin: 15px 0 8px;
-    }
-
-    select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 9px;
-      background: #090712;
-      border: 1px solid #44345c;
-      color: white;
-      outline: none;
-    }
-
     button {
       cursor: pointer;
       border: 0;
@@ -177,6 +160,19 @@
       accent-color: #b34cff;
     }
 
+    .voice-label {
+      background: #211630;
+      border: 1px solid #7041a5;
+      color: #c99aff;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-top: 15px;
+    }
+
     .roblox-link {
       display: inline-block;
       margin-top: 25px;
@@ -208,18 +204,6 @@
       color: #655a78;
       font-size: 12px;
     }
-  .voice-label {
-  background: #211630;
-  border: 1px solid #7041a5;
-  color: #c99aff;
-  padding: 13px;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-align: center;
-  margin-top: 15px;
-}
   </style>
 </head>
 
@@ -235,7 +219,9 @@
     <small>CROWN NETWORK • AI VOICE SYSTEM</small>
     <h1>CRUSTYSPEAKS</h1>
     <p>Character voice control center for your SpongeBob Roblox experience.</p>
-    <div class="status">DASHBOARD CREATED • VOICE CONNECTION NOT CONFIGURED</div>
+    <div class="status" id="connectionStatus">
+      AUDIO PLAYER READY • CLICK A CHARACTER TO ENABLE
+    </div>
   </section>
 
   <section class="characters">
@@ -243,29 +229,29 @@
     <div class="character">
       <h2>🧽 SpongeBob</h2>
       <p>Energetic, cheerful and excited.</p>
-     <div class="voice-label">ASSIGNED AI VOICE: SPONGEBOB</div>
-      <button class="test-button" onclick="testVoice('SpongeBob')">TEST VOICE</button>
+      <div class="voice-label">ASSIGNED AI VOICE: SPONGEBOB</div>
+      <button class="test-button" onclick="testVoice('SpongeBob')">ENABLE AUDIO</button>
     </div>
 
     <div class="character">
       <h2>⭐ Patrick</h2>
       <p>Goofy, playful and unpredictable.</p>
-     <div class="voice-label">ASSIGNED AI VOICE: PATRICK</div>
-      <button class="test-button" onclick="testVoice('Patrick')">TEST VOICE</button>
+      <div class="voice-label">ASSIGNED AI VOICE: PATRICK</div>
+      <button class="test-button" onclick="testVoice('Patrick')">ENABLE AUDIO</button>
     </div>
 
     <div class="character">
       <h2>🦑 Squidward</h2>
       <p>Dry, sarcastic and unimpressed.</p>
-     <div class="voice-label">ASSIGNED AI VOICE: SQUIDWARD</div>
-      <button class="test-button" onclick="testVoice('Squidward')">TEST VOICE</button>
+      <div class="voice-label">ASSIGNED AI VOICE: SQUIDWARD</div>
+      <button class="test-button" onclick="testVoice('Squidward')">ENABLE AUDIO</button>
     </div>
 
     <div class="character">
       <h2>🦀 Mr. Krabs</h2>
       <p>Gruff, greedy and obsessed with money.</p>
       <div class="voice-label">ASSIGNED AI VOICE: MR. KRABS</div>
-      <button class="test-button" onclick="testVoice('MrKrabs')">TEST VOICE</button>
+      <button class="test-button" onclick="testVoice('MrKrabs')">ENABLE AUDIO</button>
     </div>
 
   </section>
@@ -288,7 +274,7 @@
       <input type="checkbox" id="giftVoices" checked>
     </div>
 
-    <p id="message">Voice settings are currently local to this page.</p>
+    <p id="message">Click a character to enable browser audio.</p>
 
     <a class="roblox-link"
        href="https://create.roblox.com/dashboard/creations/experiences/10773881856/overview"
@@ -297,9 +283,9 @@
     </a>
 
     <p class="notice">
-      This is the dashboard interface only. Voice selections and test buttons
-      are not connected to the live voice service yet. We'll connect them
-      to the backend in the next steps.
+      Keep this website open while TikTok LIVE is running.
+      Audio plays through this browser, not through Roblox.
+      Rose reactions receive priority over normal audio.
     </p>
   </section>
 </main>
@@ -309,16 +295,150 @@
 </footer>
 
 <script>
-  function testVoice(character) {
-    document.getElementById("message").textContent =
-      character + " voice testing will be connected in the next step.";
+  let audioUnlocked = false;
+  let currentlyPlaying = false;
+  let polling = false;
+  let currentAudio = null;
+
+  const message = document.getElementById("message");
+  const status = document.getElementById("connectionStatus");
+
+  function setMessage(text) {
+    message.textContent = text;
   }
 
-  document.querySelectorAll("select, input").forEach(control => {
-    control.addEventListener("change", () => {
-      document.getElementById("message").textContent =
-        "Setting changed locally. Backend connection is coming next.";
+  function voicesAreEnabled() {
+    return document.getElementById("voicesEnabled").checked;
+  }
+
+  function stopCurrentAudio() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.src = "";
+      currentAudio = null;
+    }
+
+    currentlyPlaying = false;
+  }
+
+  async function testVoice(character) {
+    audioUnlocked = true;
+
+    if (!voicesAreEnabled()) {
+      setMessage("Character voices are disabled.");
+      return;
+    }
+
+    status.textContent = "AUDIO PLAYER ACTIVE";
+    setMessage(
+      character + " selected. Waiting for the next queued voice reaction..."
+    );
+
+    pollAudioQueue();
+  }
+
+  async function pollAudioQueue() {
+    if (polling || !audioUnlocked || !voicesAreEnabled()) {
+      return;
+    }
+
+    polling = true;
+
+    try {
+      while (audioUnlocked && voicesAreEnabled()) {
+        if (currentlyPlaying) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          continue;
+        }
+
+        const response = await fetch("/api/crustyspeaks/audio/next", {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Audio connection failed: " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (!data.audio) {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          continue;
+        }
+
+        await playQueuedAudio(data.audio);
+      }
+    } catch (error) {
+      console.error("[CRUSTYSPEAKS AUDIO]", error);
+      setMessage("Audio connection error. Check the website backend.");
+      status.textContent = "AUDIO CONNECTION ERROR";
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    } finally {
+      polling = false;
+    }
+  }
+
+  function playQueuedAudio(item) {
+    return new Promise(resolve => {
+      if (!item || !item.audio) {
+        resolve();
+        return;
+      }
+
+      currentlyPlaying = true;
+
+      currentAudio = new Audio(
+        "data:" + (item.mimeType || "audio/mpeg") +
+        ";base64," + item.audio
+      );
+
+      setMessage("Playing " + item.characterName + "...");
+
+      currentAudio.onended = () => {
+        currentAudio = null;
+        currentlyPlaying = false;
+        setMessage("Ready • Waiting for more voice reactions.");
+        resolve();
+      };
+
+      currentAudio.onerror = () => {
+        currentAudio = null;
+        currentlyPlaying = false;
+        setMessage("Could not play an audio clip.");
+        resolve();
+      };
+
+      currentAudio.play().catch(error => {
+        console.error("[CRUSTYSPEAKS PLAYBACK]", error);
+        currentAudio = null;
+        currentlyPlaying = false;
+        setMessage("Browser blocked audio. Click ENABLE AUDIO again.");
+        audioUnlocked = false;
+        resolve();
+      });
     });
+  }
+
+  document.getElementById("voicesEnabled").addEventListener("change", event => {
+    if (!event.target.checked) {
+      audioUnlocked = false;
+      stopCurrentAudio();
+      status.textContent = "AUDIO PAUSED";
+      setMessage("Character voices are disabled.");
+    } else {
+      setMessage("Click a character to enable audio again.");
+      status.textContent = "AUDIO PLAYER READY";
+    }
+  });
+
+  document.getElementById("commentVoices").addEventListener("change", () => {
+    setMessage("Comment voice preference changed locally.");
+  });
+
+  document.getElementById("giftVoices").addEventListener("change", () => {
+    setMessage("Gift voice preference changed locally.");
   });
 </script>
 
