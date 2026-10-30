@@ -15,7 +15,7 @@ function verifySession(req) {
     const expected = crypto
       .createHmac("sha256", process.env.DAILY_CODE_SECRET)
       .update(payload)
-      .digest("hex");
+      .digest("base64url");
 
     const a = Buffer.from(signature, "hex");
     const b = Buffer.from(expected, "hex");
