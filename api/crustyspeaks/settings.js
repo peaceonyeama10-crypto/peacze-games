@@ -86,9 +86,26 @@ module.exports = async function handler(req, res) {
       }
     );
 
-    const data = await response.json();
-    return res.status(response.status).json(data);
+  const responseText = await response.text();
 
+console.log("[CRUSTYSPEAKS SETTINGS BACKEND]", {
+  status: response.status,
+  contentType: response.headers.get("content-type"),
+  responsePreview: responseText.slice(0, 300)
+});
+
+let data;
+
+try {
+  data = JSON.parse(responseText);
+} catch {
+  return res.status(502).json({
+    error: "Settings backend returned HTML or invalid JSON",
+    backendStatus: response.status
+  });
+}
+
+return res.status(response.status).json(data);
   } catch (error) {
     console.error("[CRUSTYSPEAKS SETTINGS PROXY]", error);
     return res.status(502).json({ error: "Settings backend unavailable" });
