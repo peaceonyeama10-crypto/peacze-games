@@ -529,6 +529,46 @@ nav {
   }
 }
 
+/* ===== SUBSCRIPTION COUNTDOWN ===== */
+.countdown-card {
+  margin-bottom: 14px;
+}
+
+.countdown-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.countdown-plan {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.countdown-headline {
+  margin: 12px 0 6px;
+  font-size: clamp(24px, 5vw, 34px);
+  font-weight: 900;
+  letter-spacing: -.5px;
+  line-height: 1.1;
+}
+
+.countdown-detail {
+  margin: 0;
+}
+
+.countdown-card.good { border-color: #65f2ad55; }
+.countdown-card.good .countdown-headline { color: var(--green); }
+.countdown-card.soon { border-color: #ffd27a55; }
+.countdown-card.soon .countdown-headline { color: #ffd27a; }
+.countdown-card.bad { border-color: #ff9cab55; }
+.countdown-card.bad .countdown-headline { color: var(--red); }
+.countdown-card.muted .countdown-headline { color: var(--muted); font-size: 16px; }
+
   </style>
 </head>
 
@@ -616,6 +656,18 @@ nav {
               <p class="muted">Manage the services used by your creator setup.</p>
             </div>
             <span class="badge">ACCOUNT SETTINGS</span>
+          </div>
+
+          <div class="connection-card countdown-card muted" id="subscription-card"
+               role="status" aria-live="polite">
+            <div class="countdown-top">
+              <span class="eyebrow">SUBSCRIPTION</span>
+              <span class="countdown-plan" id="subscription-plan"></span>
+            </div>
+            <div class="countdown-headline" id="subscription-headline">LOADING…</div>
+            <p class="muted countdown-detail" id="subscription-detail">
+              Checking your subscription.
+            </p>
           </div>
 
           <div class="connection-card">
@@ -771,10 +823,196 @@ nav {
   const tiktokMessage = document.getElementById("tiktok-message");
   const tiktokError = document.getElementById("tiktok-error");
 
+  const subscriptionCard = document.getElementById("subscription-card");
+  const subscriptionPlan = document.getElementById("subscription-plan");
+  const subscriptionHeadline = document.getElementById("subscription-headline");
+  const subscriptionDetail = document.getElementById("subscription-detail");
+
   let signedIn = false;
   let requestBusy = false;
   let statusTimer = null;
   let statusRequestInProgress = false;
+
+  let subscription = null;
+  let subscriptionRenderTimer = null;
+  let subscriptionRefetchTimer = null;
+  let subscriptionRequestInProgress = false;
+
+  // ===== Subscription countdown (always uses Toronto's calendar date) =====
+
+  function torontoDate(date = new Date()) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Toronto",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(date);
+
+    const values = {};
+
+    for (const part of parts) {
+      if (part.type !== "literal") values[part.type] = part.value;
+    }
+
+    return `${values.year}-${values.month}-${values.day}`;
+  }
+
+  function validYmd(value) {
+    return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  }
+
+  function daysBetween(from, to) {
+    const [fy, fm, fd] = from.split("-").map(Number);
+    const [ty, tm, td] = to.split("-").map(Number);
+
+    return Math.round(
+      (Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000
+    );
+  }
+
+  function formatLong(ymd) {
+    const [y, m, d] = ymd.split("-").map(Number);
+
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: "UTC",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }).format(new Date(Date.UTC(y, m - 1, d)));
+  }
+
+  function computeCountdown(sub, today) {
+    if (!sub || !validYmd(sub.expiresOn)) {
+      return {
+        tone: "bad",
+        headline: "NO SUBSCRIPTION FOUND",
+        detail: "We could not find subscription dates for your account."
+      };
+    }
+
+    if (sub.accessStatus && sub.accessStatus !== "active") {
+      return {
+        tone: "bad",
+        headline: "ACCESS REVOKED",
+        detail: "Your access has been turned off. Please contact CROWN NETWORK."
+      };
+    }
+
+    const start = validYmd(sub.startsAt) ? sub.startsAt : "";
+    const expiry = sub.expiresOn;
+
+    if (start && start > today) {
+      return {
+        tone: "soon",
+        headline: "NOT STARTED",
+        detail: `Your access starts ${formatLong(start)}.`
+      };
+    }
+
+    const days = daysBetween(today, expiry);
+
+    if (days < 0) {
+      return {
+        tone: "bad",
+        headline: "EXPIRED",
+        detail: `Your access expired ${formatLong(expiry)}.`
+      };
+    }
+
+    if (days === 0) {
+      return {
+        tone: "soon",
+        headline: "EXPIRES TODAY",
+        detail: `Your access expires today, ${formatLong(expiry)}.`
+      };
+    }
+
+    return {
+      tone: days <= 7 ? "soon" : "good",
+      headline: days === 1 ? "1 DAY LEFT" : `${days} DAYS LEFT`,
+      detail: `Your access expires ${formatLong(expiry)}.`
+    };
+  }
+
+  function drawSubscription(info, plan) {
+    subscriptionCard.className = `connection-card countdown-card ${info.tone}`;
+    subscriptionHeadline.textContent = info.headline;
+    subscriptionDetail.textContent = info.detail;
+    subscriptionPlan.textContent = plan ? `${plan} PLAN` : "";
+  }
+
+  function renderSubscription() {
+    if (!subscription) return;
+
+    drawSubscription(
+      computeCountdown(subscription, torontoDate()),
+      subscription.plan || ""
+    );
+  }
+
+  async function loadSubscription() {
+    if (!signedIn || subscriptionRequestInProgress) return;
+
+    subscriptionRequestInProgress = true;
+
+    try {
+      const response = await fetch("/api/tiktok/subscription", {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
+
+      const data = await readJson(response);
+
+      if (response.ok && data.status === "ok" && data.subscription) {
+        subscription = data.subscription;
+        renderSubscription();
+      } else if (!subscription) {
+        drawSubscription({
+          tone: "muted",
+          headline: "SUBSCRIPTION UNAVAILABLE",
+          detail: data.message || "Could not load your subscription details."
+        }, "");
+      }
+    } catch (error) {
+      if (!subscription) {
+        drawSubscription({
+          tone: "muted",
+          headline: "SUBSCRIPTION UNAVAILABLE",
+          detail: "Could not load your subscription details."
+        }, "");
+      }
+    } finally {
+      subscriptionRequestInProgress = false;
+    }
+  }
+
+  function startSubscription() {
+    stopSubscription();
+
+    loadSubscription();
+
+    // Re-count every minute so the number changes at midnight Toronto time.
+    subscriptionRenderTimer = setInterval(renderSubscription, 60 * 1000);
+
+    // Re-read the dates every 5 minutes in case an admin changed them.
+    subscriptionRefetchTimer = setInterval(loadSubscription, 5 * 60 * 1000);
+  }
+
+  function stopSubscription() {
+    if (subscriptionRenderTimer !== null) {
+      clearInterval(subscriptionRenderTimer);
+      subscriptionRenderTimer = null;
+    }
+
+    if (subscriptionRefetchTimer !== null) {
+      clearInterval(subscriptionRefetchTimer);
+      subscriptionRefetchTimer = null;
+    }
+  }
+
+  // ===== Account and TikTok =====
 
   function setDot(element, state) {
     element.classList.toggle("online", state === true);
@@ -835,6 +1073,7 @@ nav {
       discordRelogin.hidden = true;
     } else {
       stopStatusPolling();
+      stopSubscription();
 
       discordStatus.textContent = "SIGNED OUT";
       discordCardStatus.textContent = "NOT CONNECTED";
@@ -966,6 +1205,7 @@ nav {
       }
 
       setSignedInState(true, data);
+      startSubscription();
       await updateTikTokStatus();
       startStatusPolling();
     } catch (error) {
@@ -1127,6 +1367,7 @@ nav {
       }
 
       stopStatusPolling();
+      stopSubscription();
       window.location.replace("/profile.html");
     } catch (error) {
       document.getElementById("account-message").textContent =
@@ -1153,6 +1394,8 @@ nav {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden && signedIn) {
       updateTikTokStatus();
+      renderSubscription();
+      loadSubscription();
     }
   });
 
