@@ -61,6 +61,80 @@ function getSession(req, secret) {
   }
 }
 
+function plainDate(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? value
+    : null;
+}
+
+// Looks up ONLY the logged-in creator's own subscription dates.
+// The Discord ID always comes from the signed session cookie, never from the URL.
+// Never throws: a problem here must not break the normal TikTok status.
+async function lookupSubscription(discordUserId) {
+  const { TIKTOK_BACKEND_URL, CREATOR_ADMIN_API_SECRET } = process.env;
+
+  if (!CREATOR_ADMIN_API_SECRET) {
+    return { error: "Subscription lookup is not configured." };
+  }
+
+  try {
+    const url =
+      `${TIKTOK_BACKEND_URL.replace(/\/+$/, "")}` +
+      `/api/admin/creators/${encodeURIComponent(discordUserId)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${CREATOR_ADMIN_API_SECRET}`,
+        Accept: "application/json"
+      },
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000)
+    });
+
+    if (response.status === 404) {
+      return { error: "No subscription record was found for your account." };
+    }
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      console.error(
+        "Subscription backend error:",
+        response.status,
+        text.slice(0, 300)
+      );
+      return { error: "Could not retrieve your subscription." };
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return { error: "Could not read your subscription." };
+    }
+
+    const creator = data && data.creator;
+
+    if (!creator || typeof creator !== "object") {
+      return { error: "Could not read your subscription." };
+    }
+
+    // Only the fields a creator needs. Nothing else is passed through.
+    return {
+      subscription: {
+        plan: String(creator.plan || ""),
+        startsAt: plainDate(creator.startsAt),
+        expiresOn: plainDate(creator.expiresOn),
+        accessStatus: creator.accessStatus === "active" ? "active" : "revoked"
+      }
+    };
+  } catch (error) {
+    console.error("Subscription lookup failed:", error.message);
+    return { error: "Could not retrieve your subscription." };
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -163,6 +237,24 @@ export default async function handler(req, res) {
         status: "error",
         message: "The TikTok backend returned an invalid response."
       });
+    }
+
+    // Only when the page asks for it (?include=subscription). The page polls
+    // this endpoint every 2 seconds, so the extra lookup must stay optional.
+    if (
+      req.query?.include === "subscription" &&
+      data &&
+      typeof data === "object" &&
+      !Array.isArray(data)
+    ) {
+      const result = await lookupSubscription(session.discordUserId);
+
+      if (result.subscription) {
+        data.subscription = result.subscription;
+      } else {
+        data.subscription = null;
+        data.subscriptionError = result.error;
+      }
     }
 
     return res.status(200).json(data);
