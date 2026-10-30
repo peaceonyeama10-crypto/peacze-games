@@ -52,9 +52,12 @@ module.exports = async function handler(req, res) {
 
   const discordUserId = verifySession(req);
 
-  if (!discordUserId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+if (!discordUserId) {
+  console.log("[CRUSTYSPEAKS AUTH] Session rejected");
+  return res.status(401).json({ error: "Unauthorized" });
+}
+
+console.log("[CRUSTYSPEAKS AUTH] Session accepted");
 
   try {
     const backend = process.env.TIKTOK_BACKEND_URL;
