@@ -52,9 +52,16 @@ module.exports = async function handler(req, res) {
 
   const discordUserId = verifySession(req);
 
-  if (!discordUserId) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+ if (!discordUserId) {
+  const cookie = req.headers.cookie || "";
+  console.log("[CRUSTYSPEAKS AUTH DEBUG]", {
+    cookiePresent: cookie.includes("peacze_session="),
+    secretPresent: Boolean(process.env.DAILY_CODE_SECRET),
+    approvedIdsPresent: Boolean(process.env.APPROVED_DISCORD_IDS)
+  });
+
+  return res.status(401).json({ error: "Unauthorized" });
+}
 
   const backend = process.env.TIKTOK_BACKEND_URL;
   const token = process.env.TIKTOK_QUEUE_TOKEN;
