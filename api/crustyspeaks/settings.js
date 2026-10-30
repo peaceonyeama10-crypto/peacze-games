@@ -15,10 +15,10 @@ function verifySession(req) {
     const expected = crypto
       .createHmac("sha256", process.env.DAILY_CODE_SECRET)
       .update(payload)
-      .digest("hex");
+      .digest("base64url");
 
-    const a = Buffer.from(signature, "hex");
-    const b = Buffer.from(expected, "hex");
+    const a = Buffer.from(signature);
+    const b = Buffer.from(expected);
 
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
       return null;
@@ -29,7 +29,7 @@ function verifySession(req) {
     );
 
     if (!session.discordUserId) return null;
-    if (Date.now() > session.expiresAt) return null;
+    if (Date.now() / 1000 > session.expiresAt) return null;
 
     const approved = (process.env.APPROVED_DISCORD_IDS || "")
       .split(",")
