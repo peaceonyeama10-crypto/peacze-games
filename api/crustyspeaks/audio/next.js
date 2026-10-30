@@ -33,13 +33,22 @@ const b = Buffer.from(expected, "base64url");
     );
 
     if (!session.discordUserId) return null;
-    if (Date.now() > session.expiresAt) return null;
+    if (!Number.isFinite(session.expiresAt)) {
+      console.log("[AUTH CHECK] expiresAt missing or invalid");
+      return null;
+    }
+
+    if (Date.now() / 1000 > session.expiresAt) {
+      console.log("[AUTH CHECK] Session expired");
+      return null;
+    }
 
     const approved = (process.env.APPROVED_DISCORD_IDS || "")
       .split(",")
       .map(id => id.trim());
 
-    if (!approved.includes(String(session.discordUserId))) {
+       if (!approved.includes(String(session.discordUserId))) {
+      console.log("[AUTH CHECK] Discord ID not in approved list");
       return null;
     }
 
