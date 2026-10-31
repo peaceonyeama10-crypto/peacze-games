@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRUSTYSPEAKS tester</title>
+<style>
+  :root {
+    --bg: #14120d;
+    --panel: #1d1a12;
+    --line: #3a3322;
+    --text: #f2ead3;
+    --muted: #a39878;
+    --gold: #e0b341;
+    --gold-ink: #1a1403;
+    --ok: #7fd18b;
+    --bad: #ff8a7a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 "Trebuchet MS", "Segoe UI", sans-serif;
+    padding: 24px 16px 64px;
+  }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: 0.3px; }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label { display: block; font-size: 14px; color: var(--muted); margin: 10px 0 4px; }
+  label:first-of-type { margin-top: 0; }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+  }
+  input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; }
+  button {
+    font: inherit;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: var(--gold-ink);
+    font-weight: 700;
+  }
+  button.gift {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--line);
+    font-weight: 400;
+    text-align: left;
+  }
+  button.gift:hover { border-color: var(--gold); }
+  button:disabled { opacity: 0.5; cursor: wait; }
+  .gifts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+  .gifts small { display: block; color: var(--muted); }
+  .note { color: var(--muted); font-size: 14px; margin: 12px 0 0; }
+  #log {
+    margin: 0;
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    min-height: 96px;
+    max-height: 260px;
+    overflow: auto;
+    font: 13px/1.5 Consolas, monospace;
+    white-space: pre-wrap;
+  }
+  .ok { color: var(--ok); }
+  .bad { color: var(--bad); }
+  @media (max-width: 480px) {
+    .row { flex-direction: column; gap: 0; }
+    .gifts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>CRUSTYSPEAKS tester</h1>
+  <p class="sub">Send fake comments and gifts without being LIVE.</p>
+
+  <section>
+    <h2>Connection</h2>
+    <label for="url">Render URL</label>
+    <input id="url" value="https://tiktok-race-queue-1.onrender.com" autocomplete="off">
+    <div class="row">
+      <div>
+        <label for="token">Queue token (QUEUE_TOKEN)</label>
+        <input id="token" type="password" autocomplete="off">
+      </div>
+      <div>
+        <label for="uid">Your Discord user ID</label>
+        <input id="uid" inputmode="numeric" autocomplete="off">
+      </div>
+    </div>
+    <p class="note">The token is only kept while this page is open. Your SpongeBob Roblox server must be registered and sending heartbeats. TikTok does not need to be connected.</p>
+  </section>
+
+  <section>
+    <h2>Test a comment</h2>
+    <div class="row">
+      <div>
+        <label for="cuser">Fake viewer name</label>
+        <input id="cuser" value="tester" maxlength="24">
+      </div>
+      <div>
+        <label for="ctext">Comment</label>
+        <input id="ctext" value="Hello everyone!" maxlength="120">
+      </div>
+    </div>
+    <p style="margin: 12px 0 0"><button id="sendComment">Send comment</button></p>
+  </section>
+
+  <section>
+    <h2>Test a gift</h2>
+    <div class="row">
+      <div>
+        <label for="guser">Fake viewer name</label>
+        <input id="guser" value="tester" maxlength="24">
+      </div>
+      <div>
+        <label for="gcount">Rose count (1 to 100)</label>
+        <input id="gcount" type="number" min="1" max="100" value="1">
+      </div>
+    </div>
+    <div class="gifts" id="gifts"></div>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <pre id="log">Nothing sent yet.</pre>
+  </section>
+</main>
+
+<script>
+  const GIFTS = [
+    { name: "Rose", note: "priority voices" },
+    { name: "Donut", note: "" },
+    { name: "Perfume", note: "" },
+    { name: "Confetti", note: "" },
+    { name: "Cap", note: "SpongeBob" },
+    { name: "Hat and Mustache", note: "Mr. Krabs" },
+    { name: "Bubble Gum", note: "Patrick" },
+    { name: "Paper Crane", note: "Squidward" }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const log = $("log");
+  let firstLine = true;
+
+  function write(text, cls) {
+    if (firstLine) { log.textContent = ""; firstLine = false; }
+    const line = document.createElement("div");
+    line.className = cls || "";
+    const time = new Date().toLocaleTimeString();
+    line.textContent = time + "  " + text;
+    log.prepend(line);
+  }
+
+  async function send(path, body) {
+    const base = $("url").value.trim().replace(/\/$/, "");
+    const token = $("token").value.trim();
+    const discordUserId = $("uid").value.trim();
+
+    if (!token || !discordUserId) {
+      write("Enter the queue token and your Discord user ID first.", "bad");
+      return;
+    }
+
+    document.querySelectorAll("button").forEach(b => (b.disabled = true));
+
+    try {
+      const response = await fetch(base + path, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ discordUserId, ...body })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        write("Sent. " + JSON.stringify(data), "ok");
+      } else {
+        write("Failed (" + response.status + "): " + (data.error || "unknown error"), "bad");
+      }
+    } catch (error) {
+      write("Could not reach the server. Open this page from your website (peacze-games.vercel.app), not from a file on your computer.", "bad");
+    } finally {
+      document.querySelectorAll("button").forEach(b => (b.disabled = false));
+    }
+  }
+
+  $("sendComment").addEventListener("click", () => {
+    send("/api/test/comment", {
+      username: $("cuser").value.trim() || "tester",
+      comment: $("ctext").value.trim()
+    });
+  });
+
+  const giftBox = $("gifts");
+
+  GIFTS.forEach(gift => {
+    const button = document.createElement("button");
+    button.className = "gift";
+    button.textContent = gift.name;
+
+    if (gift.note) {
+      const small = document.createElement("small");
+      small.textContent = gift.note;
+      button.appendChild(small);
+    }
+
+    button.addEventListener("click", () => {
+      send("/api/test/gift", {
+        gift: gift.name,
+        count: Number($("gcount").value) || 1,
+        username: $("guser").value.trim() || "tester"
+      });
+    });
+
+    giftBox.appendChild(button);
+  });
+</script>
+</body>
+</html>
