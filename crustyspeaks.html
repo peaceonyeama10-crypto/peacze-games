@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRUSTYSPEAKS | CROWN NETWORK</title>
-
+<link rel="icon" type="image/png" href="/crown-network-icon.png">
+<meta name="theme-color" content="#080611">
   <style>
     * {
       box-sizing: border-box;
@@ -19,30 +20,152 @@
       min-height: 100vh;
     }
 
-    header {
-      padding: 22px 7%;
-      border-bottom: 1px solid #29213e;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+  :root {
+  color-scheme: dark;
+  --bg: #080611;
+  --muted: #aaa2bf;
+  --border: #332447;
+  --cyan: #43ddff;
+  --purple: #a855ff;
+}
 
-    .logo {
-      color: #bd83ff;
-      font-size: 23px;
-      font-weight: 900;
-      letter-spacing: 2px;
-    }
+.container {
+  width: min(1160px, 92%);
+  margin: auto;
+}
 
-    header a {
-      color: #c8b8df;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: bold;
-    }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
+header.container {
+  width: min(1160px, 92%);
+}
+
+nav {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid #ffffff12;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 43px;
+  height: 43px;
+  overflow: hidden;
+  border-radius: 13px;
+  border: 1px solid #b85cff80;
+  background: #0e091c;
+  flex-shrink: 0;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand strong {
+  background: linear-gradient(95deg, white, #ff65e8 48%, #53dfff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #d5cce8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #b9b0ce;
+  transition: .2s ease;
+}
+
+.nav-links a:hover {
+  color: white;
+  background: linear-gradient(135deg, #a855ff20, #43ddff12);
+  border-color: #a855ff65;
+  transform: translateY(-2px);
+}
+
+.nav-links a[aria-current="page"] {
+  color: white;
+  background: linear-gradient(135deg, #a855ff30, #43ddff16);
+  border-color: #a855ff75;
+  box-shadow: 0 0 18px #a855ff16;
+}
+
+@media (max-width: 850px) {
+  nav {
+    min-height: 88px;
+    padding: 14px 0;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  nav {
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .nav-links {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .nav-links a {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .brand {
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+}
     main {
       max-width: 1150px;
       margin: auto;
@@ -209,20 +332,31 @@
 
 <body>
 
-<header>
-  <div class="logo">CROWN NETWORK</div>
+<header class="container">
+  <nav aria-label="Main navigation">
+    <a class="brand" href="/index.html">
+      <span class="brand-mark">
+        <img
+          src="/crown-network-icon.png"
+          alt="Crown Network logo"
+          onerror="this.style.display='none'"
+        >
+      </span>
+      <span>CROWN <strong>NETWORK</strong></span>
+    </a>
 
-  <nav class="nav-links">
-    <a href="/index.html">HOME</a>
-    <a href="/games.html">GAMES</a>
-    <a href="/crustyspeaks.html" class="active">CRUSTYSPEAKS</a>
-    <a href="/plans.html">PLANS</a>
-    <a href="/profile.html">MY PROFILE</a>
-    <a
-      href="https://discord.gg/9mkDN5Zcws"
-      target="_blank"
-      rel="noopener noreferrer"
-    >COMMUNITY ↗</a>
+    <div class="nav-links">
+      <a href="/index.html">HOME</a>
+      <a href="/games.html">GAMES</a>
+      <a href="/crustyspeaks.html" aria-current="page">CRUSTYSPEAKS</a>
+      <a href="/plans.html">PLANS</a>
+      <a href="/profile.html">MY PROFILE</a>
+      <a
+        href="https://discord.gg/9mkDN5Zcws"
+        target="_blank"
+        rel="noopener noreferrer"
+      >COMMUNITY ↗</a>
+    </div>
   </nav>
 </header>
 <main>
