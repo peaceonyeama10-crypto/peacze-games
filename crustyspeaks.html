@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRUSTYSPEAKS | CROWN NETWORK</title>
-<link rel="icon" type="image/png" href="/crown-network-icon.png">
-<meta name="theme-color" content="#080611">
+  <link rel="icon" type="image/png" href="/crown-network-icon.png">
+  <meta name="theme-color" content="#080611">
+
   <style>
     * {
       box-sizing: border-box;
@@ -20,152 +21,153 @@
       min-height: 100vh;
     }
 
-  :root {
-  color-scheme: dark;
-  --bg: #080611;
-  --muted: #aaa2bf;
-  --border: #332447;
-  --cyan: #43ddff;
-  --purple: #a855ff;
-}
+    :root {
+      color-scheme: dark;
+      --bg: #080611;
+      --muted: #aaa2bf;
+      --border: #332447;
+      --cyan: #43ddff;
+      --purple: #a855ff;
+    }
 
-.container {
-  width: min(1160px, 92%);
-  margin: auto;
-}
+    .container {
+      width: min(1160px, 92%);
+      margin: auto;
+    }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-header.container {
-  width: min(1160px, 92%);
-}
+    header.container {
+      width: min(1160px, 92%);
+    }
 
-nav {
-  min-height: 82px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  border-bottom: 1px solid #ffffff12;
-}
+    nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid #ffffff12;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 1000;
-  letter-spacing: 1.5px;
-  white-space: nowrap;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 1000;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
 
-.brand-mark {
-  width: 43px;
-  height: 43px;
-  overflow: hidden;
-  border-radius: 13px;
-  border: 1px solid #b85cff80;
-  background: #0e091c;
-  flex-shrink: 0;
-}
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      overflow: hidden;
+      border-radius: 13px;
+      border: 1px solid #b85cff80;
+      background: #0e091c;
+      flex-shrink: 0;
+    }
 
-.brand-mark img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.brand strong {
-  background: linear-gradient(95deg, white, #ff65e8 48%, #53dfff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+    .brand strong {
+      background: linear-gradient(95deg, white, #ff65e8 48%, #53dfff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: #d5cce8;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
+    .nav-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #d5cce8;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
 
-.nav-links a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 13px;
-  border: 1px solid transparent;
-  border-radius: 11px;
-  color: #b9b0ce;
-  transition: .2s ease;
-}
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      color: #b9b0ce;
+      transition: .2s ease;
+    }
 
-.nav-links a:hover {
-  color: white;
-  background: linear-gradient(135deg, #a855ff20, #43ddff12);
-  border-color: #a855ff65;
-  transform: translateY(-2px);
-}
+    .nav-links a:hover {
+      color: white;
+      background: linear-gradient(135deg, #a855ff20, #43ddff12);
+      border-color: #a855ff65;
+      transform: translateY(-2px);
+    }
 
-.nav-links a[aria-current="page"] {
-  color: white;
-  background: linear-gradient(135deg, #a855ff30, #43ddff16);
-  border-color: #a855ff75;
-  box-shadow: 0 0 18px #a855ff16;
-}
+    .nav-links a[aria-current="page"] {
+      color: white;
+      background: linear-gradient(135deg, #a855ff30, #43ddff16);
+      border-color: #a855ff75;
+      box-shadow: 0 0 18px #a855ff16;
+    }
 
-@media (max-width: 850px) {
-  nav {
-    min-height: 88px;
-    padding: 14px 0;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
+    @media (max-width: 850px) {
+      nav {
+        min-height: 88px;
+        padding: 14px 0;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
 
-  .nav-links {
-    width: 100%;
-    justify-content: center;
-    gap: 6px;
-  }
-}
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+      }
+    }
 
-@media (max-width: 560px) {
-  nav {
-    min-height: 0;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-  }
+    @media (max-width: 560px) {
+      nav {
+        min-height: 0;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
 
-  .nav-links {
-    justify-content: flex-start;
-    gap: 6px;
-  }
+      .nav-links {
+        justify-content: flex-start;
+        gap: 6px;
+      }
 
-  .nav-links a {
-    min-height: 36px;
-    padding: 0 10px;
-    font-size: 10px;
-  }
+      .nav-links a {
+        min-height: 36px;
+        padding: 0 10px;
+        font-size: 10px;
+      }
 
-  .brand {
-    font-size: 12px;
-    letter-spacing: 0;
-  }
+      .brand {
+        font-size: 12px;
+        letter-spacing: 0;
+      }
 
-  .brand-mark {
-    width: 34px;
-    height: 34px;
-  }
-}
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
     main {
       max-width: 1150px;
       margin: auto;
@@ -359,6 +361,7 @@ nav {
     </div>
   </nav>
 </header>
+
 <main>
   <section class="heading">
     <small>CROWN NETWORK • AI VOICE SYSTEM</small>
@@ -444,6 +447,9 @@ nav {
   let currentlyPlaying = false;
   let polling = false;
   let currentAudio = null;
+  let currentPlaybackItem = null;
+  let currentPlaybackStarted = false;
+  let currentPlaybackFinished = false;
 
   const message = document.getElementById("message");
   const status = document.getElementById("connectionStatus");
@@ -456,10 +462,67 @@ nav {
     return document.getElementById("voicesEnabled").checked;
   }
 
+  // Notify the Vercel API, which forwards the event to Render.
+  async function notifyPlayback(item, playbackStatus) {
+    if (!item || !item.clipId) {
+      console.warn("[CRUSTYSPEAKS] Missing clip ID; playback notification skipped.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/crustyspeaks/audio/playback", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          clipId: item.clipId,
+          status: playbackStatus,
+          characterName: item.characterName
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          "Playback notification failed: " +
+          response.status + " " + errorText
+        );
+      }
+
+      console.log("[CRUSTYSPEAKS PLAYBACK]", playbackStatus, item.clipId);
+    } catch (error) {
+      console.error("[CRUSTYSPEAKS PLAYBACK NOTIFICATION]", error);
+    }
+  }
+
+  function finishCurrentPlayback(playbackStatus) {
+    const item = currentPlaybackItem;
+
+    if (!item || currentPlaybackFinished) return;
+
+    currentPlaybackFinished = true;
+
+    if (currentPlaybackStarted) {
+      notifyPlayback(item, playbackStatus);
+    }
+
+    currentPlaybackItem = null;
+    currentPlaybackStarted = false;
+  }
+
   function stopCurrentAudio() {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.src = "";
+    const audio = currentAudio;
+
+    if (audio) {
+      finishCurrentPlayback("stopped");
+
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+
       currentAudio = null;
     }
 
@@ -532,35 +595,76 @@ nav {
         return;
       }
 
-      currentlyPlaying = true;
+      if (!item.clipId) {
+        console.error("[CRUSTYSPEAKS] Audio item has no clipId.");
+        setMessage("Audio clip is missing its playback ID.");
+        resolve();
+        return;
+      }
 
-      currentAudio = new Audio(
+      currentlyPlaying = true;
+      currentPlaybackItem = item;
+      currentPlaybackStarted = false;
+      currentPlaybackFinished = false;
+
+      const audio = new Audio(
         "data:" + (item.mimeType || "audio/mpeg") +
         ";base64," + item.audio
       );
 
-      setMessage("Playing " + item.characterName + "...");
+      currentAudio = audio;
 
-      currentAudio.onended = () => {
+      setMessage("Loading " + item.characterName + "...");
+
+      // This event fires when the browser actually begins playback.
+      audio.onplaying = () => {
+        if (currentAudio !== audio || currentPlaybackFinished) return;
+
+        if (!currentPlaybackStarted) {
+          currentPlaybackStarted = true;
+          setMessage("Playing " + item.characterName + "...");
+
+          notifyPlayback(item, "started");
+        }
+      };
+
+      audio.onended = () => {
+        if (currentAudio !== audio) return;
+
+        finishCurrentPlayback("ended");
+
         currentAudio = null;
         currentlyPlaying = false;
+
         setMessage("Ready • Waiting for more voice reactions.");
         resolve();
       };
 
-      currentAudio.onerror = () => {
+      audio.onerror = () => {
+        if (currentAudio !== audio) return;
+
+        finishCurrentPlayback("stopped");
+
         currentAudio = null;
         currentlyPlaying = false;
+
         setMessage("Could not play an audio clip.");
         resolve();
       };
 
-      currentAudio.play().catch(error => {
+      audio.play().catch(error => {
+        if (currentAudio !== audio) return;
+
         console.error("[CRUSTYSPEAKS PLAYBACK]", error);
+
+        finishCurrentPlayback("stopped");
+
         currentAudio = null;
         currentlyPlaying = false;
+
         setMessage("Browser blocked audio. Click ENABLE AUDIO again.");
         audioUnlocked = false;
+
         resolve();
       });
     });
@@ -570,6 +674,7 @@ nav {
     if (!event.target.checked) {
       audioUnlocked = false;
       stopCurrentAudio();
+
       status.textContent = "AUDIO PAUSED";
       setMessage("Character voices are disabled.");
     } else {
@@ -579,68 +684,69 @@ nav {
   });
 
   async function saveVoiceSettings() {
-  const settings = {
-    voicesEnabled: document.getElementById("voicesEnabled").checked,
-    commentVoices: document.getElementById("commentVoices").checked,
-    giftVoices: document.getElementById("giftVoices").checked
-  };
+    const settings = {
+      voicesEnabled: document.getElementById("voicesEnabled").checked,
+      commentVoices: document.getElementById("commentVoices").checked,
+      giftVoices: document.getElementById("giftVoices").checked
+    };
 
-  try {
-    const response = await fetch("/api/crustyspeaks/settings", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(settings)
-    });
+    try {
+      const response = await fetch("/api/crustyspeaks/settings", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(settings)
+      });
 
-    if (!response.ok) {
-      throw new Error("Settings save failed: " + response.status);
+      if (!response.ok) {
+        throw new Error("Settings save failed: " + response.status);
+      }
+
+      setMessage("Voice settings saved successfully.");
+    } catch (error) {
+      console.error("[CRUSTYSPEAKS SETTINGS]", error);
+      setMessage("Could not save settings. Check your connection.");
     }
-
-    setMessage("Voice settings saved successfully.");
-  } catch (error) {
-    console.error("[CRUSTYSPEAKS SETTINGS]", error);
-    setMessage("Could not save settings. Check your connection.");
   }
-}
 
-document.querySelectorAll(
-  "#voicesEnabled, #commentVoices, #giftVoices"
-).forEach(control => {
-  control.addEventListener("change", saveVoiceSettings);
-});
-async function loadVoiceSettings() {
-  try {
-    const response = await fetch("/api/crustyspeaks/settings", {
-      method: "GET",
-      credentials: "same-origin"
-    });
+  document.querySelectorAll(
+    "#voicesEnabled, #commentVoices, #giftVoices"
+  ).forEach(control => {
+    control.addEventListener("change", saveVoiceSettings);
+  });
 
-    if (!response.ok) {
-      throw new Error("Settings load failed: " + response.status);
+  async function loadVoiceSettings() {
+    try {
+      const response = await fetch("/api/crustyspeaks/settings", {
+        method: "GET",
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) {
+        throw new Error("Settings load failed: " + response.status);
+      }
+
+      const data = await response.json();
+      const settings = data.settings;
+
+      document.getElementById("voicesEnabled").checked =
+        settings.voicesEnabled;
+
+      document.getElementById("commentVoices").checked =
+        settings.commentVoices;
+
+      document.getElementById("giftVoices").checked =
+        settings.giftVoices;
+
+    } catch (error) {
+      console.error("[CRUSTYSPEAKS SETTINGS LOAD]", error);
+      setMessage("Could not load saved voice settings.");
     }
-
-    const data = await response.json();
-    const settings = data.settings;
-
-    document.getElementById("voicesEnabled").checked =
-      settings.voicesEnabled;
-
-    document.getElementById("commentVoices").checked =
-      settings.commentVoices;
-
-    document.getElementById("giftVoices").checked =
-      settings.giftVoices;
-
-  } catch (error) {
-    console.error("[CRUSTYSPEAKS SETTINGS LOAD]", error);
-    setMessage("Could not load saved voice settings.");
   }
-}
 
-loadVoiceSettings();
+  loadVoiceSettings();
 </script>
 
 </body>
