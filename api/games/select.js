@@ -92,7 +92,13 @@ export default async function handler(req, res) {
       .toUpperCase();
 
     const game = String(req.body?.game || "").trim();
-    const allowedGames = ["racing", "jungle", "savecity"];
+
+    const allowedGames = [
+      "racing",
+      "jungle",
+      "savecity",
+      "spongebob"
+    ];
 
     if (!allowedGames.includes(game)) {
       return res.status(400).json({
