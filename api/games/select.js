@@ -97,7 +97,8 @@ export default async function handler(req, res) {
       "racing",
       "jungle",
       "savecity",
-      "spongebob"
+      "spongebob",
+      "Crown dance"
     ];
 
     if (!allowedGames.includes(game)) {
