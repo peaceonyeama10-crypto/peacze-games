@@ -757,7 +757,26 @@ nav {
             <button class="btn btn-primary" type="button" onclick="chooseGame('spongebob')">
               SELECT GAME
             </button>
-            <button class="btn btn-secondary" type="button" onclick="launchGame('spongebob')">
+                    <button class="btn btn-secondary" type="button" onclick="launchGame('spongebob')">
+              PLAY ON ROBLOX ↗
+            </button>
+          </div>
+        </article>
+
+        <article class="game-card" id="card-tower">
+          <div class="game-art art-city">
+            <span class="art-tag">Crown Platforms</span>
+            <div style="font-size: 65px;">🗼</div>
+          </div>
+
+          <div class="game-content">
+            <h3>Crown Platforms</h3>
+            <p>Climb a spiral tower of platforms while TikTok gifts, likes and follows move you up or down.</p>
+            <div class="game-state" id="status-tower">AVAILABLE</div>
+            <button class="btn btn-primary" type="button" onclick="chooseGame('tower')">
+              SELECT GAME
+            </button>
+            <button class="btn btn-secondary" type="button" onclick="launchGame('tower')">
               PLAY ON ROBLOX ↗
             </button>
           </div>
@@ -853,9 +872,13 @@ dance_new: {
   name: "Crown dance",
   backendGame: "dance_new",
   url: "https://www.roblox.com/games/135478204868825/Ppeacegmaess-Place-10312026-1"
+},
+tower: {
+  name: "Crown Platfoms",
+  backendGame: "tower",
+  url: "https://www.roblox.com/games/106296065133253/Crown-Platforms"   // put your tower game's link here
 }
   };
-
     let selectedGame = "racing";
     let busy = false;
     let currentSessionCode = "";
