@@ -93,13 +93,14 @@ export default async function handler(req, res) {
 
     const game = String(req.body?.game || "").trim();
 
-    const allowedGames = [
-      "racing",
-      "jungle",
-      "savecity",
-      "spongebob",
-      "dance_new"
-    ];
+   const allowedGames = [
+  "racing",
+  "jungle",
+  "savecity",
+  "spongebob",
+  "dance_new",
+  "tower"
+];
 
     if (!allowedGames.includes(game)) {
       return res.status(400).json({
