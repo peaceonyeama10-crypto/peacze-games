@@ -816,7 +816,30 @@ nav {
             SELECT GAME
           </button>
 
-          <button class="btn btn-secondary" type="button" onclick="launchGame('horserace')">
+             <button class="btn btn-secondary" type="button" onclick="launchGame('horserace')">
+            PLAY ON ROBLOX ↗
+          </button>
+        </div>
+      </article>
+
+      <article class="game-card" id="card-crownfashion">
+        <div class="game-art art-city">
+          <span class="art-tag">FASHION SHOW</span>
+          <video autoplay muted loop playsinline>
+            <source src="/videos/crown-fashion.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="game-content">
+          <h3>CROWN FASHION</h3>
+          <p>Viewers comment their username to walk the runway, strike a pose, and shine with gift effects.</p>
+          <div class="game-state" id="status-crownfashion">AVAILABLE</div>
+
+          <button class="btn btn-primary" type="button" onclick="chooseGame('crownfashion')">
+            SELECT GAME
+          </button>
+
+          <button class="btn btn-secondary" type="button" onclick="launchGame('crownfashion')">
             PLAY ON ROBLOX ↗
           </button>
         </div>
@@ -903,6 +926,11 @@ horserace: {
   name: "Animal Run",
   backendGame: "horserace",
   url: "https://www.roblox.com/games/83678902895781/animal-run"
+},
+crownfashion: {
+  name: "Crown Fashion",
+  backendGame: "crownfashion",
+  url: "PASTE_YOUR_CROWN_FASHION_LINK_HERE"
 }
   };
     let selectedGame = "racing";
