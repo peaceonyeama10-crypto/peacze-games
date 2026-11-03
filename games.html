@@ -793,10 +793,31 @@ nav {
       SELECT GAME
     </button>
 
-    <button class="btn btn-secondary" type="button" onclick="launchGame('dance_new')">
+       <button class="btn btn-secondary" type="button" onclick="launchGame('dance_new')">
       PLAY ON ROBLOX ↗
     </button>
   </div>
+      </article>
+
+      <article class="game-card" id="card-horserace">
+        <div class="game-art">
+          <span class="art-tag">ANIMAL RACE</span>
+          <span style="font-size: 72px;">🐎</span>
+        </div>
+
+        <div class="game-content">
+          <h3>HORSE RACE</h3>
+          <p>Viewers comment their username to ride a horse and race to the finish.</p>
+          <div class="game-state" id="status-horserace">AVAILABLE</div>
+
+          <button class="btn btn-primary" type="button" onclick="chooseGame('horserace')">
+            SELECT GAME
+          </button>
+
+          <button class="btn btn-secondary" type="button" onclick="launchGame('horserace')">
+            PLAY ON ROBLOX ↗
+          </button>
+        </div>
       </article>
       </div>
     </section>
@@ -875,6 +896,11 @@ tower: {
   name: "Crown Platforms",
   backendGame: "tower",
   url: "https://www.roblox.com/games/106296065133253/Crown-Platforms"   // put your tower game's link here
+},
+horserace: {
+  name: "ANIMAL RACE",
+  backendGame: "horserace",
+  url: "https://www.roblox.com/games/83678902895781/animal-run"
 }
   };
     let selectedGame = "racing";
