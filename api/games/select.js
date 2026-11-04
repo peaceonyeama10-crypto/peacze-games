@@ -83,7 +83,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed." });
   }
 
-  if (req.headers.origin !== "https://peacze-games.vercel.app") {
+  const allowedOrigins = [
+    "https://crownnetwork.live",
+    "https://peacze-games.vercel.app"
+  ];
+
+  if (!allowedOrigins.includes(req.headers.origin)) {
     return res.status(403).json({ error: "Origin not allowed." });
   }
 
