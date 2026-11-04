@@ -1,5 +1,80 @@
 import crypto from "node:crypto";
 
+// ===== APPROVAL FROM THE ADMIN DASHBOARD =====
+// A creator is approved when their record in admin-dashboard.html is ACTIVE:
+// access not revoked, start date reached, and not expired.
+// Same rules as statusFor() in admin-dashboard.html.
+// Results are remembered for 60 seconds so the backend isn't asked on every poll.
+const approvalCache = new Map();
+const APPROVAL_CACHE_MS = 60 * 1000;
+
+function torontoToday() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+
+  const values = Object.fromEntries(
+    parts.map(({ type, value }) => [type, value])
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+async function isApprovedCreator(discordUserId) {
+  const id = String(discordUserId || "").trim();
+  const backend = (process.env.TIKTOK_BACKEND_URL || "").replace(/\/+$/, "");
+  const secret = process.env.CREATOR_ADMIN_API_SECRET;
+
+  if (!backend || !secret || !/^\d{17,20}$/.test(id)) return false;
+
+  const cached = approvalCache.get(id);
+  if (cached && Date.now() - cached.at < APPROVAL_CACHE_MS) {
+    return cached.approved;
+  }
+
+  let approved = false;
+
+  try {
+    const response = await fetch(
+      `${backend}/api/admin/creators/${encodeURIComponent(id)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${secret}`,
+          Accept: "application/json"
+        },
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000)
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json().catch(() => null);
+      const creator = data && data.creator;
+
+      if (creator && creator.accessStatus === "active") {
+        const today = torontoToday();
+        const start = creator.startsAt ? String(creator.startsAt).slice(0, 10) : "";
+        const expiry = creator.expiresOn ? String(creator.expiresOn).slice(0, 10) : "";
+
+        approved = !(start && start > today) && !(expiry && expiry < today);
+      }
+    } else if (response.status !== 404) {
+      // Backend problem: don't remember this answer, try again next time.
+      console.error("[APPROVAL] Creator lookup failed:", response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("[APPROVAL] Creator lookup error:", error.message);
+    return false;
+  }
+
+  approvalCache.set(id, { approved, at: Date.now() });
+  return approved;
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -15,12 +90,8 @@ export default async function handler(req, res) {
   const backend = process.env.TIKTOK_BACKEND_URL;
   const token = process.env.TIKTOK_QUEUE_TOKEN;
   const secret = process.env.DAILY_CODE_SECRET;
-  const approvedIds = (process.env.APPROVED_DISCORD_IDS || "")
-    .split(",")
-    .map(id => id.trim())
-    .filter(Boolean);
 
-  if (!backend || !token || !secret || approvedIds.length === 0) {
+  if (!backend || !token || !secret) {
     return res.status(500).json({
       error: "Server configuration is missing."
     });
@@ -79,7 +150,7 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!approvedIds.includes(data.discordUserId)) {
+    if (!(await isApprovedCreator(data.discordUserId))) {
       return res.status(403).json({
         error: "Your Discord account is not approved."
       });
