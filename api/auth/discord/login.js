@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri:
-      "https://peacze-games.vercel.app/api/auth/discord/callback",
+      "https://crownnetwork.live/api/auth/discord/callback",
     response_type: "code",
     scope: "identify",
     state
