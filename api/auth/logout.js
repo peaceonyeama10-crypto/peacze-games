@@ -9,6 +9,7 @@ export default async function handler(req, res) {
   }
 
   const allowedOrigins = [
+    "https://crownnetwork.live",
     "https://peacze-games.vercel.app",
     "https://peacze-games-git-main-peace-sever.vercel.app"
   ];
