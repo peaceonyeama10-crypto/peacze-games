@@ -152,7 +152,7 @@ export default async function handler(req, res) {
           grant_type: "authorization_code",
           code: String(code),
           redirect_uri:
-            "https://peacze-games.vercel.app/api/auth/discord/callback"
+            "https://crownnetwork.live/api/auth/discord/callback"
         })
       }
     );
