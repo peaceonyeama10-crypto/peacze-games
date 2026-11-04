@@ -728,6 +728,43 @@ nav {
   .live-dot { animation: none; }
 }
 
+/* ===== DAILY CODE RESET TIMER ===== */
+.code-reset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 2px solid #ff3b5c;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3a0d18, #1d0910);
+  box-shadow: 0 0 22px #ff3b5c30;
+}
+
+.code-reset-label {
+  color: #ffb3c0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.code-reset-time {
+  color: #ff3b5c;
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 1000;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px #ff3b5c80;
+}
+
+.code-saved {
+  margin-top: 8px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+}
+
   </style>
 </head>
 <body>
@@ -967,6 +1004,11 @@ nav {
     </section>
 
     <section class="access-form" aria-labelledby="access-heading">
+      <div class="code-reset" aria-live="off">
+        <span class="code-reset-label">DAILY CODE RESETS IN</span>
+        <span class="code-reset-time" id="code-reset-time">--:--:--</span>
+      </div>
+
       <label id="access-heading" for="daily-access-code">DAILY DISCORD ACCESS CODE</label>
 
       <input
@@ -1064,6 +1106,75 @@ crownfashion: {
     const copyMessage = document.getElementById("copy-message");
     const copyButton = document.getElementById("copy-code");
 
+    // ===== SAVED DAILY CODE + RESET TIMER =====
+    const SAVED_CODE_KEY = "crownDailyCode";
+
+    function torontoNow() {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Toronto",
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(new Date());
+      const v = Object.fromEntries(parts.map(p => [p.type, p.value]));
+      return {
+        day: `${v.year}-${v.month}-${v.day}`,
+        seconds: Number(v.hour) * 3600 + Number(v.minute) * 60 + Number(v.second)
+      };
+    }
+
+    function saveDailyCode(code) {
+      try {
+        localStorage.setItem(SAVED_CODE_KEY, JSON.stringify({
+          code,
+          day: torontoNow().day
+        }));
+      } catch {}
+    }
+
+    function clearDailyCode() {
+      try { localStorage.removeItem(SAVED_CODE_KEY); } catch {}
+    }
+
+    function loadDailyCode() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SAVED_CODE_KEY) || "null");
+        if (saved && saved.code && saved.day === torontoNow().day) return saved.code;
+        clearDailyCode(); // it's from an old day, throw it away
+      } catch {}
+      return "";
+    }
+
+    const resetTimeEl = document.getElementById("code-reset-time");
+    let lastDay = torontoNow().day;
+
+    function updateResetTimer() {
+      const now = torontoNow();
+
+      // The code just reset: clear the old one
+      if (now.day !== lastDay) {
+        lastDay = now.day;
+        clearDailyCode();
+        accessCodeInput.value = "";
+        showMessage("The daily code just reset. Get today's new code from Discord.", true);
+      }
+
+      const left = Math.max(0, 86400 - now.seconds);
+      const h = String(Math.floor(left / 3600)).padStart(2, "0");
+      const m = String(Math.floor((left % 3600) / 60)).padStart(2, "0");
+      const s = String(left % 60).padStart(2, "0");
+      resetTimeEl.textContent = `${h}:${m}:${s}`;
+    }
+
+    const savedCode = loadDailyCode();
+    if (savedCode) {
+      accessCodeInput.value = savedCode;
+      showMessage("Today's access code is saved. Just pick a game!");
+    }
+
+    updateResetTimer();
+    setInterval(updateResetTimer, 1000);
+
     function showMessage(message, isError = false) {
       messageBox.textContent = message;
       messageBox.classList.toggle("error", isError);
@@ -1156,6 +1267,7 @@ crownfashion: {
         }
 
         currentSessionCode = String(result.sessionCode);
+        saveDailyCode(code); // it worked, remember it until the daily reset
         registrationGame.textContent = `${GAMES[id].name} selected successfully.`;
         registrationCode.textContent = currentSessionCode;
         copyMessage.textContent = "";
@@ -1168,6 +1280,9 @@ crownfashion: {
           block: "center"
         });
       } catch (error) {
+        if (/daily code|access code/i.test(error.message || "")) {
+          clearDailyCode();
+        }
         showMessage(
           error.message || "Could not select the game. Please try again.",
           true
