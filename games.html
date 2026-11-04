@@ -620,9 +620,116 @@ nav {
   }
 }
 
+/* ===== LIVE NOW PANEL ===== */
+.live-panel {
+  margin: 10px auto 15px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: linear-gradient(155deg, #1c1430, #0e0a19 72%);
+}
+
+.live-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.live-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 1000;
+  letter-spacing: 1.5px;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff3b5c;
+  box-shadow: 0 0 10px #ff3b5c;
+  animation: livePulse 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.8); }
+}
+
+.live-total {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.live-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+}
+
+.live-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #47305d;
+  border-radius: 12px;
+  background: #110c1e;
+}
+
+.live-name {
+  min-width: 0;
+}
+
+.live-name strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.live-name span {
+  color: #d5a4ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.live-viewers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #ff3b5c1f;
+  border: 1px solid #ff3b5c55;
+  color: #ffd2da;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.live-empty {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
+}
+
   </style>
 </head>
-
 <body>
   <header class="container">
     <nav aria-label="Main navigation">
@@ -659,8 +766,20 @@ nav {
       <p class="intro">
         Choose an experience and bring your community into the action.
         Select a game and enter your daily Discord access code to generate
-        a registration code.
+            a registration code.
       </p>
+    </section>
+
+    <section class="live-panel" aria-labelledby="live-heading">
+      <div class="live-head">
+        <div class="live-title" id="live-heading">
+          <span class="live-dot"></span> LIVE NOW
+        </div>
+        <span class="live-total" id="live-total"></span>
+      </div>
+      <div class="live-list" id="live-list">
+        <div class="live-empty">Checking who's live...</div>
+      </div>
     </section>
 
     <section aria-labelledby="games-heading">
@@ -1125,6 +1244,88 @@ crownfashion: {
     });
 
     updateCards();
+
+    // ===== LIVE NOW PANEL =====
+    const LIVE_URL = "https://tiktok-race-queue-1.onrender.com/api/live-now";
+    const liveList = document.getElementById("live-list");
+    const liveTotal = document.getElementById("live-total");
+
+    function gameNameFor(backendKey) {
+      for (const game of Object.values(GAMES)) {
+        if (game.backendGame === backendKey) return game.name;
+      }
+      return "";
+    }
+
+    function formatViewers(n) {
+      n = Number(n) || 0;
+      if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+      if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+      return String(n);
+    }
+
+    async function refreshLiveNow() {
+      try {
+        const response = await fetch(LIVE_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error("bad response");
+
+        const result = await response.json();
+        const live = Array.isArray(result.live) ? result.live : [];
+
+        liveList.replaceChildren();
+
+        if (live.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "live-empty";
+          empty.textContent = "Nobody is live right now. Check back soon!";
+          liveList.appendChild(empty);
+          liveTotal.textContent = "";
+          return;
+        }
+
+        let totalViewers = 0;
+
+        for (const entry of live) {
+          totalViewers += Number(entry.viewers) || 0;
+
+          const item = document.createElement("div");
+          item.className = "live-item";
+
+          const name = document.createElement("div");
+          name.className = "live-name";
+
+          const strong = document.createElement("strong");
+          strong.textContent = "@" + String(entry.username || "");
+
+          const game = document.createElement("span");
+          game.textContent = gameNameFor(entry.game).toUpperCase();
+
+          name.append(strong, game);
+
+          const viewers = document.createElement("div");
+          viewers.className = "live-viewers";
+          viewers.textContent = "👁 " + formatViewers(entry.viewers);
+
+          item.append(name, viewers);
+          liveList.appendChild(item);
+        }
+
+        liveTotal.textContent =
+          `${live.length} LIVE · ${formatViewers(totalViewers)} WATCHING`;
+      } catch {
+        liveTotal.textContent = "";
+        if (!liveList.querySelector(".live-item")) {
+          liveList.replaceChildren();
+          const empty = document.createElement("div");
+          empty.className = "live-empty";
+          empty.textContent = "Couldn't load live streams right now.";
+          liveList.appendChild(empty);
+        }
+      }
+    }
+
+    refreshLiveNow();
+    setInterval(refreshLiveNow, 10000);
   </script>
 </body>
 </html>
