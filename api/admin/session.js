@@ -23,7 +23,7 @@ module.exports = function handler(req, res) {
   const origin = req.headers.origin;
   if (
     origin &&
-    origin !== "https://peacze-games.vercel.app"
+    origin !== "https://crownnetwork.live"
   ) {
     return respond(res, 403, { error: "Request not allowed." });
   }
