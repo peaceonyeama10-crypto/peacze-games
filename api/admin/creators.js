@@ -75,7 +75,7 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: "Administrator session required." });
   }
 
-  const allowedOrigin = "https://peacze-games.vercel.app";
+const ALLOWED_ORIGIN = "https://crownnetwork.live";
   const origin = req.headers.origin;
 
   if (origin && origin !== allowedOrigin) {
