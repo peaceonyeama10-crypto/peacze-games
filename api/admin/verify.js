@@ -38,7 +38,7 @@ module.exports = function handler(req, res) {
     return respond(res, 405, { error: "Method not allowed." });
   }
 
-  if (req.headers.origin !== "https://peacze-games.vercel.app") {
+  if (!["https://crownnetwork.live", "https://peacze-games.vercel.app"].includes(req.headers.origin)) {
     return respond(res, 403, { error: "Request not allowed." });
   }
 
