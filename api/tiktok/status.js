@@ -239,8 +239,7 @@ export default async function handler(req, res) {
   }
 
   const allowedOrigins = [
-    "https://peacze-games.vercel.app",
-    "https://peacze-games-git-main-peace-sever.vercel.app"
+    "https://crownnetwork.live"
   ];
 
   const origin = req.headers.origin;
